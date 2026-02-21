@@ -170,44 +170,34 @@
             </div>
         </section>
 
-        <section id="view-profile" class="hidden p-5 fade-in">
+      <section id="view-profile" class="hidden p-5 fade-in">
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             
             <div class="space-y-6">
                 <div class="glass-panel p-5 rounded-3xl">
-                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Motor de Inteligencia</h3>
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4" data-translate="ai_engine">Motor de Inteligencia</h3>
                     <div class="flex gap-2">
                         <input type="password" id="api-key-input" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
-                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase text-white">Save</button>
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase text-white shadow-lg">Save</button>
                     </div>
-                    <p id="key-status" class="text-[9px] text-slate-500 mt-2 italic">Detección: Gemini, Groq, OpenAI, DeepSeek.</p>
                 </div>
 
                 <div class="glass-panel p-5 rounded-3xl">
-                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Diseñador de Botones</h3>
+                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4" data-translate="button_designer">Diseñador de Botones</h3>
                     <div class="grid grid-cols-2 gap-3 mb-4"><input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs"><input type="text" id="btn-url" placeholder="https://..." class="text-xs"></div>
-                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase text-white">Crear Acceso</button>
+                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase text-white shadow-lg">Crear Acceso</button>
                 </div>
 
                 <div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
                     <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest" data-translate="system">Sistema</h3>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Sonido Alerta</span><select id="sys-alarm" onchange="updateSystem('alarmSound', this.value)" class="text-[10px] py-1 px-4"><option value="800">Cyber Beep</option><option value="1500">Minimalist</option><option value="pulsar">Pulse Red</option><option value="siren">Siren Pro</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="theme">Tema</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px]"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="text_size">Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px]"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="alarm_tone">Tono Alerta</span><select id="sys-alarm" onchange="updateSystem('alarmSound', this.value)" class="text-[10px]"><option value="800">Cyber Beep</option><option value="pulsar">Pulse Red</option><option value="siren">Siren Pro</option><option value="zen">Zen Morning</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px]"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option></select></div>
                     <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Idioma / 语言</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl">
-                    <h3 class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-4">Data Vault</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="exportData()" class="flex flex-col items-center p-3 glass-panel rounded-2xl border-green-500/20 text-green-400 transition-all active:scale-95"><i data-lucide="download" class="mb-1" size="18"></i><span class="text-[9px] font-bold">EXPORTAR</span></button>
-                        <button onclick="document.getElementById('import-file').click()" class="flex flex-col items-center p-3 glass-panel rounded-2xl border-blue-500/20 text-blue-400 transition-all active:scale-95"><i data-lucide="upload" class="mb-1" size="18"></i><span class="text-[9px] font-bold">RESTAURAR</span></button>
-                        <input type="file" id="import-file" class="hidden" onchange="importData(this)">
-                    </div>
-                </div>
-
-                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
+                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify">
                     <h4 class="font-bold text-slate-400 mb-2 uppercase">Aviso Legal y Políticas</h4>
                     <p>VICO POCKET funciona bajo el modelo Local-First. Sus datos residen únicamente en su navegador. Handcrafted by Jaime Andrés Dueñas Vicuña.</p>
                     <div class="mt-4 border-t border-white/5 pt-4 text-center">
@@ -217,8 +207,15 @@
                 </div>
             </div>
         </section>
-    </nav>
 
+        <div id="install-banner" class="hidden p-4 mx-5 my-6 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-blue-600 rounded-xl"><i data-lucide="download-cloud" class="text-white"></i></div>
+                <div><h4 class="text-xs font-bold text-white">Instalar VICO POCKET</h4><p class="text-[9px] text-slate-400">Modo APK sin navegador</p></div>
+            </div>
+            <button onclick="triggerPwaInstall()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white">INSTALAR</button>
+        </div>
+    </main>
     <nav class="nav-bar">
         <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>HOME</span></div>
         <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>DATA</span></div>
