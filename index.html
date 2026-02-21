@@ -14,40 +14,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.2); }
-        
-        /* TEMAS DINÁMICOS */
+        :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
         body.theme-Cyber { --bg: #0b0f1a; --primary: #3b82f6; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
         body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
         body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
 
-        /* TAMAÑOS DE FUENTE */
         body.font-sm { font-size: 12px; }
         body.font-normal { font-size: 14px; }
         body.font-lg { font-size: 16px; }
 
         body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass-panel { background: rgba(11, 15, 26, 0.75); backdrop-filter: blur(15px); border: 1px solid var(--border); }
+        .glass { background: rgba(11, 15, 26, 0.75); backdrop-filter: blur(15px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
-        /* TASKBAR SUPERIOR (Mini Reloj Focus) */
-        .task-bar { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 38px; 
-            background: rgba(0,0,0,0.85); z-index: 500; 
-            display: flex; justify-content: center; align-items: center; 
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(5px);
-        }
-
-        /* NAVEGACIÓN INFERIOR (7 Iconos) */
-        .nav-bar { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; 
-            background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); 
-            display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; 
-        }
+        .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.85); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(5px); }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { margin-bottom: 4px; transition: 0.3s; }
@@ -73,37 +57,25 @@
     <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
         
         <section id="view-dashboard" class="p-5 space-y-6 fade-in">
-            <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent">
+            <div class="p-6 rounded-3xl border border-blue-500/20 glass bg-gradient-to-br from-blue-900/10 to-transparent">
                 <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
                 <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"El conocimiento es poder."</p>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-                <div onclick="switchTab('view-notes')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-colors">
-                    <i data-lucide="file-text" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Notas</span>
-                </div>
-                <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Links</span>
-                </div>
-                <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold text-center">Eventos (0)</span>
-                </div>
-                <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Start Focus</span>
-                </div>
-                <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Análisis</span>
-                </div>
-                <div onclick="switchTab('view-discovery')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Discovery</span>
-                </div>
+                <div onclick="switchTab('view-notes')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5"><i data-lucide="file-text" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Notas</span></div>
+                <div onclick="switchTab('view-links')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5"><i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Links</span></div>
+                <div onclick="switchTab('view-calendar')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5"><i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold text-center">Eventos (0)</span></div>
+                <div onclick="openPomo()" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5"><i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Start Focus</span></div>
+                <div onclick="switchTab('view-analysis')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5"><i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Análisis</span></div>
+                <div onclick="switchTab('view-discovery')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5"><i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Discovery</span></div>
             </div>
 
             <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
 
-            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center">
-                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase">Notas</div></div>
-                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase">Recursos</div></div>
+            <div class="glass p-5 rounded-3xl flex justify-around text-center border-white/5">
+                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Notas</div></div>
+                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Recursos</div></div>
             </div>
         </section>
 
@@ -111,7 +83,7 @@
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             
             <div class="space-y-6">
-                <div class="glass-panel p-4 rounded-xl border border-blue-500/30 flex items-center justify-between cursor-pointer" onclick="alert('Cargando Manual VICO Pocket...')">
+                <div class="glass p-4 rounded-xl border border-blue-500/30 flex items-center justify-between cursor-pointer" onclick="openManual()">
                     <div class="flex items-center gap-3">
                         <div class="p-2 bg-blue-500/20 rounded-lg text-blue-400"><i data-lucide="book-open"></i></div>
                         <div><h3 class="font-bold text-sm text-white">Manual de Usuario VICO</h3><p class="text-[9px] text-slate-500">Guía completa de funciones inteligentes</p></div>
@@ -119,98 +91,77 @@
                     <i data-lucide="chevron-right" size="16"></i>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl">
+                <div class="glass p-5 rounded-3xl">
                     <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Motor de Inteligencia</h3>
                     <div class="flex gap-2">
                         <input type="password" id="api-key-input" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
-                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase">Conectar</button>
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase text-white">Guardar</button>
                     </div>
                     <p id="key-status" class="text-[9px] text-slate-500 mt-2 italic">Detección automática de Gemini, Groq, OpenAI y DeepSeek.</p>
                 </div>
 
-                <div class="glass-panel p-4 rounded-xl bg-gradient-to-r from-blue-900/10 to-transparent flex justify-between items-center">
+                <div class="glass p-4 rounded-xl bg-gradient-to-r from-blue-900/10 to-transparent flex justify-between items-center">
                     <div><h3 class="font-bold text-sm text-white">Support Dev</h3><p class="text-[9px] text-slate-400">Si te gusta la app, invítame un café.</p></div>
-                    <a href="https://www.paypal.com/paypalme/texiduvi" target="_blank" class="bg-[#0070ba] px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-lg"><i data-lucide="coffee" size="14"></i> PayPal</a>
+                    <a href="https://www.paypal.com/paypalme/texiduvi" target="_blank" class="bg-[#0070ba] px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-lg text-white"><i data-lucide="coffee" size="14"></i> PayPal</a>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl">
+                <div class="glass p-5 rounded-3xl">
                     <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Gestión de Fuentes (RSS)</h3>
                     <div class="grid grid-cols-1 gap-2 mb-3">
                         <input type="text" id="rss-name" placeholder="Nombre (ej: Xataka)" class="text-xs">
                         <div class="flex gap-2">
                             <input type="text" id="rss-url" placeholder="URL del Feed..." class="flex-1 text-xs">
-                            <button onclick="addRssSource()" class="bg-slate-700 px-4 rounded-xl"><i data-lucide="plus" size="16"></i></button>
+                            <button onclick="addRssSource()" class="bg-slate-700 px-4 rounded-xl text-white"><i data-lucide="plus" size="16"></i></button>
                         </div>
                     </div>
                     <div id="rss-list-container" class="space-y-1 max-h-24 overflow-y-auto no-scrollbar"></div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl">
+                <div class="glass p-5 rounded-3xl">
                     <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Diseñador de Botones</h3>
                     <div class="grid grid-cols-2 gap-2 mb-3">
                         <input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs">
                         <input type="text" id="btn-url" placeholder="https://..." class="text-xs">
                     </div>
-                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase">Añadir al Dashboard</button>
+                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase text-white">Crear Botón</button>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl space-y-4">
-                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ajustes de Sistema</h3>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="palette" size="14"></i> Tema Visual</span>
-                        <select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-2">
-                            <option value="Cyber">Cyber Blue</option>
-                            <option value="Gold">Luxury Gold</option>
-                            <option value="Nature">Nature Green</option>
-                            <option value="Nebula">Cosmic Nebula</option>
-                            <option value="Minimal">Black Minimal</option>
-                        </select>
+                <div class="glass p-5 rounded-3xl space-y-4">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Sistema</h3>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="palette" size="14"></i> Tema</span>
+                        <select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-2"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="type" size="14"></i> Tamaño de Texto</span>
-                        <select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-2">
-                            <option value="sm">Pequeño</option>
-                            <option value="normal">Normal</option>
-                            <option value="lg">Grande</option>
-                        </select>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="type" size="14"></i> Texto</span>
+                        <select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-2"><option value="sm">Pequeño</option><option value="normal">Normal</option><option value="lg">Grande</option></select>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="volume-2" size="14"></i> Sonidos de Sistema</span>
-                        <input type="checkbox" id="sys-sound" onchange="updateSystem('sound', this.checked)" class="w-4 h-4 accent-blue-600">
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="globe" size="14"></i> Idioma</span>
+                        <select id="sys-lang" class="text-[10px] py-1 px-2"><option value="es">Español</option><option value="en">English</option></select>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> Modo Desarrollador</span>
-                        <input type="checkbox" id="sys-dev" class="w-4 h-4 accent-purple-600">
-                    </div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="volume-2" size="14"></i> Sonido</span><input type="checkbox" id="sys-sound" onchange="updateSystem('sound', this.checked)" class="w-4 h-4 accent-blue-600"></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> Developer Mode</span><input type="checkbox" id="sys-dev" class="w-4 h-4 accent-purple-600"></div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl">
+                <div class="glass p-5 rounded-3xl">
                     <h3 class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-4">Data Vault</h3>
                     <div class="grid grid-cols-2 gap-3">
-                        <button onclick="exportData()" class="flex flex-col items-center p-3 glass rounded-2xl border-green-500/20 text-green-400">
-                            <i data-lucide="download" class="mb-1" size="18"></i><span class="text-[9px] font-bold">EXPORTAR</span>
-                        </button>
-                        <button onclick="document.getElementById('import-file').click()" class="flex flex-col items-center p-3 glass rounded-2xl border-blue-500/20 text-blue-400">
-                            <i data-lucide="upload" class="mb-1" size="18"></i><span class="text-[9px] font-bold">IMPORTAR</span>
-                        </button>
+                        <button onclick="exportData()" class="flex flex-col items-center p-3 glass rounded-2xl border-green-500/20 text-green-400"><i data-lucide="download" class="mb-1" size="18"></i><span class="text-[9px] font-bold">EXPORTAR</span></button>
+                        <button onclick="document.getElementById('import-file').click()" class="flex flex-col items-center p-3 glass rounded-2xl border-blue-500/20 text-blue-400"><i data-lucide="upload" class="mb-1" size="18"></i><span class="text-[9px] font-bold">IMPORTAR</span></button>
                         <input type="file" id="import-file" class="hidden" onchange="importData(this)">
                     </div>
                 </div>
 
                 <div class="text-center py-6 border-t border-white/5 space-y-4">
-                    <p class="text-[10px] text-slate-500 text-justify leading-relaxed px-4">
-                        <strong>Aviso Legal:</strong> VICO POCKET funciona bajo el modelo Local-First. Tus datos residen únicamente en tu navegador. Handcrafted by <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="text-blue-400 font-bold underline">Jaime Andrés Dueñas Vicuña</a>.
-                    </p>
+                    <p class="text-[10px] text-slate-500 text-justify px-4"><strong>Aviso Legal y Privacidad:</strong> VICO POCKET funciona bajo el modelo Local-First. Tus datos residen únicamente en tu navegador. Handcrafted by <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="text-blue-400 font-bold underline">Jaime Andrés Dueñas Vicuña</a>.</p>
                     <p class="text-[10px] font-bold text-slate-600 tracking-[0.3em] uppercase">© 2026 VICO POCKET OS</p>
                 </div>
             </div>
         </section>
 
-        <section id="view-notes" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Notas</h2></section>
-        <section id="view-links" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Links</h2></section>
-        <section id="view-analysis" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección IA</h2></section>
-        <section id="view-discovery" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Discovery</h2></section>
-        <section id="view-calendar" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Agenda</h2></section>
+        <section id="view-notes" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Notas Pocket</h2><div id="notes-grid" class="space-y-3"></div></section>
+        <section id="view-links" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Links Pocket</h2><div id="links-container" class="space-y-2"></div></section>
+        <section id="view-analysis" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">IA ROI Engine</h2><div id="ai-results" class="hidden"></div></section>
+        <section id="view-discovery" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Discovery</h2><div id="news-list" class="space-y-4"></div></section>
+        <section id="view-calendar" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Agenda</h2><div id="events-list" class="space-y-2"></div></section>
     </main>
 
     <nav class="nav-bar">
@@ -218,14 +169,63 @@
         <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>NOTAS</span></div>
         <div class="nav-item" onclick="switchTab('view-links', this)"><i data-lucide="bookmark"></i><span>LINKS</span></div>
         <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="pie-chart"></i><span>IA ROI</span></div>
-        <div class="nav-item" onclick="switchTab('view-discovery', this)"><i data-lucide="compass"></i><span>FEEDS</span></div>
+        <div class="nav-item" onclick="switchTab('view-discovery', this)"><i data-lucide="compass"></i><span>DESCUBRE</span></div>
         <div class="nav-item" onclick="switchTab('view-calendar', this)"><i data-lucide="calendar"></i><span>AGENDA</span></div>
         <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="settings"></i><span>PERFIL</span></div>
     </nav>
 
+    <div id="modal-manual" class="fixed inset-0 z-[600] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg max-h-[85vh] rounded-2xl flex flex-col shadow-2xl relative animate-in fade-in overflow-hidden">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800 rounded-t-2xl">
+                <h3 class="font-bold text-white flex items-center gap-2"><i data-lucide="book-open" size="18" class="text-blue-400"></i> Manual VICO OS</h3>
+                <button onclick="closeManual()" class="text-slate-400 hover:text-white transition-colors bg-slate-700/50 p-1 rounded-full"><i data-lucide="x" size="20"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-8 text-sm text-slate-300">
+                <section class="space-y-2">
+                    <div class="flex items-center gap-2 text-white font-bold text-base border-b border-slate-700 pb-1 mb-2"><i data-lucide="layout" size="18" class="text-blue-500"></i> 1. Dashboard & Widgets</div>
+                    <p class="leading-relaxed">La pantalla principal es tu centro de comando.
+                        <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-400 text-xs">
+                            <li><strong>Widgets:</strong> Accesos directos a Notas, Links y Análisis.</li>
+                            <li><strong>Pomodoro:</strong> Toca el icono de cronómetro o el widget "Start Focus" para iniciar una sesión de concentración (25min).</li>
+                            <li><strong>Historial:</strong> Accede a tus últimos 2 informes de IA directamente.</li>
+                        </ul>
+                    </p>
+                </section>
+                <section class="space-y-2">
+                    <div class="flex items-center gap-2 text-white font-bold text-base border-b border-slate-700 pb-1 mb-2"><i data-lucide="activity" size="18" class="text-purple-500"></i> 2. Análisis IA (Real vs Simulado)</div>
+                    <p class="leading-relaxed">VICO cuenta con dos modos de operación en la pestaña <strong>IA ROI</strong>:</p>
+                    <div class="grid grid-cols-1 gap-2 mt-2">
+                        <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-yellow-500">
+                            <h5 class="font-bold text-white text-xs mb-1">Modo Simulación (Default)</h5>
+                            <p class="text-[10px] text-slate-400">Funciona sin configuración. Genera datos heurísticos aproximados para demostraciones rápidas.</p>
+                        </div>
+                        <div class="bg-slate-800 p-3 rounded-lg border-l-4 border-green-500">
+                            <h5 class="font-bold text-white text-xs mb-1">Modo Real (Gemini API)</h5>
+                            <p class="text-[10px] text-slate-400">Introduce tu <strong>API Key</strong> en Perfil. VICO conectará con Google Gemini para buscar información real en la web, analizar competidores y generar estrategias de mercado verídicas.</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="space-y-2">
+                    <div class="flex items-center gap-2 text-white font-bold text-base border-b border-slate-700 pb-1 mb-2"><i data-lucide="rss" size="18" class="text-orange-500"></i> 3. Discovery & RSS</div>
+                    <p class="leading-relaxed">Mantente al día con noticias tech.<br/><strong>Añadir Fuentes:</strong> Toca el botón <strong>(+)</strong> en la parte superior derecha de Discovery para añadir manualmente cualquier feed RSS (ej: blogs, periódicos).</p>
+                </section>
+                <section class="space-y-2 text-justify">
+                    <div class="flex items-center gap-2 text-white font-bold text-base border-b border-slate-700 pb-1 mb-2"><i data-lucide="shield" size="18" class="text-green-500"></i> 4. Privacidad y Datos</div>
+                    <p class="leading-relaxed">VICO es una app <strong>Local-First</strong>.<br/>Tus notas, API Keys y configuraciones se guardan en tu navegador. No tenemos servidores.<br/>Usa la sección <strong>Data Vault</strong> en Perfil para exportar una copia de seguridad (.json) regularmente.</p>
+                </section>
+                <div class="bg-blue-900/20 p-4 rounded-xl text-center border border-blue-500/30">
+                    <p class="text-xs text-blue-300 font-bold">¿Dudas? Usa el ChatBot flotante para asistencia rápida.</p>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-700 bg-slate-800 rounded-b-2xl text-center">
+                <button onclick="closeManual()" class="bg-blue-600 hover:bg-blue-500 text-white px-8 py-2.5 rounded-full font-bold text-xs transition-transform hover:scale-105 shadow-lg">¡Entendido, Inicia!</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-pomo" class="fixed inset-0 z-[250] bg-black/98 backdrop-blur-2xl flex items-center justify-center hidden">
         <div class="w-full max-w-sm p-6 text-center space-y-8">
-            <h3 class="orbitron text-[11px] text-blue-400 tracking-[0.3em] uppercase">Zen Focus Mode</h3>
+            <h3 class="orbitron text-[11px] text-blue-400 tracking-[0.3em] uppercase">Focus Engine</h3>
             <div id="pomo-clock" class="text-8xl font-mono font-bold text-white orbitron">25:00</div>
             <div class="flex justify-center gap-3">
                 <button onclick="setPomoTime(15)" class="text-[10px] glass px-4 py-2 rounded-full">15m</button>
@@ -237,7 +237,7 @@
                 <button onclick="resetFocus()" class="glass p-6 rounded-full"><i data-lucide="rotate-ccw"></i></button>
             </div>
             <div class="glass p-5 rounded-3xl text-left">
-                <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Historial Reciente</h4>
+                <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Historial</h4>
                 <div id="pomo-logs" class="space-y-2 text-[10px] text-slate-400"></div>
             </div>
             <button onclick="closePomo()" class="text-slate-500 text-[10px] uppercase underline tracking-widest font-bold">Minimizar</button>
@@ -245,24 +245,23 @@
     </div>
 
     <script>
-        // --- BASE DE DATOS Y ESTADO ---
+        // --- DATA & STATE ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
             btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
-            rss: JSON.parse(localStorage.getItem('vp_rss')) || [{name:'Wired AI', url:'https://wired.com/rss'}],
+            rss: JSON.parse(localStorage.getItem('vp_rss')) || [{name:'Xataka', url:'https://xataka.com/feed'}],
             config: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'normal', sound: true },
             pomo: { time: 1500, active: false, timer: null, logs: JSON.parse(localStorage.getItem('vp_pomo_logs')) || [] }
         };
 
         window.addEventListener('load', () => {
             lucide.createIcons();
-            applySystemConfig();
+            applyConfig();
             renderDashboard();
             renderRssConfigList();
         });
 
-        // --- NAVEGACIÓN ---
         function switchTab(id, el) {
             document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
@@ -272,28 +271,20 @@
             }
         }
 
-        // --- SISTEMA Y CONFIGURACIÓN ---
-        function applySystemConfig() {
+        function applyConfig() {
             document.body.className = `theme-${app.config.theme} font-${app.config.font}`;
             document.getElementById('sys-theme').value = app.config.theme;
             document.getElementById('sys-font').value = app.config.font;
             document.getElementById('sys-sound').checked = app.config.sound;
-            document.getElementById('api-key-input').value = app.config.key;
+            document.getElementById('api-key-field').value = app.config.key;
         }
 
-        function updateSystem(key, val) {
-            app.config[key] = val;
-            saveData();
-            applySystemConfig();
-        }
+        function updateSystem(k, v) { app.config[k] = v; save(); applyConfig(); }
+        function saveApi() { app.config.key = document.getElementById('api-key-field').value.trim(); save(); alert('API Sincronizada'); }
 
-        function saveApi() {
-            app.config.key = document.getElementById('api-key-input').value.trim();
-            saveData();
-            alert('Motor de Inteligencia Sincronizado.');
-        }
+        function openManual() { document.getElementById('modal-manual').classList.remove('hidden'); }
+        function closeManual() { document.getElementById('modal-manual').classList.add('hidden'); }
 
-        // --- POMODORO AVANZADO ---
         function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
         function closePomo() { document.getElementById('modal-pomo').classList.add('hidden'); }
         function setPomoTime(m) { if(app.pomo.active) return; app.pomo.time = m * 60; updatePomoUI(); }
@@ -301,37 +292,30 @@
         function toggleFocus() {
             const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
             if(app.pomo.active) {
-                clearInterval(app.pomo.timer);
-                app.pomo.active = false;
-                tb.classList.add('hidden');
+                clearInterval(app.pomo.timer); app.pomo.active = false; tb.classList.add('hidden');
                 ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>';
             } else {
-                app.pomo.active = true;
-                tb.classList.remove('hidden');
+                app.pomo.active = true; tb.classList.remove('hidden');
                 ctrl.innerHTML = '<i data-lucide="pause" fill="white"></i>';
                 app.pomo.timer = setInterval(() => {
-                    app.pomo.time--;
-                    updatePomoUI();
-                    if(app.pomo.time <= 0) finishPomoSession();
+                    app.pomo.time--; updatePomoUI();
+                    if(app.pomo.time <= 0) finishPomo();
                 }, 1000);
             }
             lucide.createIcons();
         }
 
-        function finishPomoSession() {
-            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            app.pomo.logs.unshift(timeStr);
-            if(app.pomo.logs.length > 3) app.pomo.logs.pop();
+        function finishPomo() {
+            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            app.pomo.logs.unshift(now); if(app.pomo.logs.length > 3) app.pomo.logs.pop();
             localStorage.setItem('vp_pomo_logs', JSON.stringify(app.pomo.logs));
-            resetFocus();
-            alert("¡Estado Focus Completado!");
+            resetFocus(); alert("¡Sesión completada!");
         }
 
         function resetFocus() {
             clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false;
             document.getElementById('top-taskbar').classList.add('hidden');
-            updatePomoUI();
-            document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>';
+            updatePomoUI(); document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>';
             lucide.createIcons();
         }
 
@@ -340,66 +324,57 @@
             const str = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
             document.getElementById('pomo-clock').innerText = str;
             document.getElementById('mini-timer').innerText = str;
-            
             const logDiv = document.getElementById('pomo-logs');
-            logDiv.innerHTML = app.pomo.logs.length ? app.pomo.logs.map(l => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span><i data-lucide="check-circle" size="10" class="text-green-500 inline mr-1"></i> Sesión Exitosa</span><span class="font-mono text-slate-500">${l}</span></div>`).join('') : '<p class="italic text-slate-600">No hay registros.</p>';
-            lucide.createIcons();
-        }
-
-        // --- DASHBOARD Y DISEÑADOR ---
-        function renderDashboard() {
-            document.getElementById('stat-notes').innerText = app.notes.length;
-            document.getElementById('stat-links').innerText = app.notes.filter(n => n.folder === 'Links').length;
-            document.getElementById('dash-events-label').innerText = `Eventos (${app.events.length})`;
-            
-            const area = document.getElementById('custom-buttons-dashboard');
-            area.innerHTML = app.btns.map(b => `
-                <div class="relative group">
-                    <button onclick="window.open('${b.url}', '_blank')" class="bg-blue-600/20 border border-blue-500/30 px-3 py-1.5 rounded-xl text-[10px] font-bold text-blue-400">${b.label}</button>
-                    <button onclick="delCustomBtn(${b.id})" class="absolute -top-1 -right-1 bg-red-600 w-3 h-3 flex items-center justify-center text-[8px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-                </div>`).join('');
+            logDiv.innerHTML = app.pomo.logs.length ? app.pomo.logs.map(l => `<div class="bg-white/5 p-2 rounded text-[8px]">Sesión OK - ${l}</div>`).join('') : '<p class="text-slate-600">Vacío.</p>';
         }
 
         function createCustomBtn() {
             const l = document.getElementById('btn-name').value, u = document.getElementById('btn-url').value;
             if(!l || !u) return;
             app.btns.push({ id: Date.now(), label: l, url: u.startsWith('http') ? u : 'https://'+u });
-            saveData(); renderDashboard();
+            save(); renderDashboard();
             document.getElementById('btn-name').value = ''; document.getElementById('btn-url').value = '';
         }
-        function delCustomBtn(id) { app.btns = app.btns.filter(b => b.id !== id); saveData(); renderDashboard(); }
 
-        // --- RSS ---
         function addRssSource() {
             const n = document.getElementById('rss-name').value, u = document.getElementById('rss-url').value;
             if(!n || !u) return;
             app.rss.push({ name: n, url: u });
-            saveData(); renderRssConfigList();
+            save(); renderRssConfigList();
             document.getElementById('rss-name').value = ''; document.getElementById('rss-url').value = '';
         }
+
         function renderRssConfigList() {
             const list = document.getElementById('rss-list-container');
-            list.innerHTML = app.rss.map((r, i) => `<div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded"><span>${r.name}</span><button onclick="delRss(${i})" class="text-red-500 font-bold">BORRAR</button></div>`).join('');
+            list.innerHTML = app.rss.map((r, i) => `<div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded"><span>${r.name}</span><button onclick="delRss(${i})" class="text-red-500">x</button></div>`).join('');
         }
-        function delRss(i) { app.rss.splice(i, 1); saveData(); renderRssConfigList(); }
+        function delRss(i) { app.rss.splice(i, 1); save(); renderRssConfigList(); }
 
-        // --- DATA VAULT ---
-        function exportData() {
-            const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'vico_pocket_backup_full.json'; a.click();
-        }
-        function importData(input) {
-            const r = new FileReader(); r.onload = e => { try { const d = JSON.parse(e.target.result); app = d; saveData(); location.reload(); } catch(err) { alert('JSON Inválido'); } };
-            if(input.files[0]) r.readAsText(input.files[0]);
+        function renderDashboard() {
+            document.getElementById('stat-notes').innerText = app.notes.length;
+            document.getElementById('stat-links').innerText = app.notes.filter(n => n.folder === 'Links').length;
+            document.getElementById('dash-events-label').innerText = `Eventos (${app.events.length})`;
+            const area = document.getElementById('custom-buttons-dashboard');
+            area.innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}', '_blank')" class="bg-blue-600/20 border border-blue-500/30 px-3 py-1.5 rounded-xl text-[10px] font-bold text-blue-400 m-1">${b.label}</button>`).join('');
         }
 
-        function saveData() {
+        function save() {
             localStorage.setItem('vp_notes', JSON.stringify(app.notes));
             localStorage.setItem('vp_events', JSON.stringify(app.events));
             localStorage.setItem('vp_btns', JSON.stringify(app.btns));
             localStorage.setItem('vp_rss', JSON.stringify(app.rss));
             localStorage.setItem('vp_cfg', JSON.stringify(app.config));
         }
+
+        function exportData() {
+            const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'vico_pocket_os_full.json'; a.click();
+        }
+
+        function importData(input) {
+            const r = new FileReader(); r.onload = e => { try { app = JSON.parse(e.target.result); save(); location.reload(); } catch(err) { alert('Backup corrupto'); } };
+            if(input.files[0]) r.readAsText(input.files[0]);
+        }
     </script>
 </body>
-</html>
+                            </html> 
