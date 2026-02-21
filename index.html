@@ -1,9 +1,9 @@
-Tu<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE</title>
+    <title>VICO POCKET OS - ELITE v7</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -16,7 +16,7 @@ Tu<!DOCTYPE html>
     <style>
         :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
         
-        /* TEMAS */
+        /* TEMAS DINÁMICOS */
         body.theme-Cyber { --bg: #0b0f1a; --primary: #00fff7; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
@@ -30,7 +30,7 @@ Tu<!DOCTYPE html>
 
         body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass-panel { background: rgba(11, 15, 26, 0.9); backdrop-filter: blur(25px); border: 1px solid var(--border); }
+        .glass-panel { background: rgba(11, 15, 26, 0.92); backdrop-filter: blur(25px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
         /* BARRAS */
@@ -45,12 +45,15 @@ Tu<!DOCTYPE html>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .chip-active { background: var(--primary); color: black; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
         
-        /* ALARMA POPUP ANIMATION */
-        @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.05); border-color: red; } 100% { transform: scale(1); } }
+        /* ALARMA POPUP */
+        @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.03); border-color: red; } 100% { transform: scale(1); } }
         .alarm-active { animation: ring 0.5s infinite; border: 2px solid red !important; }
-
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Estilos News Card */
+        .news-card { background: rgba(255,255,255,0.02); border-radius: 28px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: 0.3s; }
+        .news-card:hover { border-color: var(--primary); transform: translateY(-2px); }
     </style>
 </head>
 <body class="theme-Cyber font-normal">
@@ -64,27 +67,16 @@ Tu<!DOCTYPE html>
     </div>
 
     <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
-        <div id="install-banner" class="hidden p-4 mx-5 mb-6 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between animate-bounce">
-    <div class="flex items-center gap-3">
-        <div class="p-2 bg-blue-600 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-            <i data-lucide="download-cloud" class="text-white"></i>
-        </div>
-        <div>
-            <h4 class="text-xs font-bold text-white">Instalar VICO POCKET</h4>
-            <p class="text-[9px] text-slate-400">Acceso rápido sin navegador</p>
-        </div>
-    </div>
-    <button onclick="triggerPwaInstall()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white uppercase tracking-widest">Instalar</button>
-        </div>
+        
         <section id="view-dashboard" class="p-5 space-y-6 fade-in">
             <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent">
                 <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
-                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"Bienvenidos al Centro de Control Duvi."</p>
+                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"Red Neural Duvi: Sincronizada."</p>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
                 <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30 transition-all active:scale-95">
-                    <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="quickNote">Nota Rápida</span>
+                    <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="quick_note">Nota Rápida</span>
                 </div>
                 <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
                     <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="links">Links Pocket</span>
@@ -96,18 +88,26 @@ Tu<!DOCTYPE html>
                     <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="focus">Focus</span>
                 </div>
                 <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
-                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="roi">Análisis ROI</span>
+                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="roi">ROI</span>
                 </div>
                 <div onclick="switchTab('view-discovery')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
-                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Discovery</span>
+                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="discovery">Discovery</span>
                 </div>
             </div>
 
             <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
 
-            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5 shadow-inner">
-                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">Notas</div></div>
-                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">Links</div></div>
+            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5">
+                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">NOTAS</div></div>
+                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">ENLACES</div></div>
+            </div>
+
+            <div id="install-banner" class="hidden p-4 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-600 rounded-xl"><i data-lucide="download-cloud" class="text-white"></i></div>
+                    <div><h4 class="text-xs font-bold text-white">Instalar VICO POCKET</h4><p class="text-[9px] text-slate-400">Acceso nativo sin la X</p></div>
+                </div>
+                <button onclick="triggerPwaInstall()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white">INSTALAR</button>
             </div>
         </section>
 
@@ -127,14 +127,14 @@ Tu<!DOCTYPE html>
             </div>
             <div class="glass-panel p-4 rounded-xl mb-4 flex items-center gap-2">
                 <i data-lucide="search" class="text-slate-500" size="16"></i>
-                <input type="text" id="link-search" placeholder="Filtrar por etiqueta o título..." class="flex-1 bg-transparent border-none p-0 text-xs" oninput="renderLinks()">
+                <input type="text" id="link-search" placeholder="Filtrar por etiqueta..." class="flex-1 bg-transparent border-none p-0 text-xs" oninput="renderLinks()">
             </div>
             <div id="links-list" class="space-y-3"></div>
         </section>
 
         <section id="view-discovery" class="hidden p-5 fade-in">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold orbitron">Discovery Élite</h2>
+                <h2 class="text-xl font-bold orbitron">Discovery Elite</h2>
                 <div class="flex gap-2">
                     <button onclick="fetchNews(app.activeRss)" class="text-blue-400 bg-blue-500/10 p-2 rounded-full"><i data-lucide="refresh-cw" size="18"></i></button>
                     <button onclick="openRssModal()" class="text-white bg-blue-600 p-2 rounded-full"><i data-lucide="plus" size="18"></i></button>
@@ -152,25 +152,7 @@ Tu<!DOCTYPE html>
             <div id="events-list" class="space-y-3"></div>
         </section>
 
-        <section id="view-analysis" class="hidden p-5 fade-in">
-            <h2 class="text-xl font-bold orbitron mb-4 text-purple-400 flex items-center gap-2"><i data-lucide="brain-circuit"></i> IA ROI Engine</h2>
-            <div class="glass-panel p-6 rounded-3xl mb-6">
-                <textarea id="ai-query" placeholder="Ej: Analizar impacto estratégico de Apple en 2026..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
-                <button id="btn-ai" onclick="runROIAnalysis()" class="w-full bg-blue-600 py-3 rounded-2xl font-bold orbitron text-[10px] tracking-widest flex items-center justify-center gap-2 uppercase text-white shadow-xl shadow-blue-500/20">
-                    <i data-lucide="cpu"></i> <span data-translate="run_analysis">Iniciar Proceso</span>
-                </button>
-            </div>
-            <div id="ai-results" class="hidden space-y-6">
-                <div class="glass-panel p-4 rounded-3xl"><canvas id="chartLine" height="180"></canvas></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="glass-panel p-4 rounded-3xl"><canvas id="chartRadar" height="150"></canvas></div>
-                    <div class="glass-panel p-4 rounded-3xl"><canvas id="chartDoughnut" height="150"></canvas></div>
-                </div>
-                <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono"></div>
-            </div>
-        </section>
-
-      <section id="view-profile" class="hidden p-5 fade-in">
+        <section id="view-profile" class="hidden p-5 fade-in">
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             
             <div class="space-y-6">
@@ -190,14 +172,19 @@ Tu<!DOCTYPE html>
 
                 <div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
                     <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest" data-translate="system">Sistema</h3>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="theme">Tema</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px]"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="text_size">Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px]"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="alarm_tone">Tono Alerta</span><select id="sys-alarm" onchange="updateSystem('alarmSound', this.value)" class="text-[10px]"><option value="800">Cyber Beep</option><option value="pulsar">Pulse Red</option><option value="siren">Siren Pro</option><option value="zen">Zen Morning</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px]"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="theme">Tema</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="text_size">Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="alarm_tone">Tono Alerta</span><select id="sys-alarm" onchange="updateSystem('alarmSound', this.value)" class="text-[10px] py-1 px-4"><option value="800">Cyber Beep</option><option value="pulsar">Pulse Red</option><option value="siren">Siren Pro</option><option value="zen">Zen Morning</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
                     <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify">
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-4">Data Vault</h3>
+                    <div class="grid grid-cols-2 gap-3"><button onclick="exportData()" class="glass-panel p-3 rounded-2xl text-[9px] font-bold text-green-400 uppercase">Export</button><button onclick="document.getElementById('import-file').click()" class="glass-panel p-3 rounded-2xl text-[9px] font-bold text-blue-400 uppercase">Restore</button><input type="file" id="import-file" class="hidden" onchange="importData(this)"></div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
                     <h4 class="font-bold text-slate-400 mb-2 uppercase">Aviso Legal y Políticas</h4>
                     <p>VICO POCKET funciona bajo el modelo Local-First. Sus datos residen únicamente en su navegador. Handcrafted by Jaime Andrés Dueñas Vicuña.</p>
                     <div class="mt-4 border-t border-white/5 pt-4 text-center">
@@ -207,17 +194,10 @@ Tu<!DOCTYPE html>
                 </div>
             </div>
         </section>
-
-        <div id="install-banner" class="hidden p-4 mx-5 my-6 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="p-2 bg-blue-600 rounded-xl"><i data-lucide="download-cloud" class="text-white"></i></div>
-                <div><h4 class="text-xs font-bold text-white">Instalar VICO POCKET</h4><p class="text-[9px] text-slate-400">Modo APK sin navegador</p></div>
-            </div>
-            <button onclick="triggerPwaInstall()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white">INSTALAR</button>
-        </div>
     </main>
+
     <nav class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>HOME</span></div>
+        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>CORE</span></div>
         <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>DATA</span></div>
         <div class="nav-item" onclick="switchTab('view-links', this)"><i data-lucide="bookmark"></i><span>LINKS</span></div>
         <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="pie-chart"></i><span>ROI</span></div>
@@ -228,9 +208,7 @@ Tu<!DOCTYPE html>
 
     <div id="modal-alarm" class="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6 hidden">
         <div class="glass-panel w-full max-w-sm rounded-[40px] p-8 text-center border-red-500/50 alarm-active">
-            <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_50px_red]">
-                <i data-lucide="bell-ring" class="text-red-500 animate-bounce" size="40"></i>
-            </div>
+            <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_50px_red]"><i data-lucide="bell-ring" class="text-red-500 animate-bounce" size="40"></i></div>
             <h2 class="orbitron text-2xl font-bold text-white mb-2 uppercase">VICO AGENDA</h2>
             <p id="alarm-title" class="text-slate-300 text-sm mb-8 font-bold tracking-widest"></p>
             <button onclick="stopAlarm()" class="w-full bg-red-600 py-4 rounded-2xl font-bold text-white shadow-lg tracking-[0.2em] transition-all active:scale-95">DETENER ALARMA</button>
@@ -244,15 +222,14 @@ Tu<!DOCTYPE html>
             <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed">
                 <div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5">Hola, soy VICO. He recuperado todas mis funciones de alta capacidad. ¿Qué analizamos hoy?</div>
             </div>
-            <div class="p-3 border-t border-white/5 flex gap-1"><input type="text" id="chat-in" placeholder="Duda rápida..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button></div>
+            <div class="p-3 border-t border-white/5 flex gap-1"><input type="text" id="chat-in" placeholder="..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button></div>
         </div>
     </div>
 
     <div id="modal-note" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-blue-500/30 shadow-2xl">
             <h3 id="note-modal-title" class="font-bold orbitron text-blue-400 text-sm uppercase">Registro</h3>
-            <input type="hidden" id="nt-id">
-            <input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
+            <input type="hidden" id="nt-id"><input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
             <div class="flex gap-2">
                 <select id="nt-folder-modal" class="flex-1 text-[10px] font-bold text-blue-400"></select>
                 <input type="color" id="nt-color" value="#3b82f6" class="w-10 h-10 border-none bg-transparent cursor-pointer">
@@ -265,37 +242,21 @@ Tu<!DOCTYPE html>
     <div id="modal-link" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-green-500/30 shadow-2xl">
             <h3 class="font-bold orbitron text-green-400 text-sm uppercase">Guardar Enlace</h3>
-            <input type="text" id="lk-url" placeholder="https://..." class="w-full text-sm">
-            <input type="text" id="lk-title" placeholder="Título (Opcional)" class="w-full text-sm">
-            <input type="text" id="lk-tags" placeholder="Etiquetas (separadas por comas)" class="w-full text-sm">
-            <div class="flex gap-2 pt-2"><button onclick="saveLink()" class="flex-1 bg-green-600 py-3 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95">GUARDAR</button><button onclick="closeModal('modal-link')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CANCELAR</button></div>
+            <input type="text" id="lk-url" placeholder="https://..." class="w-full text-sm"><input type="text" id="lk-title" placeholder="Título"><input type="text" id="lk-tags" placeholder="Etiquetas (comas)"><div class="flex gap-2 pt-2"><button onclick="saveLink()" class="flex-1 bg-green-600 py-3 rounded-xl font-bold text-white transition-all active:scale-95">SAVE</button><button onclick="closeModal('modal-link')" class="flex-1 glass-panel py-3 rounded-xl">CANCEL</button></div>
         </div>
     </div>
 
     <div id="modal-event" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-yellow-500/30 shadow-2xl">
-            <h3 class="font-bold orbitron text-yellow-400 text-sm uppercase">Agendar Cita</h3>
-            <input type="text" id="ev-title" placeholder="Descripción de la cita..." class="w-full text-sm">
-            <input type="datetime-local" id="ev-date" class="w-full text-sm">
-            <button onclick="saveEvent()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-white shadow-lg shadow-yellow-500/20 uppercase text-xs transition-all active:scale-95">Confirmar</button>
-            <button onclick="closeModal('modal-event')" class="w-full text-[10px] text-slate-500 uppercase tracking-widest">CANCELAR</button>
-        </div>
-    </div>
-
-    <div id="modal-rss" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
-        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-orange-500/30 shadow-2xl">
-            <h3 class="font-bold orbitron text-orange-400 text-sm uppercase">Nuevo Feed</h3>
-            <input type="text" id="new-rss-name" placeholder="Nombre (ej: Wired)" class="w-full text-sm">
-            <input type="text" id="new-rss-url" placeholder="https://..." class="w-full text-sm">
-            <button onclick="addNewRss()" class="w-full bg-orange-600 py-3 rounded-xl font-bold text-white shadow-lg shadow-orange-500/20 uppercase text-xs transition-all active:scale-95">Añadir Fuente</button>
-            <button onclick="closeModal('modal-rss')" class="w-full text-[10px] text-slate-500 uppercase tracking-widest">CANCELAR</button>
+            <h3 class="font-bold orbitron text-yellow-400 text-sm uppercase">Agendar</h3>
+            <input type="text" id="ev-title" placeholder="Cita" class="w-full text-sm"><input type="datetime-local" id="ev-date" class="w-full text-sm"><button onclick="saveEvent()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-white shadow-lg uppercase text-xs">Confirmar</button><button onclick="closeModal('modal-event')" class="w-full text-[10px] text-slate-500">CANCELAR</button>
         </div>
     </div>
 
     <div id="modal-pomo" class="fixed inset-0 z-[600] bg-black/98 backdrop-blur flex items-center justify-center hidden">
         <div class="text-center space-y-8"><div id="pomo-clock" class="text-8xl orbitron font-bold text-white">25:00</div>
-        <div class="flex justify-center gap-6"><button onclick="toggleFocus()" id="pomo-ctrl" class="bg-blue-600 p-8 rounded-full shadow-2xl transition-all active:scale-90"><i data-lucide="play" fill="white"></i></button><button onclick="resetFocus()" class="glass-panel p-8 rounded-full transition-all active:scale-90"><i data-lucide="rotate-ccw"></i></button></div>
-        <button onclick="closeModal('modal-pomo')" class="text-slate-500 uppercase text-[10px] underline tracking-[0.2em]">CERRAR SESIÓN</button></div>
+        <div class="flex justify-center gap-6"><button onclick="toggleFocus()" id="pomo-ctrl" class="bg-blue-600 p-8 rounded-full shadow-2xl active:scale-90"><i data-lucide="play" fill="white"></i></button><button onclick="resetFocus()" class="glass-panel p-8 rounded-full active:scale-90"><i data-lucide="rotate-ccw"></i></button></div>
+        <button onclick="minimizePomo()" class="text-slate-500 uppercase text-[10px] underline tracking-[0.2em]">MINIMIZAR</button></div>
     </div>
 
     <script>
@@ -310,17 +271,22 @@ Tu<!DOCTYPE html>
                 {name:'Ciencia', url:'https://www.agenciasinc.es/rss/all'},
                 {name:'Robótica', url:'https://www.wired.com/feed/tag/robotics/latest/rss'},
                 {name:'Espacio', url:'https://naukas.com/category/astronomia/feed/'},
-                {name:'Biotecnología', url:'https://www.biotech-spain.com/es/rss.php'},
+                {name:'Biotec', url:'https://www.biotech-spain.com/es/rss.php'},
                 {name:'Física', url:'https://phys.org/rss-feed/physics-news/'},
                 {name:'IA News', url:'https://www.xataka.com/tag/inteligencia-artificial/feed'},
                 {name:'Neural', url:'https://neurosciencenews.com/feed/'},
                 {name:'Futuro', url:'https://techcrunch.com/category/startups/feed/'},
                 {name:'Cyber', url:'https://feeds.feedburner.com/TheHackersNews'},
-                {name:'OpenAI', url:'https://openai.com/news/rss.xml'}
+                {name:'OpenAI', url:'https://openai.com/news/rss.xml'},
+                {name:'MIT Tech', url:'https://www.technologyreview.com/feed/'},
+                {name:'The Verge', url:'https://www.theverge.com/ai-artificial-intelligence/rss/index.xml'},
+                {name:'ZDNet', url:'https://www.zdnet.com/topic/artificial-intelligence/rss.xml'},
+                {name:'ComputerHoy', url:'https://computerhoy.com/rss/tecnologia/inteligencia-artificial'},
+                {name:'Nature', url:'https://www.nature.com/nature.rss'}
             ],
             config: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'font-normal', sound: true, lang: 'es', alarmSound: '800', showPopup: true },
             pomo: { time: 1500, active: false, timer: null },
-            folders: ["Fijadas", "Proyectos", "Código", "Links", "Varios"],
+            folders: ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Ideas", "Varios"],
             activeFolder: 'Fijadas',
             activeRss: 0,
             notified: [],
@@ -328,12 +294,11 @@ Tu<!DOCTYPE html>
         };
 
         const DICT = {
-            es: { quickNote: "Nota Rápida", links: "Links Pocket", focus: "Enfoque", roi: "IA ROI", discovery: "Discovery", system: "Sistema", ai_engine: "Motor IA", button_designer: "Diseñador", theme: "Tema", text_size: "Texto", alarm_tone: "Sonido Alarma", language: "Idioma", focusing: "Enfoque..." },
-            en: { quickNote: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "AI ROI", discovery: "Discovery", system: "System", ai_engine: "AI Engine", button_designer: "Designer", theme: "Theme", text_size: "Font", alarm_tone: "Alert Tone", language: "Language", focusing: "Focusing..." },
-            zh: { quickNote: "快速笔记", links: "链接口袋", focus: "专注模式", roi: "AI 分析", discovery: "发现", system: "系统设置", ai_engine: "人工智能引擎", button_designer: "按钮设计", theme: "主题", text_size: "字体大小", alarm_tone: "警报声", language: "语言", focusing: "专注于..." }
+            es: { quick_note: "Nota Rápida", links: "Links Pocket", focus: "Focus", roi: "ROI", discovery: "Discovery", system: "Sistema", ai_engine: "Motor IA", button_designer: "Diseñador", theme: "Tema", text_size: "Texto", alarm_tone: "Sonido Alarma", language: "Idioma", focusing: "Enfoque...", agenda: "Agenda", resources: "Links", notes: "Notas" },
+            en: { quick_note: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "AI ROI", discovery: "Discovery", system: "System", ai_engine: "AI Engine", button_designer: "Designer", theme: "Theme", text_size: "Font", alarm_tone: "Alert Tone", language: "Language", focusing: "Focusing...", agenda: "Agenda", resources: "Links", notes: "Notes" },
+            zh: { quick_note: "快速笔记", links: "链接口袋", focus: "专注模式", roi: "AI 分析", discovery: "发现", system: "系统设置", ai_engine: "人工智能引擎", button_designer: "按钮设计", theme: "主题", text_size: "字体大小", alarm_tone: "警报声", language: "语言", focusing: "专注于...", agenda: "议程", resources: "资源", notes: "笔记" }
         };
 
-        // --- AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if(!app.config.sound) return;
@@ -341,17 +306,17 @@ Tu<!DOCTYPE html>
             o.connect(g); g.connect(audioCtx.destination);
             if(type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); }
             else if (type === 'siren') { o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(1400, audioCtx.currentTime + 0.4); }
+            else if (type === 'zen') { o.frequency.setValueAtTime(500, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 1); }
             else { o.frequency.value = parseInt(type) || 800; }
-            g.gain.value = 0.1; o.start(); o.stop(audioCtx.currentTime + 0.2);
+            g.gain.value = 0.1; o.start(); o.stop(audioCtx.currentTime + 0.5);
         }
 
         function triggerAlarm(title) {
             document.getElementById('alarm-title').innerText = title;
             document.getElementById('modal-alarm').classList.remove('hidden');
             if(app.alarmInterval) clearInterval(app.alarmInterval);
-            app.alarmInterval = setInterval(() => playSound(app.config.alarmSound), 600);
+            app.alarmInterval = setInterval(() => playSound(app.config.alarmSound), 800);
         }
-
         function stopAlarm() { clearInterval(app.alarmInterval); document.getElementById('modal-alarm').classList.add('hidden'); }
 
         window.addEventListener('load', () => {
@@ -377,7 +342,6 @@ Tu<!DOCTYPE html>
         function updateSystem(k, v) { app.config[k]=v; save(); applySystemConfig(); playSound(800); }
         function saveApi() { app.config.key = document.getElementById('api-key-input').value.trim(); save(); alert('API Sync'); playSound(1000); }
 
-        // --- NOTAS (FIX: SELECTOR VISIBLE) ---
         function renderNotes() {
             const bar = document.getElementById('folder-bar');
             bar.innerHTML = app.folders.map(f => `<button onclick="setFolder('${f}')" class="px-5 py-2 rounded-full text-[10px] font-bold whitespace-nowrap transition-all ${app.activeFolder === f ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${f}</button>`).join('');
@@ -385,10 +349,7 @@ Tu<!DOCTYPE html>
             grid.innerHTML = app.notes.filter(n => n.folder === app.activeFolder).map(n => `
                 <div class="glass-panel p-5 rounded-3xl border-l-8 shadow-xl animate-in fade-in" style="border-left-color: ${n.color || 'var(--primary)'}">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="flex-1" onclick="openNoteModal('${n.id}')">
-                            <h4 class="font-bold text-sm text-white">${n.title}</h4>
-                            <p class="text-[10px] text-slate-400 mt-2 line-clamp-3 leading-relaxed">${n.content}</p>
-                        </div>
+                        <div class="flex-1" onclick="openNoteModal('${n.id}')"><h4 class="font-bold text-sm text-white">${n.title}</h4><p class="text-[10px] text-slate-400 mt-2 line-clamp-3 leading-relaxed">${n.content}</p></div>
                         <button onclick="delNote('${n.id}')" class="text-slate-600 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
                     </div>
                     <div class="flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5">
@@ -404,8 +365,6 @@ Tu<!DOCTYPE html>
         function setFolder(f) { app.activeFolder = f; renderNotes(); playSound(600); }
         function moveNote(id, f) { const idx=app.notes.findIndex(n=>n.id===id); app.notes[idx].folder=f; save(); renderNotes(); renderDashboard(); playSound(1000); }
 
-        // --- DISCOVERY (EXTRAER IMÁGENES REALES) ---
-        // --- DISCOVERY: EXTRACCIÓN DE IMÁGENES REALES ---
         async function fetchNews(idx=0) {
             app.activeRss = idx; renderChips();
             const list = document.getElementById('news-list');
@@ -415,55 +374,55 @@ Tu<!DOCTYPE html>
                 const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(app.rss[idx].url)}`);
                 const data = await res.json();
                 list.innerHTML = data.items.map((item, ix) => {
-                    // Intento de extraer imagen real del feed
                     const img = item.thumbnail || item.enclosure.link || (item.content.match(/src="([^"]+)"/) || [])[1];
                     return `
                     <div class="news-card glass-panel overflow-hidden rounded-3xl mb-4 border-white/5">
                         ${img ? `<img src="${img}" class="h-48 w-full object-cover opacity-80" onerror="this.style.display='none'">` : ''}
-                        <div class="p-5">
-                            <h4 class="text-sm font-bold text-white mb-4 line-clamp-2">${item.title}</h4>
+                        <div class="p-6">
+                            <h4 class="text-sm font-bold text-white mb-4 line-clamp-2 leading-tight">${item.title}</h4>
                             <div class="flex justify-between items-center">
                                 <div class="flex gap-2">
-                                    <button class="bg-white/5 p-2 rounded-xl text-slate-400" onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')"><i data-lucide="bookmark" size="16"></i></button>
-                                    <button class="bg-white/5 p-2 rounded-xl text-slate-400" onclick="shareLink('${item.link}')"><i data-lucide="share-2" size="16"></i></button>
+                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')"><i data-lucide="bookmark" size="18"></i></button>
+                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="shareLink('${item.link}')"><i data-lucide="share-2" size="18"></i></button>
                                 </div>
-                                <button onclick="sendToROI('${item.title.replace(/'/g,"")}')" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-[10px] font-bold">ANALYZE</button>
+                                <button onclick="sendToROI('${item.title.replace(/'/g,"")}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[9px] font-bold orbitron active:scale-95 transition-all uppercase">Analyze</button>
                             </div>
                         </div>
                     </div>`;
                 }).join('');
                 lucide.createIcons();
-            } catch(e) { list.innerHTML = '<p class="text-center py-20 text-red-500">Error de conexión.</p>'; }
+            } catch(e) { list.innerHTML = '<p class="text-center py-20 text-red-500">Error de conexión con el Feed.</p>'; }
         }
+        function renderChips() { document.getElementById('discovery-chips').innerHTML = app.rss.map((r,i) => `<button onclick="fetchNews(${i})" class="px-5 py-2 rounded-full text-[10px] whitespace-nowrap transition-all ${app.activeRss === i ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${r.name}</button>`).join(''); }
 
-        // --- AGENDA: ALARMA REPETITIVA PRO ---
+        function saveLink() {
+            const u = document.getElementById('lk-url').value, t = document.getElementById('lk-title').value, tags = document.getElementById('lk-tags').value;
+            if(!u) return;
+            app.links.unshift({ id: Date.now().toString(), url: u.startsWith('http') ? u : 'https://'+u, title: t || u, tags: tags.split(',').map(s=>s.trim()).filter(s=>s) });
+            save(); renderLinks(); renderDashboard(); closeModal('modal-link');
+            document.getElementById('lk-url').value=''; document.getElementById('lk-title').value=''; document.getElementById('lk-tags').value='';
+        }
+        function renderLinks() {
+            const q = document.getElementById('link-search').value.toLowerCase();
+            document.getElementById('links-list').innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q)).map(l => `
+                <div class="glass-panel p-4 rounded-2xl flex justify-between items-start border-l-2 border-green-500/30">
+                    <div class="flex-1 truncate"><a href="${l.url}" target="_blank" class="text-xs font-bold text-blue-400 block truncate underline">${l.title}</a><div class="flex gap-1 mt-2">${l.tags.map(t=>`<span class="text-[8px] text-slate-500">#${t}</span>`).join('')}</div></div>
+                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-500"><i data-lucide="trash-2" size="14"></i></button>
+                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">Sin enlaces.</p>';
+            lucide.createIcons();
+        }
+        function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
+
         function checkAgenda() {
             const now = new Date();
             app.events.forEach(e => {
                 const evDate = new Date(e.date);
                 if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
-                    triggerAlarm(e.title);
+                    if (app.config.showPopup) triggerAlarm(e.title);
+                    if (Notification.permission === "granted") new Notification("VICO AGENDA", { body: e.title });
                     app.notified.push(e.id);
                 }
             });
-        }
-
-        function triggerAlarm(title) {
-            document.getElementById('alarm-title').innerText = title;
-            document.getElementById('modal-alarm').classList.remove('hidden');
-            if(app.alarmInterval) clearInterval(app.alarmInterval);
-            app.alarmInterval = setInterval(() => {
-                const tone = app.config.alarmSound;
-                if(tone === 'pulsar') playBeep(400, 'square', 0.2);
-                else if(tone === 'siren') playBeep(1200, 'sawtooth', 0.3);
-                else if(tone === 'zen') playBeep(500, 'sine', 0.5);
-                else playBeep(parseInt(tone), 'sine', 0.1);
-            }, 700);
-        }
-
-        function stopAlarm() {
-            clearInterval(app.alarmInterval);
-            document.getElementById('modal-alarm').classList.add('hidden');
         }
         function renderEvents() {
             document.getElementById('events-list').innerHTML = app.events.sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime()).map(e => `
@@ -475,39 +434,13 @@ Tu<!DOCTYPE html>
         }
         function delEvent(id) { app.events = app.events.filter(e=>e.id!==id); save(); renderEvents(); renderDashboard(); }
 
-        // --- LINKS POCKET (CORREGIDO) ---
-        function saveLink() {
-            const u = document.getElementById('lk-url').value, t = document.getElementById('lk-title').value, tags = document.getElementById('lk-tags').value;
-            if(!u) return;
-            const newLink = { id: Date.now().toString(), url: u.startsWith('http') ? u : 'https://'+u, title: t || u, tags: tags.split(',').map(s=>s.trim()).filter(s=>s) };
-            app.links.unshift(newLink);
-            save(); renderLinks(); renderDashboard(); closeModal('modal-link');
-            document.getElementById('lk-url').value=''; document.getElementById('lk-title').value=''; document.getElementById('lk-tags').value='';
+        function saveEvent() {
+            const t = document.getElementById('ev-title').value, d = document.getElementById('ev-date').value;
+            if(!t || !d) return;
+            app.events.push({ id: Date.now().toString(), title: t, date: d });
+            save(); renderEvents(); renderDashboard(); closeModal('modal-event'); playSound(800);
         }
 
-        function renderLinks() {
-            const q = document.getElementById('link-search').value.toLowerCase();
-            const list = document.getElementById('links-list');
-            list.innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q)).map(l => `
-                <div class="glass-panel p-4 rounded-2xl border-l-2 border-green-500/30">
-                    <a href="${l.url}" target="_blank" class="text-xs font-bold text-blue-400 block truncate underline">${l.title}</a>
-                    <div class="flex gap-1 mt-2">${l.tags.map(t=>`<span class="text-[8px] text-slate-500">#${t}</span>`).join(' ')}</div>
-                </div>`).join('');
-        }
-        </div>
-                    </div>
-                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-500"><i data-lucide="trash-2" size="14"></i></button>
-                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">Sin enlaces.</p>';
-            lucide.createIcons();
-        }
-        function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
-        function checkShareTarget() {
-            const p = new URLSearchParams(window.location.search);
-            const u = p.get('url') || p.get('text');
-            if (u) { openLinkModal(); document.getElementById('lk-url').value = u; window.history.replaceState({},'',window.location.pathname); }
-        }
-
-        // --- AUXILIARES GLOBALES ---
         function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         function openNoteModal(id=null) { 
@@ -531,10 +464,13 @@ Tu<!DOCTYPE html>
             localStorage.setItem('vp_btns', JSON.stringify(app.btns)); 
             localStorage.setItem('vp_rss', JSON.stringify(app.rss)); 
         }
-        function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); renderCustomBtns(); renderLinks(); renderEvents(); }
-        function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; document.getElementById('dash-events-label').innerText = `Agenda (${app.events.length})`; }
+        function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); renderCustomBtns(); renderLinks(); renderEvents(); renderRssList(); }
+        function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; document.getElementById('dash-events-label').innerText = `${DICT[app.config.lang].agenda} (${app.events.length})`; }
         function renderCustomBtns() { document.getElementById('custom-buttons-dashboard').innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}','_blank')" class="bg-blue-600/20 border border-blue-500/30 px-5 py-2 rounded-2xl text-[10px] font-bold text-blue-400 m-1 active:scale-95 transition-all">${b.label}</button>`).join(''); }
         function createCustomBtn() { const l=document.getElementById('btn-name').value, u=document.getElementById('btn-url').value; if(!l||!u) return; app.btns.push({id:Date.now().toString(),label:l,url:u}); save(); renderCustomBtns(); }
+        function renderRssList() { document.getElementById('rss-list-container').innerHTML = app.rss.map((r,i)=>`<div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded"><span>${r.name}</span><button onclick="delRss(${i})" class="text-red-500">×</button></div>`).join(''); }
+        function addRssSource() { const n=document.getElementById('rss-name').value, u=document.getElementById('rss-url').value; if(!n||!u) return; app.rss.push({name:n, url:u}); save(); renderRssList(); }
+        function delRss(i) { app.rss.splice(i,1); save(); renderRssList(); }
         function exportData() { const b=new Blob([JSON.stringify(app)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='vico_backup.json'; a.click(); }
         function importData(i) { const r = new FileReader(); r.onload = e => { app = JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(i.files[0]); }
         function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); playSound(500); }
@@ -546,9 +482,9 @@ Tu<!DOCTYPE html>
             const n=document.getElementById('new-rss-name').value, u=document.getElementById('new-rss-url').value;
             if(!n||!u) return; app.rss.push({name:n, url:u}); save(); fetchNews(app.rss.length-1); closeModal('modal-rss');
         }
-        function saveLinkToPocket(u, t) { app.links.unshift({ id: Date.now().toString(), url: u, title: t, tags: ['Discovery'] }); save(); renderLinks(); renderDashboard(); playSound(1000); alert("Enlace guardado."); }
+        function saveLinkToPocket(u, t) { app.links.unshift({ id: Date.now().toString(), url: u, title: t, tags: ['Discovery'] }); save(); renderLinks(); renderDashboard(); playSound(1000); alert("Link Pocket Guardado."); }
         function shareLink(u) { if(navigator.share) navigator.share({url:u}); else prompt("Link:", u); }
-        function sendToROI(t) { document.getElementById('ai-query').value = `Analiza ROI de: ${t}`; switchTab('view-analysis'); }
+        function sendToROI(t) { document.getElementById('ai-query').value = `ROI: ${t}`; switchTab('view-analysis'); }
         function toggleFocus() {
             const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
             if(app.pomo.active) { clearInterval(app.pomo.timer); app.pomo.active = false; tb.classList.add('hidden'); ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>'; }
@@ -559,10 +495,11 @@ Tu<!DOCTYPE html>
         }
         function resetFocus() { clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false; document.getElementById('top-taskbar').classList.add('hidden'); updatePomoUI(); document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>'; lucide.createIcons(); }
         function updatePomoUI() { const m = Math.floor(app.pomo.time/60), s = app.pomo.time%60; const str = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; document.getElementById('pomo-clock').innerText = str; document.getElementById('mini-timer').innerText = str; }
-        
+        function minimizePomo() { document.getElementById('modal-pomo').classList.add('hidden'); if(app.pomo.active) document.getElementById('top-taskbar').classList.remove('hidden'); }
+
         async function sendChat() {
             const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-            if(!inp.value || !app.config.key) return alert("Pega tu API Key en Perfil");
+            if(!inp.value || !app.config.key) return alert("API Key requerida");
             const ut = inp.value; msgs.innerHTML += `<div class="bg-blue-600/20 p-3 rounded-2xl ml-10 text-white border border-blue-500/10 shadow-lg animate-in slide-in-from-right">${ut}</div>`;
             inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
             try {
@@ -571,8 +508,8 @@ Tu<!DOCTYPE html>
                 const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: ut }] }] }) });
                 const d = await r.json();
                 const ai = app.config.key.startsWith('AIza') ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
-                msgs.innerHTML += `<div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5 animate-in slide-in-from-left">VICO: ${ai}</div>`;
-            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error. Check Key.</div>`; }
+                msgs.innerHTML += `<div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5">VICO: ${ai}</div>`;
+            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error.</div>`; }
             msgs.scrollTop = msgs.scrollHeight;
         }
 
@@ -585,13 +522,12 @@ Tu<!DOCTYPE html>
             try {
                 const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.config.key}`, {
                     method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza ROI y mercado de: ${q}. Genera un informe de 3 párrafos texto plano sin asteriscos ni Markdown.` }] }] })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `Actúa como analista ROI agéntico. Analiza ${q}. Genera un informe de 3 párrafos texto plano sin asteriscos ni Markdown.` }] }] })
                 });
                 const d = await res.json();
                 const aiTxt = d.candidates[0].content.parts[0].text.replace(/[*#"`]/g, "");
                 document.getElementById('ai-results').classList.remove('hidden');
                 document.getElementById('ai-report').innerText = aiTxt;
-                // Simulación de gráficas dinámicas
                 renderROICharts();
             } catch(e) { alert("Fallo IA."); }
             finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
@@ -609,36 +545,10 @@ Tu<!DOCTYPE html>
                 new Chart(ctxD, { type: 'doughnut', data: { labels: ['Pos','Neg'], datasets: [{data:[85,15], backgroundColor:['#10b981','#ef4444'], borderWidth:0}] }, options: { cutout:'80%', plugins:{legend:{display:false}} } })
             ];
         }
-        // --- LÓGICA DE INSTALACIÓN PWA ---
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('install-banner').classList.remove('hidden');
-});
 
-async function triggerPwaInstall() {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-        document.getElementById('install-banner').classList.add('hidden');
-    }
-    deferredPrompt = null;
-}
-
-// --- POMODORO MINIMIZABLE ---
-function minimizePomo() {
-    document.getElementById('modal-pomo').classList.add('hidden');
-    if (app.pomo.active) {
-        document.getElementById('top-taskbar').classList.remove('hidden');
-    }
-}
-
-// Actualiza tu función openPomo anterior con esta
-function openPomo() {
-    document.getElementById('modal-pomo').classList.remove('hidden');
-}
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('install-banner').classList.remove('hidden'); });
+        async function triggerPwaInstall() { if (!deferredPrompt) return; deferredPrompt.prompt(); const { outcome } = await deferredPrompt.userChoice; if (outcome === 'accepted') document.getElementById('install-banner').classList.add('hidden'); deferredPrompt = null; }
     </script>
 </body>
 </html>
