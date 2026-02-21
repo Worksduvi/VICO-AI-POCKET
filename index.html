@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+Tu<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
@@ -307,25 +307,20 @@
             btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
             favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
             rss: JSON.parse(localStorage.getItem('vp_rss')) || [
-               rss: JSON.parse(localStorage.getItem('vp_rss')) || [
-    {name:'Ciencia', url:'https://www.agenciasinc.es/rss/all'},
-    {name:'Robótica', url:'https://www.wired.com/feed/tag/robotics/latest/rss'},
-    {name:'Espacio', url:'https://naukas.com/category/astronomia/feed/'},
-    {name:'Biotecnología', url:'https://www.biotech-spain.com/es/rss.php'},
-    {name:'Energía', url:'https://elpais.com/rss/economia/energia.xml'},
-    {name:'Física', url:'https://phys.org/rss-feed/physics-news/'},
-    {name:'Nanotec', url:'https://www.nanowerk.com/nanowerk.xml'},
-    {name:'Neurociencia', url:'https://neurosciencenews.com/feed/'},
-    {name:'Astronomía', url:'https://hubblesite.org/rss/news'},
-    {name:'Química', url:'https://www.rsc.org/chemistryworld/rss'},
-      {name:'TechCrunch', url:'https://techcrunch.com/category/artificial-intelligence/feed/'},
-      {name:'The Verge', url:'https://www.theverge.com/ai-artificial-intelligence/rss/index.xml'},
-      {name:'Wired AI', url:'https://www.wired.com/feed/tag/artificial-intelligence/latest/rss'},
-      {name:'AI News', url:'https://www.xataka.com/tag/inteligencia-artificial/feed'},                       
-    {name:'Medio Ambiente', url:'https://cnnespanol.cnn.com/category/medio-ambiente/feed/'}],
+                {name:'Ciencia', url:'https://www.agenciasinc.es/rss/all'},
+                {name:'Robótica', url:'https://www.wired.com/feed/tag/robotics/latest/rss'},
+                {name:'Espacio', url:'https://naukas.com/category/astronomia/feed/'},
+                {name:'Biotecnología', url:'https://www.biotech-spain.com/es/rss.php'},
+                {name:'Física', url:'https://phys.org/rss-feed/physics-news/'},
+                {name:'IA News', url:'https://www.xataka.com/tag/inteligencia-artificial/feed'},
+                {name:'Neural', url:'https://neurosciencenews.com/feed/'},
+                {name:'Futuro', url:'https://techcrunch.com/category/startups/feed/'},
+                {name:'Cyber', url:'https://feeds.feedburner.com/TheHackersNews'},
+                {name:'OpenAI', url:'https://openai.com/news/rss.xml'}
+            ],
             config: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'font-normal', sound: true, lang: 'es', alarmSound: '800', showPopup: true },
             pomo: { time: 1500, active: false, timer: null },
-            folders: ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Ideas", "Varios"],
+            folders: ["Fijadas", "Proyectos", "Código", "Links", "Varios"],
             activeFolder: 'Fijadas',
             activeRss: 0,
             notified: [],
@@ -333,9 +328,9 @@
         };
 
         const DICT = {
-            es: { quickNote: "Nota Rápida", links: "Links", focus: "Focus", roi: "ROI", discovery: "Discovery", notes: "Notas", resources: "Links", system: "Sistema", focusing: "Enfoque", agenda: "Agenda" },
-            en: { quickNote: "Quick Note", links: "Links", focus: "Focus", roi: "ROI", discovery: "Discovery", notes: "Notes", resources: "Links", system: "System", focusing: "Focusing", agenda: "Agenda" },
-            zh: { quickNote: "快速笔记", links: "链接", focus: "专注", roi: "分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统", focusing: "专注中", agenda: "议程" }
+            es: { quickNote: "Nota Rápida", links: "Links Pocket", focus: "Enfoque", roi: "IA ROI", discovery: "Discovery", system: "Sistema", ai_engine: "Motor IA", button_designer: "Diseñador", theme: "Tema", text_size: "Texto", alarm_tone: "Sonido Alarma", language: "Idioma", focusing: "Enfoque..." },
+            en: { quickNote: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "AI ROI", discovery: "Discovery", system: "System", ai_engine: "AI Engine", button_designer: "Designer", theme: "Theme", text_size: "Font", alarm_tone: "Alert Tone", language: "Language", focusing: "Focusing..." },
+            zh: { quickNote: "快速笔记", links: "链接口袋", focus: "专注模式", roi: "AI 分析", discovery: "发现", system: "系统设置", ai_engine: "人工智能引擎", button_designer: "按钮设计", theme: "主题", text_size: "字体大小", alarm_tone: "警报声", language: "语言", focusing: "专注于..." }
         };
 
         // --- AUDIO ENGINE ---
