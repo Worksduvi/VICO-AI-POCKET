@@ -493,11 +493,6 @@ Tu<!DOCTYPE html>
                     <a href="${l.url}" target="_blank" class="text-xs font-bold text-blue-400 block truncate underline">${l.title}</a>
                     <div class="flex gap-1 mt-2">${l.tags.map(t=>`<span class="text-[8px] text-slate-500">#${t}</span>`).join(' ')}</div>
                 </div>`).join('');
-        }</div>
-                    </div>
-                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-500"><i data-lucide="trash-2" size="14"></i></button>
-                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">Sin enlaces.</p>';
-            lucide.createIcons();
         }
         function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
         function checkShareTarget() {
