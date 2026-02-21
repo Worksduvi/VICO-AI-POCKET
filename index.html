@@ -14,19 +14,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
+        :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.2); }
+        
+        /* TEMAS DINÁMICOS */
         body.theme-Cyber { --bg: #0b0f1a; --primary: #3b82f6; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
         body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
         body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
 
+        /* TAMAÑOS DE FUENTE */
+        body.font-sm { font-size: 12px; }
+        body.font-normal { font-size: 14px; }
+        body.font-lg { font-size: 16px; }
+
         body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(11, 15, 26, 0.75); backdrop-filter: blur(15px); border: 1px solid var(--border); }
+        .glass-panel { background: rgba(11, 15, 26, 0.75); backdrop-filter: blur(15px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
-        /* TASKBAR SUPERIOR (Mini Reloj) */
+        /* TASKBAR SUPERIOR (Mini Reloj Focus) */
         .task-bar { 
             position: fixed; top: 0; left: 0; width: 100%; height: 38px; 
             background: rgba(0,0,0,0.85); z-index: 500; 
@@ -35,7 +42,7 @@
             backdrop-filter: blur(5px);
         }
 
-        /* NAVEGACIÓN INFERIOR */
+        /* NAVEGACIÓN INFERIOR (7 Iconos) */
         .nav-bar { 
             position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; 
             background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); 
@@ -46,216 +53,213 @@
         .nav-item i { margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active i { transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary)); }
 
-        /* UI de Notas */
-        .folder-btn { transition: 0.2s; border: 1px solid transparent; }
-        .folder-btn.active { background: var(--primary); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--primary); }
-
-        input, textarea, select { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; outline: none; padding: 12px; }
-        input:focus { border-color: var(--primary); }
+        input, textarea, select { background: rgba(0,0,0,0.5) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 10px; outline: none; padding: 10px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="theme-Cyber">
+<body class="theme-Cyber font-normal">
 
     <div id="top-taskbar" class="task-bar hidden">
-        <div class="flex items-center gap-3 px-4 py-1 rounded-full bg-black/40 border border-white/5 shadow-inner">
+        <div class="flex items-center gap-3 px-4 py-1 rounded-full bg-black/40 border border-white/5">
             <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_red]"></div>
             <span id="mini-timer" class="text-[11px] font-mono font-bold text-white tracking-widest">25:00</span>
-            <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter">Focusing...</span>
+            <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter">Focus Engine</span>
         </div>
     </div>
 
     <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
         
         <section id="view-dashboard" class="p-5 space-y-6 fade-in">
-            <div class="p-6 rounded-3xl border border-blue-500/20 glass bg-gradient-to-br from-blue-900/10 to-transparent">
+            <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent">
                 <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
-                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">Cargando base de datos neural...</p>
+                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"El conocimiento es poder."</p>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-                <div onclick="switchTab('view-notes')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-colors">
-                    <i data-lucide="file-text" class="text-blue-400 mb-1" size="20"></i>
-                    <span class="text-[9px] font-bold">Notas</span>
+                <div onclick="switchTab('view-notes')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-colors">
+                    <i data-lucide="file-text" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Notas</span>
                 </div>
-                <div onclick="switchTab('view-links')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i>
-                    <span class="text-[9px] font-bold">Links</span>
+                <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Links</span>
                 </div>
-                <div onclick="switchTab('view-calendar')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i>
-                    <span id="label-events" class="text-[9px] font-bold">Eventos (0)</span>
+                <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold text-center">Eventos (0)</span>
                 </div>
-                <div onclick="openPomo()" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i>
-                    <span class="text-[9px] font-bold">Start Focus</span>
+                <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Start Focus</span>
                 </div>
-                <div onclick="switchTab('view-analysis')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i>
-                    <span class="text-[9px] font-bold">Análisis</span>
+                <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Análisis</span>
                 </div>
-                <div onclick="switchTab('view-discovery')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i>
-                    <span class="text-[9px] font-bold">Discovery</span>
+                <div onclick="switchTab('view-discovery')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Discovery</span>
                 </div>
             </div>
 
             <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
 
-            <div class="glass p-5 rounded-3xl flex justify-around text-center border-white/5">
-                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Notas</div></div>
-                <div class="w-[1px] h-8 bg-white/10 my-auto"></div>
-                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Recursos</div></div>
-            </div>
-        </section>
-
-        <section id="view-notes" class="hidden p-5 fade-in">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold orbitron">Conocimientos</h2>
-                <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-600/30"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
-            <div id="notes-grid" class="space-y-4"></div>
-        </section>
-
-        <section id="view-analysis" class="hidden p-5 fade-in">
-            <h2 class="text-xl font-bold orbitron mb-4 text-purple-400 flex items-center gap-2"><i data-lucide="brain-circuit"></i> IA ROI Engine</h2>
-            <div class="glass p-6 rounded-3xl mb-6">
-                <textarea id="ai-query" placeholder="Ej: Comparativa estratégica de IA en banca 2026..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
-                <button id="btn-ai" onclick="runROIAnalysis()" class="w-full bg-blue-600 py-3 rounded-2xl font-bold orbitron text-[10px] tracking-widest flex items-center justify-center gap-2 uppercase">
-                    <i data-lucide="cpu"></i> Iniciar Proceso Neural
-                </button>
-            </div>
-            
-            <div id="ai-results" class="hidden space-y-6">
-                <div class="glass p-4 rounded-3xl"><canvas id="chartLine" height="180"></canvas></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="glass p-4 rounded-3xl"><canvas id="chartRadar" height="150"></canvas></div>
-                    <div class="glass p-4 rounded-3xl"><canvas id="chartDoughnut" height="150"></canvas></div>
-                </div>
-                <div id="ai-report" class="glass p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap"></div>
+            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center">
+                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase">Notas</div></div>
+                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase">Recursos</div></div>
             </div>
         </section>
 
         <section id="view-profile" class="hidden p-5 fade-in">
-            <h2 class="text-2xl font-bold orbitron mb-8">VICO Core</h2>
+            <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             
             <div class="space-y-6">
-                <div class="glass p-5 rounded-3xl">
-                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Conectividad IA</h3>
-                    <div class="flex gap-2 mb-2">
-                        <input type="password" id="api-key-field" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
-                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs">OK</button>
+                <div class="glass-panel p-4 rounded-xl border border-blue-500/30 flex items-center justify-between cursor-pointer" onclick="alert('Cargando Manual VICO Pocket...')">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2 bg-blue-500/20 rounded-lg text-blue-400"><i data-lucide="book-open"></i></div>
+                        <div><h3 class="font-bold text-sm text-white">Manual de Usuario VICO</h3><p class="text-[9px] text-slate-500">Guía completa de funciones inteligentes</p></div>
                     </div>
-                    <p id="key-status" class="text-[9px] text-slate-500 italic">Detectando motor...</p>
+                    <i data-lucide="chevron-right" size="16"></i>
                 </div>
 
-                <div class="glass p-5 rounded-3xl">
-                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Diseñador de Accesos</h3>
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs">
-                        <input type="text" id="btn-url" placeholder="URL (https://...)" class="text-xs">
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Motor de Inteligencia</h3>
+                    <div class="flex gap-2">
+                        <input type="password" id="api-key-input" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase">Conectar</button>
                     </div>
-                    <button onclick="addNewCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs">Añadir al Dashboard</button>
+                    <p id="key-status" class="text-[9px] text-slate-500 mt-2 italic">Detección automática de Gemini, Groq, OpenAI y DeepSeek.</p>
                 </div>
 
-                <div class="glass p-5 rounded-3xl flex justify-between items-center bg-gradient-to-r from-blue-900/20 to-transparent">
-                    <span class="text-xs font-bold text-slate-400">Desarrollo Duvi</span>
+                <div class="glass-panel p-4 rounded-xl bg-gradient-to-r from-blue-900/10 to-transparent flex justify-between items-center">
+                    <div><h3 class="font-bold text-sm text-white">Support Dev</h3><p class="text-[9px] text-slate-400">Si te gusta la app, invítame un café.</p></div>
                     <a href="https://www.paypal.com/paypalme/texiduvi" target="_blank" class="bg-[#0070ba] px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-lg"><i data-lucide="coffee" size="14"></i> PayPal</a>
                 </div>
 
-                <div class="glass p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
-                    <h4 class="font-bold text-slate-400 mb-1 uppercase">Aviso Legal y Privacidad</h4>
-                    <p>Esta aplicación es propiedad intelectual de Jaime Andrés Dueñas Vicuña. Los datos se procesan localmente. Handcrafted by <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="text-blue-500 font-bold">Jaime Andrés Dueñas Vicuña</a>.</p>
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Gestión de Fuentes (RSS)</h3>
+                    <div class="grid grid-cols-1 gap-2 mb-3">
+                        <input type="text" id="rss-name" placeholder="Nombre (ej: Xataka)" class="text-xs">
+                        <div class="flex gap-2">
+                            <input type="text" id="rss-url" placeholder="URL del Feed..." class="flex-1 text-xs">
+                            <button onclick="addRssSource()" class="bg-slate-700 px-4 rounded-xl"><i data-lucide="plus" size="16"></i></button>
+                        </div>
+                    </div>
+                    <div id="rss-list-container" class="space-y-1 max-h-24 overflow-y-auto no-scrollbar"></div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Diseñador de Botones</h3>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs">
+                        <input type="text" id="btn-url" placeholder="https://..." class="text-xs">
+                    </div>
+                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase">Añadir al Dashboard</button>
+                </div>
+
+                <div class="glass-panel p-5 rounded-3xl space-y-4">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ajustes de Sistema</h3>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="palette" size="14"></i> Tema Visual</span>
+                        <select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-2">
+                            <option value="Cyber">Cyber Blue</option>
+                            <option value="Gold">Luxury Gold</option>
+                            <option value="Nature">Nature Green</option>
+                            <option value="Nebula">Cosmic Nebula</option>
+                            <option value="Minimal">Black Minimal</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="type" size="14"></i> Tamaño de Texto</span>
+                        <select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-2">
+                            <option value="sm">Pequeño</option>
+                            <option value="normal">Normal</option>
+                            <option value="lg">Grande</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="volume-2" size="14"></i> Sonidos de Sistema</span>
+                        <input type="checkbox" id="sys-sound" onchange="updateSystem('sound', this.checked)" class="w-4 h-4 accent-blue-600">
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-300 flex items-center gap-2"><i data-lucide="terminal" size="14"></i> Modo Desarrollador</span>
+                        <input type="checkbox" id="sys-dev" class="w-4 h-4 accent-purple-600">
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-4">Data Vault</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="exportData()" class="flex flex-col items-center p-3 glass rounded-2xl border-green-500/20 text-green-400">
+                            <i data-lucide="download" class="mb-1" size="18"></i><span class="text-[9px] font-bold">EXPORTAR</span>
+                        </button>
+                        <button onclick="document.getElementById('import-file').click()" class="flex flex-col items-center p-3 glass rounded-2xl border-blue-500/20 text-blue-400">
+                            <i data-lucide="upload" class="mb-1" size="18"></i><span class="text-[9px] font-bold">IMPORTAR</span>
+                        </button>
+                        <input type="file" id="import-file" class="hidden" onchange="importData(this)">
+                    </div>
+                </div>
+
+                <div class="text-center py-6 border-t border-white/5 space-y-4">
+                    <p class="text-[10px] text-slate-500 text-justify leading-relaxed px-4">
+                        <strong>Aviso Legal:</strong> VICO POCKET funciona bajo el modelo Local-First. Tus datos residen únicamente en tu navegador. Handcrafted by <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="text-blue-400 font-bold underline">Jaime Andrés Dueñas Vicuña</a>.
+                    </p>
+                    <p class="text-[10px] font-bold text-slate-600 tracking-[0.3em] uppercase">© 2026 VICO POCKET OS</p>
                 </div>
             </div>
         </section>
+
+        <section id="view-notes" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Notas</h2></section>
+        <section id="view-links" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Links</h2></section>
+        <section id="view-analysis" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección IA</h2></section>
+        <section id="view-discovery" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Discovery</h2></section>
+        <section id="view-calendar" class="hidden p-5 fade-in"><h2 class="orbitron font-bold">Sección Agenda</h2></section>
     </main>
 
     <nav class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>CORE</span></div>
-        <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>DATA</span></div>
+        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>HOME</span></div>
+        <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>NOTAS</span></div>
         <div class="nav-item" onclick="switchTab('view-links', this)"><i data-lucide="bookmark"></i><span>LINKS</span></div>
-        <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="pie-chart"></i><span>ROI</span></div>
+        <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="pie-chart"></i><span>IA ROI</span></div>
         <div class="nav-item" onclick="switchTab('view-discovery', this)"><i data-lucide="compass"></i><span>FEEDS</span></div>
-        <div class="nav-item" onclick="switchTab('view-calendar', this)"><i data-lucide="calendar"></i><span>CITAS</span></div>
-        <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="user"></i><span>SETTINGS</span></div>
+        <div class="nav-item" onclick="switchTab('view-calendar', this)"><i data-lucide="calendar"></i><span>AGENDA</span></div>
+        <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="settings"></i><span>PERFIL</span></div>
     </nav>
 
     <div id="modal-pomo" class="fixed inset-0 z-[250] bg-black/98 backdrop-blur-2xl flex items-center justify-center hidden">
         <div class="w-full max-w-sm p-6 text-center space-y-8">
-            <h3 class="orbitron text-[10px] text-blue-400 tracking-[0.3em] uppercase">Focus Engine v2</h3>
-            
+            <h3 class="orbitron text-[11px] text-blue-400 tracking-[0.3em] uppercase">Zen Focus Mode</h3>
             <div id="pomo-clock" class="text-8xl font-mono font-bold text-white orbitron">25:00</div>
-            
             <div class="flex justify-center gap-3">
-                <button onclick="setPomo(15)" class="text-[10px] glass px-4 py-2 rounded-full text-slate-500 hover:text-white">15m</button>
-                <button onclick="setPomo(25)" class="text-[10px] glass px-4 py-2 rounded-full text-blue-400 border-blue-500/50">25m</button>
-                <button onclick="setPomo(45)" class="text-[10px] glass px-4 py-2 rounded-full text-slate-500 hover:text-white">45m</button>
+                <button onclick="setPomoTime(15)" class="text-[10px] glass px-4 py-2 rounded-full">15m</button>
+                <button onclick="setPomoTime(25)" class="text-[10px] glass px-4 py-2 rounded-full text-blue-400 border-blue-500/50">25m</button>
+                <button onclick="setPomoTime(45)" class="text-[10px] glass px-4 py-2 rounded-full">45m</button>
             </div>
-
-            <div class="flex justify-center gap-8 items-center py-4">
+            <div class="flex justify-center gap-8 py-4">
                 <button id="pomo-ctrl" onclick="toggleFocus()" class="bg-blue-600 p-8 rounded-full shadow-[0_0_40px_rgba(59,130,246,0.3)]"><i data-lucide="play" fill="white" size="28"></i></button>
                 <button onclick="resetFocus()" class="glass p-6 rounded-full"><i data-lucide="rotate-ccw"></i></button>
             </div>
-
             <div class="glass p-5 rounded-3xl text-left">
                 <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Historial Reciente</h4>
-                <div id="pomo-logs" class="space-y-2 text-[10px] text-slate-400">
-                    <p class="italic text-slate-600">No hay registros hoy.</p>
-                </div>
+                <div id="pomo-logs" class="space-y-2 text-[10px] text-slate-400"></div>
             </div>
-
             <button onclick="closePomo()" class="text-slate-500 text-[10px] uppercase underline tracking-widest font-bold">Minimizar</button>
         </div>
     </div>
 
-    <div id="modal-note" class="fixed inset-0 z-[200] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
-        <div class="glass w-full max-w-xs rounded-3xl p-6 space-y-4 border-blue-500/30">
-            <h3 class="font-bold orbitron text-blue-400 text-sm">Registrar Dato</h3>
-            <input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
-            <textarea id="nt-text" placeholder="Escribe aquí..." class="w-full h-36 text-xs resize-none"></textarea>
-            <div class="flex gap-2 pt-2">
-                <button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold">Guardar</button>
-                <button onclick="closeNoteModal()" class="flex-1 glass py-3 rounded-xl">Cerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="vico-chat" class="fixed bottom-24 right-4 z-[150]">
-        <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl hover:scale-110 transition-all border border-white/10"><i data-lucide="bot" class="text-white"></i></button>
-        <div id="chat-win" class="glass fixed bottom-44 right-4 w-80 h-[420px] rounded-3xl flex flex-col hidden shadow-2xl border-blue-500/20 overflow-hidden">
-            <div class="bg-blue-600 p-3.5 flex justify-between items-center font-bold text-[10px] uppercase text-white tracking-widest"><span>VICO AI Chat</span><button onclick="toggleChat()"><i data-lucide="x" size="14"></i></button></div>
-            <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-3 text-[11px] leading-relaxed"></div>
-            <div class="p-3 border-t border-white/5 flex gap-1">
-                <input type="text" id="chat-in" placeholder="¿Duda rápida?" class="flex-1 p-2.5 text-[10px] bg-black/40 border-none">
-                <button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // --- BASE DE DATOS LOCAL ---
+        // --- BASE DE DATOS Y ESTADO ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
             btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
-            cfg: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', provider: 'gemini', theme: 'Cyber' },
-            pomo: { time: 1500, active: false, timer: null, logs: JSON.parse(localStorage.getItem('vp_pomo_logs')) || [] },
-            folders: ["Fijadas", "APIs", "Proyectos", "Código", "Links", "Varios"],
-            activeFolder: 'Fijadas'
+            rss: JSON.parse(localStorage.getItem('vp_rss')) || [{name:'Wired AI', url:'https://wired.com/rss'}],
+            config: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'normal', sound: true },
+            pomo: { time: 1500, active: false, timer: null, logs: JSON.parse(localStorage.getItem('vp_pomo_logs')) || [] }
         };
-
-        const SYS_PROMPT = "Eres VICO, asistente inteligente ROI y de productividad de Jaime Andrés.";
-        const PHRASES = ["El conocimiento es poder.", "VICO: Sincronización completa.", "Analizando posibilidades...", "Enfoque total activado."];
 
         window.addEventListener('load', () => {
             lucide.createIcons();
-            applyTheme(app.cfg.theme);
-            document.getElementById('api-key-field').value = app.cfg.key;
-            document.getElementById('phrase').innerText = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+            applySystemConfig();
             renderDashboard();
-            renderNotes();
-            updatePomoUI();
+            renderRssConfigList();
         });
 
         // --- NAVEGACIÓN ---
@@ -268,19 +272,34 @@
             }
         }
 
-        // --- POMODORO AVANZADO (Lógica Real) ---
-        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
-        function closePomo() { document.getElementById('modal-pomo').classList.add('hidden'); }
-        
-        function setPomo(m) {
-            if(app.pomo.active) return;
-            app.pomo.time = m * 60;
-            updatePomoUI();
+        // --- SISTEMA Y CONFIGURACIÓN ---
+        function applySystemConfig() {
+            document.body.className = `theme-${app.config.theme} font-${app.config.font}`;
+            document.getElementById('sys-theme').value = app.config.theme;
+            document.getElementById('sys-font').value = app.config.font;
+            document.getElementById('sys-sound').checked = app.config.sound;
+            document.getElementById('api-key-input').value = app.config.key;
         }
 
+        function updateSystem(key, val) {
+            app.config[key] = val;
+            saveData();
+            applySystemConfig();
+        }
+
+        function saveApi() {
+            app.config.key = document.getElementById('api-key-input').value.trim();
+            saveData();
+            alert('Motor de Inteligencia Sincronizado.');
+        }
+
+        // --- POMODORO AVANZADO ---
+        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
+        function closePomo() { document.getElementById('modal-pomo').classList.add('hidden'); }
+        function setPomoTime(m) { if(app.pomo.active) return; app.pomo.time = m * 60; updatePomoUI(); }
+
         function toggleFocus() {
-            const ctrl = document.getElementById('pomo-ctrl');
-            const tb = document.getElementById('top-taskbar');
+            const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
             if(app.pomo.active) {
                 clearInterval(app.pomo.timer);
                 app.pomo.active = false;
@@ -293,20 +312,23 @@
                 app.pomo.timer = setInterval(() => {
                     app.pomo.time--;
                     updatePomoUI();
-                    if(app.pomo.time <= 0) {
-                        logPomoSession();
-                        resetFocus();
-                        alert("Sesión de enfoque completada.");
-                    }
+                    if(app.pomo.time <= 0) finishPomoSession();
                 }, 1000);
             }
             lucide.createIcons();
         }
 
+        function finishPomoSession() {
+            const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            app.pomo.logs.unshift(timeStr);
+            if(app.pomo.logs.length > 3) app.pomo.logs.pop();
+            localStorage.setItem('vp_pomo_logs', JSON.stringify(app.pomo.logs));
+            resetFocus();
+            alert("¡Estado Focus Completado!");
+        }
+
         function resetFocus() {
-            clearInterval(app.pomo.timer);
-            app.pomo.time = 1500;
-            app.pomo.active = false;
+            clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false;
             document.getElementById('top-taskbar').classList.add('hidden');
             updatePomoUI();
             document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>';
@@ -319,160 +341,65 @@
             document.getElementById('pomo-clock').innerText = str;
             document.getElementById('mini-timer').innerText = str;
             
-            // Render Logs
-            const logsArea = document.getElementById('pomo-logs');
-            if(app.pomo.logs.length > 0) {
-                logsArea.innerHTML = app.pomo.logs.slice(0, 3).map(l => `
-                    <div class="flex justify-between items-center bg-white/5 p-2 rounded-lg">
-                        <span><i data-lucide="check" size="10" class="inline text-green-500"></i> Sesión OK</span>
-                        <span class="text-[8px] font-mono text-slate-500">${l}</span>
-                    </div>`).join('');
-                lucide.createIcons();
-            }
+            const logDiv = document.getElementById('pomo-logs');
+            logDiv.innerHTML = app.pomo.logs.length ? app.pomo.logs.map(l => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span><i data-lucide="check-circle" size="10" class="text-green-500 inline mr-1"></i> Sesión Exitosa</span><span class="font-mono text-slate-500">${l}</span></div>`).join('') : '<p class="italic text-slate-600">No hay registros.</p>';
+            lucide.createIcons();
         }
 
-        function logPomoSession() {
-            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            app.pomo.logs.unshift(now);
-            if(app.pomo.logs.length > 3) app.pomo.logs.pop();
-            localStorage.setItem('vp_pomo_logs', JSON.stringify(app.pomo.logs));
-        }
-
-        // --- DASHBOARD & NOTAS ---
+        // --- DASHBOARD Y DISEÑADOR ---
         function renderDashboard() {
             document.getElementById('stat-notes').innerText = app.notes.length;
             document.getElementById('stat-links').innerText = app.notes.filter(n => n.folder === 'Links').length;
-            document.getElementById('label-events').innerText = `Eventos (${app.events.length})`;
+            document.getElementById('dash-events-label').innerText = `Eventos (${app.events.length})`;
             
             const area = document.getElementById('custom-buttons-dashboard');
             area.innerHTML = app.btns.map(b => `
                 <div class="relative group">
                     <button onclick="window.open('${b.url}', '_blank')" class="bg-blue-600/20 border border-blue-500/30 px-3 py-1.5 rounded-xl text-[10px] font-bold text-blue-400">${b.label}</button>
-                    <button onclick="delBtn(${b.id})" class="absolute -top-1 -right-1 bg-red-600 text-[8px] text-white w-3 h-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                    <button onclick="delCustomBtn(${b.id})" class="absolute -top-1 -right-1 bg-red-600 w-3 h-3 flex items-center justify-center text-[8px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity">×</button>
                 </div>`).join('');
         }
 
-        function renderNotes() {
-            const bar = document.getElementById('folder-bar');
-            bar.innerHTML = app.folders.map(f => `<button onclick="setFolder('${f}')" class="folder-btn px-4 py-1.5 rounded-full text-[10px] font-bold transition-all ${app.activeFolder === f ? 'active' : 'bg-slate-800 text-slate-500'}">${f}</button>`).join('');
-            
-            const grid = document.getElementById('notes-grid');
-            const items = app.notes.filter(n => n.folder === app.activeFolder);
-            grid.innerHTML = items.length ? '' : '<p class="text-center text-[9px] text-slate-700 py-10">Folder vacío.</p>';
-            
-            items.forEach(n => {
-                grid.innerHTML += `
-                    <div class="glass p-4 rounded-2xl flex justify-between items-start border-l-4 border-blue-500/50">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-sm text-white">${n.title}</h4>
-                            <p class="text-[10px] text-slate-400 mt-1 line-clamp-3">${n.content}</p>
-                            <div class="text-[8px] text-slate-600 mt-3 font-mono uppercase">${n.date}</div>
-                        </div>
-                        <button onclick="delNote(${n.id})" class="text-slate-600 hover:text-red-500"><i data-lucide="trash-2" size="14"></i></button>
-                    </div>`;
-            });
-            lucide.createIcons();
-        }
-
-        function setFolder(f) { app.activeFolder = f; renderNotes(); }
-        function openNoteModal() { document.getElementById('modal-note').classList.remove('hidden'); }
-        function closeNoteModal() { document.getElementById('modal-note').classList.add('hidden'); }
-        function saveNote() {
-            const t = document.getElementById('nt-title').value, c = document.getElementById('nt-text').value;
-            if(!t) return;
-            app.notes.unshift({ id: Date.now(), title: t, content: c, folder: app.activeFolder, date: new Date().toLocaleDateString() });
-            save(); renderAll(); renderNotes(); closeNoteModal();
-            document.getElementById('nt-title').value = ''; document.getElementById('nt-text').value = '';
-        }
-        function delNote(id) { app.notes = app.notes.filter(n => n.id !== id); save(); renderNotes(); renderDashboard(); }
-
-        // --- IA ROI ENGINE ---
-        let charts = { l: null, r: null, p: null };
-        async function runROIAnalysis() {
-            const q = document.getElementById('ai-query').value;
-            if(!q || !app.cfg.key) return alert("Pega tu API Key en Settings");
-            const btn = document.getElementById('btn-ai');
-            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROCESANDO...';
-            lucide.createIcons();
-
-            try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.cfg.key}`, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza mercado y ROI de: ${q}. Resume en 3 puntos clave.` }] }] })
-                });
-                const d = await res.json();
-                const aiTxt = d.candidates[0].content.parts[0].text;
-                
-                document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = aiTxt;
-                renderCharts();
-                document.getElementById('ai-results').scrollIntoView({behavior:'smooth'});
-            } catch(e) { alert("Error de enlace IA."); }
-            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO NEURAL"; lucide.createIcons(); }
-        }
-
-        function renderCharts() {
-            const ctxL = document.getElementById('chartLine').getContext('2d');
-            if(charts.l) charts.l.destroy();
-            charts.l = new Chart(ctxL, { type: 'line', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{label:'Growth', data:[25,60,45,95], borderColor:'#3b82f6', tension:0.4}] }, options: { plugins:{legend:{display:false}}, scales:{y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{display:false}}, x:{grid:{display:false}}} } });
-            
-            const ctxR = document.getElementById('chartRadar').getContext('2d');
-            if(charts.r) charts.r.destroy();
-            charts.r = new Chart(ctxR, { type: 'radar', data: { labels: ['ROI','Riesgo','Viral','Cost','Uso'], datasets: [{data:[80,30,90,40,75], backgroundColor:'rgba(59,130,246,0.2)', borderColor:'#3b82f6'}] }, options: { scales:{r:{grid:{color:'rgba(255,255,255,0.1)'}, pointLabels:{color:'#64748b', font:{size:8}}, ticks:{display:false}}}, plugins:{legend:{display:false}} } });
-
-            const ctxP = document.getElementById('chartDoughnut').getContext('2d');
-            if(charts.p) charts.p.destroy();
-            charts.p = new Chart(ctxP, { type: 'doughnut', data: { labels: ['Pos','Neg'], datasets: [{data:[85,15], backgroundColor:['#10b981','#ef4444'], borderWidth:0}] }, options: { cutout:'80%', plugins:{legend:{display:false}} } });
-        }
-
-        // --- SETTINGS & PACK DUVI ---
-        function detectProvider(v) {
-            const s = document.getElementById('key-status');
-            if(v.startsWith('AIza')) { s.innerHTML = "✅ GEMINI DETECTADO"; app.cfg.provider = 'gemini'; }
-            else if(v.startsWith('gsk')) { s.innerHTML = "✅ GROQ DETECTADO"; app.cfg.provider = 'groq'; }
-            else if(v.startsWith('sk-')) { s.innerHTML = "✅ OPENAI DETECTADO"; app.cfg.provider = 'openai'; }
-        }
-
-        function saveApi() { app.cfg.key = document.getElementById('api-key-field').value; save(); alert("Sincronización OK"); }
-        function applyTheme(t) { document.body.className = 'theme-' + t; app.cfg.theme = t; save(); }
-        function addNewCustomBtn() {
+        function createCustomBtn() {
             const l = document.getElementById('btn-name').value, u = document.getElementById('btn-url').value;
             if(!l || !u) return;
             app.btns.push({ id: Date.now(), label: l, url: u.startsWith('http') ? u : 'https://'+u });
-            save(); renderDashboard();
+            saveData(); renderDashboard();
             document.getElementById('btn-name').value = ''; document.getElementById('btn-url').value = '';
         }
-        function delBtn(id) { app.btns = app.btns.filter(b => b.id !== id); save(); renderDashboard(); }
+        function delCustomBtn(id) { app.btns = app.btns.filter(b => b.id !== id); saveData(); renderDashboard(); }
 
-        // --- CHAT AI ---
-        function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); }
-        async function sendChat() {
-            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-            if(!inp.value || !app.cfg.key) return;
-            const ut = inp.value;
-            msgs.innerHTML += `<div class="bg-blue-600/20 p-2.5 rounded-2xl ml-10 text-white">${ut}</div>`;
-            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
-            try {
-                let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.cfg.key}`;
-                let b = { contents: [{ parts: [{ text: SYS_PROMPT + " Pregunta: " + ut }] }] };
-                if(app.cfg.provider === 'groq') {
-                    url = "https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions";
-                    b = { model: "llama-3.3-70b-versatile", messages: [{role:"system", content: SYS_PROMPT}, {role:"user", content: ut}] };
-                }
-                const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${app.cfg.key}` }, body: JSON.stringify(b) });
-                const d = await r.json();
-                const ai = app.cfg.provider === 'gemini' ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
-                msgs.innerHTML += `<div class="bg-white/5 p-2.5 rounded-2xl mr-10">VICO: ${ai}</div>`;
-            } catch(e) { msgs.innerHTML += `<div class="text-red-500">Error de señal.</div>`; }
-            msgs.scrollTop = msgs.scrollHeight;
+        // --- RSS ---
+        function addRssSource() {
+            const n = document.getElementById('rss-name').value, u = document.getElementById('rss-url').value;
+            if(!n || !u) return;
+            app.rss.push({ name: n, url: u });
+            saveData(); renderRssConfigList();
+            document.getElementById('rss-name').value = ''; document.getElementById('rss-url').value = '';
+        }
+        function renderRssConfigList() {
+            const list = document.getElementById('rss-list-container');
+            list.innerHTML = app.rss.map((r, i) => `<div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded"><span>${r.name}</span><button onclick="delRss(${i})" class="text-red-500 font-bold">BORRAR</button></div>`).join('');
+        }
+        function delRss(i) { app.rss.splice(i, 1); saveData(); renderRssConfigList(); }
+
+        // --- DATA VAULT ---
+        function exportData() {
+            const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'vico_pocket_backup_full.json'; a.click();
+        }
+        function importData(input) {
+            const r = new FileReader(); r.onload = e => { try { const d = JSON.parse(e.target.result); app = d; saveData(); location.reload(); } catch(err) { alert('JSON Inválido'); } };
+            if(input.files[0]) r.readAsText(input.files[0]);
         }
 
-        function save() {
+        function saveData() {
             localStorage.setItem('vp_notes', JSON.stringify(app.notes));
             localStorage.setItem('vp_events', JSON.stringify(app.events));
             localStorage.setItem('vp_btns', JSON.stringify(app.btns));
-            localStorage.setItem('vp_cfg', JSON.stringify(app.cfg));
+            localStorage.setItem('vp_rss', JSON.stringify(app.rss));
+            localStorage.setItem('vp_cfg', JSON.stringify(app.config));
         }
     </script>
 </body>
-    </html> 
+</html>
