@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET AI</title>
+    <title>VICO POCKET OS</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -14,229 +14,248 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        :root { --bg: #0b0f1a; --primary: #3b82f6; --accent: #1e293b; }
-        body.theme-Cyber { --bg: #050b1a; --primary: #00fff7; }
+        :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
+        body.theme-Cyber { --bg: #0b0f1a; --primary: #3b82f6; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
         body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
         body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
 
-        body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow-x: hidden; }
+        body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass { background: rgba(11, 15, 26, 0.75); backdrop-filter: blur(15px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
-        /* Navegación Inferior Estilo Nativo */
-        .nav-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
-            background: rgba(11, 15, 26, 0.9); border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px;
+        /* TASKBAR SUPERIOR (Mini Reloj) */
+        .task-bar { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 38px; 
+            background: rgba(0,0,0,0.85); z-index: 500; 
+            display: flex; justify-content: center; align-items: center; 
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(5px);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #64748b; font-size: 8px; cursor: pointer; flex: 1; }
+
+        /* NAVEGACIÓN INFERIOR */
+        .nav-bar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; 
+            background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); 
+            display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; 
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active i { transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary)); }
 
-        input, textarea, select { background: rgba(0,0,0,0.4) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; outline: none !important; }
-        .card-note { transition: transform 0.2s; border-left: 4px solid var(--primary); }
-        .card-note:active { transform: scale(0.98); }
+        /* UI de Notas */
+        .folder-btn { transition: 0.2s; border: 1px solid transparent; }
+        .folder-btn.active { background: var(--primary); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--primary); }
+
+        input, textarea, select { background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; outline: none; padding: 12px; }
+        input:focus { border-color: var(--primary); }
     </style>
 </head>
 <body class="theme-Cyber">
 
-    <main id="main-scroll" class="h-screen w-full overflow-y-auto pb-24 scroll-smooth">
+    <div id="top-taskbar" class="task-bar hidden">
+        <div class="flex items-center gap-3 px-4 py-1 rounded-full bg-black/40 border border-white/5 shadow-inner">
+            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_red]"></div>
+            <span id="mini-timer" class="text-[11px] font-mono font-bold text-white tracking-widest">25:00</span>
+            <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter">Focusing...</span>
+        </div>
+    </div>
+
+    <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
         
         <section id="view-dashboard" class="p-5 space-y-6 fade-in">
-            <div class="flex justify-between items-center pt-4">
-                <div>
-                    <h1 class="text-2xl font-bold orbitron text-white">VICO POCKET</h1>
-                    <p id="phrase" class="text-[10px] text-slate-500 italic mt-1">Cargando inspiración...</p>
+            <div class="p-6 rounded-3xl border border-blue-500/20 glass bg-gradient-to-br from-blue-900/10 to-transparent">
+                <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
+                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">Cargando base de datos neural...</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+                <div onclick="switchTab('view-notes')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-colors">
+                    <i data-lucide="file-text" class="text-blue-400 mb-1" size="20"></i>
+                    <span class="text-[9px] font-bold">Notas</span>
                 </div>
-                <div id="status-ia" class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#22c55e]"></div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-3">
-                <button onclick="switchTab('view-notes')" class="glass p-3 rounded-2xl flex flex-col items-center"><i data-lucide="file-text" class="text-blue-400 mb-1" size="20"></i><span class="text-[8px]">NOTAS</span></button>
-                <button onclick="switchTab('view-links')" class="glass p-3 rounded-2xl flex flex-col items-center"><i data-lucide="link" class="text-green-400 mb-1" size="20"></i><span class="text-[8px]">LINKS</span></button>
-                <button onclick="switchTab('view-analysis')" class="glass p-3 rounded-2xl flex flex-col items-center"><i data-lucide="activity" class="text-purple-400 mb-1" size="20"></i><span class="text-[8px]">ROI</span></button>
-                <button onclick="openPomo()" class="glass p-3 rounded-2xl flex flex-col items-center"><i data-lucide="zap" class="text-yellow-400 mb-1" size="20"></i><span class="text-[8px]">FOCUS</span></button>
-            </div>
-
-            <div class="glass p-5 rounded-3xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="brain" size="60"></i></div>
-                <h3 class="text-[10px] font-bold text-slate-500 mb-4 tracking-widest">RESUMEN DE INTELIGENCIA</h3>
-                <div class="flex justify-between items-end">
-                    <div><div id="stat-notes" class="text-3xl font-bold text-white">0</div><p class="text-[8px] text-slate-500">CONOCIMIENTOS</p></div>
-                    <div><div id="stat-links" class="text-3xl font-bold text-white">0</div><p class="text-[8px] text-slate-500">RECURSOS</p></div>
-                    <div><div id="stat-events" class="text-3xl font-bold text-white">0</div><p class="text-[8px] text-slate-500">EVENTOS</p></div>
+                <div onclick="switchTab('view-links')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i>
+                    <span class="text-[9px] font-bold">Links</span>
+                </div>
+                <div onclick="switchTab('view-calendar')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i>
+                    <span id="label-events" class="text-[9px] font-bold">Eventos (0)</span>
+                </div>
+                <div onclick="openPomo()" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i>
+                    <span class="text-[9px] font-bold">Start Focus</span>
+                </div>
+                <div onclick="switchTab('view-analysis')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i>
+                    <span class="text-[9px] font-bold">Análisis</span>
+                </div>
+                <div onclick="switchTab('view-discovery')" class="glass p-3 rounded-2xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i>
+                    <span class="text-[9px] font-bold">Discovery</span>
                 </div>
             </div>
 
-            <div id="dash-news" class="space-y-3"></div>
+            <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
+
+            <div class="glass p-5 rounded-3xl flex justify-around text-center border-white/5">
+                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Notas</div></div>
+                <div class="w-[1px] h-8 bg-white/10 my-auto"></div>
+                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Recursos</div></div>
+            </div>
         </section>
 
         <section id="view-notes" class="hidden p-5 fade-in">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold orbitron">Notas</h2>
-                <div class="flex gap-2">
-                    <button onclick="exportData()" class="p-2 glass rounded-lg"><i data-lucide="download" size="18"></i></button>
-                    <button onclick="showNoteForm()" class="bg-blue-600 p-2 rounded-lg"><i data-lucide="plus" size="18"></i></button>
-                </div>
+                <h2 class="text-xl font-bold orbitron">Conocimientos</h2>
+                <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-600/30"><i data-lucide="plus"></i></button>
             </div>
-
-            <div id="folder-scroll" class="flex gap-2 overflow-x-auto pb-4 no-scrollbar"></div>
-
-            <div id="notes-grid" class="grid grid-cols-1 gap-3"></div>
+            <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
+            <div id="notes-grid" class="space-y-4"></div>
         </section>
 
         <section id="view-analysis" class="hidden p-5 fade-in">
-            <h2 class="text-xl font-bold orbitron mb-2 text-purple-400">Análisis Neural</h2>
-            <p class="text-[10px] text-slate-500 mb-6 uppercase tracking-widest">Predictive Intelligence Engine</p>
-            
-            <div class="glass p-5 rounded-2xl mb-6">
-                <textarea id="ai-query" placeholder="Ej: Analiza el mercado de IA en 2026..." class="w-full h-24 text-sm bg-transparent border-none resize-none mb-4" oninput="detectAnalysisType()"></textarea>
-                <button id="btn-analysis" onclick="startNeuralAnalysis()" class="w-full bg-purple-600 py-3 rounded-xl font-bold flex items-center justify-center gap-2">
-                    <i data-lucide="cpu"></i> INICIAR ESCANEO
+            <h2 class="text-xl font-bold orbitron mb-4 text-purple-400 flex items-center gap-2"><i data-lucide="brain-circuit"></i> IA ROI Engine</h2>
+            <div class="glass p-6 rounded-3xl mb-6">
+                <textarea id="ai-query" placeholder="Ej: Comparativa estratégica de IA en banca 2026..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
+                <button id="btn-ai" onclick="runROIAnalysis()" class="w-full bg-blue-600 py-3 rounded-2xl font-bold orbitron text-[10px] tracking-widest flex items-center justify-center gap-2 uppercase">
+                    <i data-lucide="cpu"></i> Iniciar Proceso Neural
                 </button>
             </div>
-
-            <div id="analysis-output" class="space-y-6 hidden">
-                <div class="glass p-4 rounded-2xl">
-                    <canvas id="radarChart" height="300"></canvas>
+            
+            <div id="ai-results" class="hidden space-y-6">
+                <div class="glass p-4 rounded-3xl"><canvas id="chartLine" height="180"></canvas></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="glass p-4 rounded-3xl"><canvas id="chartRadar" height="150"></canvas></div>
+                    <div class="glass p-4 rounded-3xl"><canvas id="chartDoughnut" height="150"></canvas></div>
                 </div>
-                <div id="ai-report-text" class="glass p-5 rounded-2xl text-xs leading-relaxed text-slate-300 whitespace-pre-wrap"></div>
+                <div id="ai-report" class="glass p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap"></div>
             </div>
-        </section>
-
-        <section id="view-calendar" class="hidden p-5 fade-in">
-            <h2 class="text-xl font-bold orbitron mb-6">Agenda</h2>
-            <div class="glass p-4 rounded-2xl mb-6 space-y-3">
-                <input type="text" id="evt-title" placeholder="¿Qué tienes pendiente?" class="w-full text-sm p-3 rounded-xl">
-                <input type="datetime-local" id="evt-date" class="w-full text-sm p-3 rounded-xl">
-                <button onclick="addEvent()" class="w-full bg-blue-600 py-2 rounded-xl font-bold">Agendar Cita</button>
-            </div>
-            <div id="events-list" class="space-y-2"></div>
         </section>
 
         <section id="view-profile" class="hidden p-5 fade-in">
-            <h2 class="text-xl font-bold orbitron mb-8">Configuración</h2>
+            <h2 class="text-2xl font-bold orbitron mb-8">VICO Core</h2>
             
             <div class="space-y-6">
-                <div class="glass p-5 rounded-2xl">
-                    <div class="flex items-center gap-2 mb-4 text-blue-400 font-bold text-xs uppercase"><i data-lucide="key"></i> Motor Inteligente</div>
-                    <input type="password" id="api-key" placeholder="API Key (Gemini, Groq, OpenAI...)" class="w-full text-xs font-mono p-3 rounded-xl mb-3" oninput="detectProvider(this.value)">
-                    <p id="key-info" class="text-[9px] text-slate-500 mb-4">Pega tu clave para autodetectar el proveedor.</p>
-                    <button onclick="saveSettings()" class="w-full bg-green-600 py-2 rounded-xl text-xs font-bold">Guardar Cambios</button>
+                <div class="glass p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Conectividad IA</h3>
+                    <div class="flex gap-2 mb-2">
+                        <input type="password" id="api-key-field" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs">OK</button>
+                    </div>
+                    <p id="key-status" class="text-[9px] text-slate-500 italic">Detectando motor...</p>
                 </div>
 
-                <div class="glass p-5 rounded-2xl">
-                    <div class="flex items-center gap-2 mb-4 text-slate-400 font-bold text-xs uppercase"><i data-lucide="palette"></i> Interfaz</div>
-                    <select id="theme-select" onchange="setTheme(this.value)" class="w-full text-xs p-3 rounded-xl">
-                        <option value="Cyber">Cyber Blue</option>
-                        <option value="Gold">Luxury Gold</option>
-                        <option value="Nature">Nature Green</option>
-                        <option value="Nebula">Cosmic Nebula</option>
-                        <option value="Minimal">Black Minimal</option>
-                    </select>
+                <div class="glass p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Diseñador de Accesos</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs">
+                        <input type="text" id="btn-url" placeholder="URL (https://...)" class="text-xs">
+                    </div>
+                    <button onclick="addNewCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs">Añadir al Dashboard</button>
                 </div>
 
-                <div class="glass p-5 rounded-2xl text-[10px] text-slate-500 leading-relaxed text-justify">
-                    <h4 class="font-bold text-slate-300 mb-2">Aviso Legal y Privacidad</h4>
-                    <p><strong>VICO POCKET AI</strong> funciona bajo el modelo Local-First. Tus datos, notas y API Keys residen únicamente en el almacenamiento local de este dispositivo. No recolectamos información personal ni conversaciones. El uso de la IA y el acceso a enlaces externos es responsabilidad absoluta del usuario.</p>
+                <div class="glass p-5 rounded-3xl flex justify-between items-center bg-gradient-to-r from-blue-900/20 to-transparent">
+                    <span class="text-xs font-bold text-slate-400">Desarrollo Duvi</span>
+                    <a href="https://www.paypal.com/paypalme/texiduvi" target="_blank" class="bg-[#0070ba] px-6 py-2 rounded-full font-bold text-xs flex items-center gap-2 shadow-lg"><i data-lucide="coffee" size="14"></i> PayPal</a>
                 </div>
 
-                <div class="text-center py-6">
-                    <a href="https://www.paypal.com/paypalme/texiduvi" target="_blank" class="inline-flex items-center gap-2 bg-[#0070ba] px-8 py-3 rounded-full font-bold text-xs text-white mb-6 shadow-xl">
-                        <i data-lucide="coffee" size="16"></i> Invítame un Café
-                    </a>
-                    <p class="text-[9px] text-slate-600 uppercase tracking-widest">
-                        Handcrafted by <br> 
-                        <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="text-blue-500 font-bold">Jaime Andrés Dueñas Vicuña</a>
-                    </p>
+                <div class="glass p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
+                    <h4 class="font-bold text-slate-400 mb-1 uppercase">Aviso Legal y Privacidad</h4>
+                    <p>Esta aplicación es propiedad intelectual de Jaime Andrés Dueñas Vicuña. Los datos se procesan localmente. Handcrafted by <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="text-blue-500 font-bold">Jaime Andrés Dueñas Vicuña</a>.</p>
                 </div>
             </div>
         </section>
     </main>
 
     <nav class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="layout-grid" size="22"></i><span>CORE</span></div>
-        <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="layers" size="22"></i><span>DATA</span></div>
-        <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="brain-circuit" size="22"></i><span>ROI</span></div>
-        <div class="nav-item" onclick="switchTab('view-calendar', this)"><i data-lucide="calendar-days" size="22"></i><span>AGENDA</span></div>
-        <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="shield-check" size="22"></i><span>SECURITY</span></div>
+        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>CORE</span></div>
+        <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>DATA</span></div>
+        <div class="nav-item" onclick="switchTab('view-links', this)"><i data-lucide="bookmark"></i><span>LINKS</span></div>
+        <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="pie-chart"></i><span>ROI</span></div>
+        <div class="nav-item" onclick="switchTab('view-discovery', this)"><i data-lucide="compass"></i><span>FEEDS</span></div>
+        <div class="nav-item" onclick="switchTab('view-calendar', this)"><i data-lucide="calendar"></i><span>CITAS</span></div>
+        <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="user"></i><span>SETTINGS</span></div>
     </nav>
 
-    <div id="modal-note" class="fixed inset-0 z-[200] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 hidden">
-        <div class="glass w-full max-w-sm rounded-3xl p-6 space-y-4">
-            <h3 class="font-bold orbitron text-blue-400">Registrar Dato</h3>
-            <input type="text" id="note-title" placeholder="Título del conocimiento..." class="w-full text-sm p-3 rounded-xl">
-            <select id="note-folder" class="w-full text-xs p-3 rounded-xl"></select>
-            <textarea id="note-text" placeholder="Contenido neural..." class="w-full h-32 text-sm p-3 rounded-xl resize-none"></textarea>
-            <div class="flex gap-2 pt-2">
-                <button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold">Guardar</button>
-                <button onclick="closeNoteForm()" class="flex-1 glass py-3 rounded-xl">Cancelar</button>
+    <div id="modal-pomo" class="fixed inset-0 z-[250] bg-black/98 backdrop-blur-2xl flex items-center justify-center hidden">
+        <div class="w-full max-w-sm p-6 text-center space-y-8">
+            <h3 class="orbitron text-[10px] text-blue-400 tracking-[0.3em] uppercase">Focus Engine v2</h3>
+            
+            <div id="pomo-clock" class="text-8xl font-mono font-bold text-white orbitron">25:00</div>
+            
+            <div class="flex justify-center gap-3">
+                <button onclick="setPomo(15)" class="text-[10px] glass px-4 py-2 rounded-full text-slate-500 hover:text-white">15m</button>
+                <button onclick="setPomo(25)" class="text-[10px] glass px-4 py-2 rounded-full text-blue-400 border-blue-500/50">25m</button>
+                <button onclick="setPomo(45)" class="text-[10px] glass px-4 py-2 rounded-full text-slate-500 hover:text-white">45m</button>
             </div>
+
+            <div class="flex justify-center gap-8 items-center py-4">
+                <button id="pomo-ctrl" onclick="toggleFocus()" class="bg-blue-600 p-8 rounded-full shadow-[0_0_40px_rgba(59,130,246,0.3)]"><i data-lucide="play" fill="white" size="28"></i></button>
+                <button onclick="resetFocus()" class="glass p-6 rounded-full"><i data-lucide="rotate-ccw"></i></button>
+            </div>
+
+            <div class="glass p-5 rounded-3xl text-left">
+                <h4 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-3">Historial Reciente</h4>
+                <div id="pomo-logs" class="space-y-2 text-[10px] text-slate-400">
+                    <p class="italic text-slate-600">No hay registros hoy.</p>
+                </div>
+            </div>
+
+            <button onclick="closePomo()" class="text-slate-500 text-[10px] uppercase underline tracking-widest font-bold">Minimizar</button>
         </div>
     </div>
 
-    <div id="modal-pomo" class="fixed inset-0 z-[250] bg-black/95 backdrop-blur-xl flex items-center justify-center hidden">
-        <div class="text-center">
-            <div id="pomo-timer" class="text-8xl font-mono font-bold text-white orbitron mb-10">25:00</div>
-            <div class="flex justify-center gap-6 mb-12">
-                <button id="pomo-btn" onclick="togglePomo()" class="bg-blue-600 p-8 rounded-full shadow-[0_0_30px_rgba(59,130,246,0.5)]"><i data-lucide="play" fill="white"></i></button>
-                <button onclick="resetPomo()" class="glass p-8 rounded-full"><i data-lucide="rotate-ccw"></i></button>
+    <div id="modal-note" class="fixed inset-0 z-[200] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass w-full max-w-xs rounded-3xl p-6 space-y-4 border-blue-500/30">
+            <h3 class="font-bold orbitron text-blue-400 text-sm">Registrar Dato</h3>
+            <input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
+            <textarea id="nt-text" placeholder="Escribe aquí..." class="w-full h-36 text-xs resize-none"></textarea>
+            <div class="flex gap-2 pt-2">
+                <button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold">Guardar</button>
+                <button onclick="closeNoteModal()" class="flex-1 glass py-3 rounded-xl">Cerrar</button>
             </div>
-            <button onclick="closePomo()" class="text-slate-500 text-xs underline">Salir del Estado Focus</button>
         </div>
     </div>
 
     <div id="vico-chat" class="fixed bottom-24 right-4 z-[150]">
-        <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl border border-white/10 hover:scale-110 transition-all"><i data-lucide="message-square" class="text-white"></i></button>
-        <div id="chat-window" class="glass fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden border-blue-500/30 overflow-hidden shadow-2xl">
-            <div class="bg-blue-600/20 p-4 flex justify-between items-center border-b border-white/10">
-                <span class="text-[10px] font-bold orbitron tracking-widest text-blue-400">VICO AI ASSISTANT</span>
-                <button onclick="toggleChat()"><i data-lucide="x" size="14"></i></button>
-            </div>
+        <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl hover:scale-110 transition-all border border-white/10"><i data-lucide="bot" class="text-white"></i></button>
+        <div id="chat-win" class="glass fixed bottom-44 right-4 w-80 h-[420px] rounded-3xl flex flex-col hidden shadow-2xl border-blue-500/20 overflow-hidden">
+            <div class="bg-blue-600 p-3.5 flex justify-between items-center font-bold text-[10px] uppercase text-white tracking-widest"><span>VICO AI Chat</span><button onclick="toggleChat()"><i data-lucide="x" size="14"></i></button></div>
             <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-3 text-[11px] leading-relaxed"></div>
-            <div class="p-3 border-t border-white/5 flex gap-2">
-                <input type="text" id="chat-in" placeholder="¿Duda rápida?" class="flex-1 text-xs p-2 bg-black/40 rounded-lg border-none">
-                <button onclick="sendChat()" class="bg-blue-600 p-2 rounded-lg"><i data-lucide="send" size="14"></i></button>
+            <div class="p-3 border-t border-white/5 flex gap-1">
+                <input type="text" id="chat-in" placeholder="¿Duda rápida?" class="flex-1 p-2.5 text-[10px] bg-black/40 border-none">
+                <button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DATA & CONFIG ---
-        const DUVI_FOLDERS = ["Fijadas", "APIs", "Proyectos", "Código", "Links", "Negocios", "Varios"];
-        const PHRASES = ["El conocimiento es poder.", "Persiste y vencerás.", "La innovación distingue a los líderes.", "VICO te acompaña."];
-        
+        // --- BASE DE DATOS LOCAL ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
-            config: JSON.parse(localStorage.getItem('vp_config')) || { key: '', provider: 'gemini', theme: 'Cyber' },
-            activeFolder: 'Fijadas',
-            pomo: { time: 1500, active: false, timer: null },
-            chart: null
+            btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
+            cfg: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', provider: 'gemini', theme: 'Cyber' },
+            pomo: { time: 1500, active: false, timer: null, logs: JSON.parse(localStorage.getItem('vp_pomo_logs')) || [] },
+            folders: ["Fijadas", "APIs", "Proyectos", "Código", "Links", "Varios"],
+            activeFolder: 'Fijadas'
         };
 
-        const VICO_SYSTEM = "Eres VICO, un asistente experto en ROI, análisis de mercado y gestión de datos local-first.";
+        const SYS_PROMPT = "Eres VICO, asistente inteligente ROI y de productividad de Jaime Andrés.";
+        const PHRASES = ["El conocimiento es poder.", "VICO: Sincronización completa.", "Analizando posibilidades...", "Enfoque total activado."];
 
-        // --- INIT ---
         window.addEventListener('load', () => {
             lucide.createIcons();
-            setTheme(app.config.theme);
-            document.getElementById('api-key').value = app.config.key;
-            document.getElementById('theme-select').value = app.config.theme;
+            applyTheme(app.cfg.theme);
+            document.getElementById('api-key-field').value = app.cfg.key;
             document.getElementById('phrase').innerText = PHRASES[Math.floor(Math.random()*PHRASES.length)];
-            
-            // Cargar select de carpetas
-            const sel = document.getElementById('note-folder');
-            DUVI_FOLDERS.forEach(f => sel.innerHTML += `<option value="${f}">${f}</option>`);
-            
             renderDashboard();
             renderNotes();
-            renderEvents();
-            fetchNews();
+            updatePomoUI();
         });
 
         // --- NAVEGACIÓN ---
@@ -247,224 +266,213 @@
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 el.classList.add('active');
             }
-            window.scrollTo(0,0);
         }
 
-        // --- DASHBOARD ---
+        // --- POMODORO AVANZADO (Lógica Real) ---
+        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
+        function closePomo() { document.getElementById('modal-pomo').classList.add('hidden'); }
+        
+        function setPomo(m) {
+            if(app.pomo.active) return;
+            app.pomo.time = m * 60;
+            updatePomoUI();
+        }
+
+        function toggleFocus() {
+            const ctrl = document.getElementById('pomo-ctrl');
+            const tb = document.getElementById('top-taskbar');
+            if(app.pomo.active) {
+                clearInterval(app.pomo.timer);
+                app.pomo.active = false;
+                tb.classList.add('hidden');
+                ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>';
+            } else {
+                app.pomo.active = true;
+                tb.classList.remove('hidden');
+                ctrl.innerHTML = '<i data-lucide="pause" fill="white"></i>';
+                app.pomo.timer = setInterval(() => {
+                    app.pomo.time--;
+                    updatePomoUI();
+                    if(app.pomo.time <= 0) {
+                        logPomoSession();
+                        resetFocus();
+                        alert("Sesión de enfoque completada.");
+                    }
+                }, 1000);
+            }
+            lucide.createIcons();
+        }
+
+        function resetFocus() {
+            clearInterval(app.pomo.timer);
+            app.pomo.time = 1500;
+            app.pomo.active = false;
+            document.getElementById('top-taskbar').classList.add('hidden');
+            updatePomoUI();
+            document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>';
+            lucide.createIcons();
+        }
+
+        function updatePomoUI() {
+            const m = Math.floor(app.pomo.time / 60), s = app.pomo.time % 60;
+            const str = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            document.getElementById('pomo-clock').innerText = str;
+            document.getElementById('mini-timer').innerText = str;
+            
+            // Render Logs
+            const logsArea = document.getElementById('pomo-logs');
+            if(app.pomo.logs.length > 0) {
+                logsArea.innerHTML = app.pomo.logs.slice(0, 3).map(l => `
+                    <div class="flex justify-between items-center bg-white/5 p-2 rounded-lg">
+                        <span><i data-lucide="check" size="10" class="inline text-green-500"></i> Sesión OK</span>
+                        <span class="text-[8px] font-mono text-slate-500">${l}</span>
+                    </div>`).join('');
+                lucide.createIcons();
+            }
+        }
+
+        function logPomoSession() {
+            const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            app.pomo.logs.unshift(now);
+            if(app.pomo.logs.length > 3) app.pomo.logs.pop();
+            localStorage.setItem('vp_pomo_logs', JSON.stringify(app.pomo.logs));
+        }
+
+        // --- DASHBOARD & NOTAS ---
         function renderDashboard() {
             document.getElementById('stat-notes').innerText = app.notes.length;
             document.getElementById('stat-links').innerText = app.notes.filter(n => n.folder === 'Links').length;
-            document.getElementById('stat-events').innerText = app.events.length;
-        }
-
-        async function fetchNews() {
-            const cont = document.getElementById('dash-news');
-            try {
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.xataka.com/feed`);
-                const data = await res.json();
-                cont.innerHTML = `<h4 class="text-[9px] font-bold text-slate-600 uppercase mb-2">Flash Tecnológico</h4>`;
-                data.items.slice(0,3).forEach(item => {
-                    cont.innerHTML += `
-                        <div class="glass p-3 rounded-2xl flex gap-3 items-center" onclick="window.open('${item.link}', '_blank')">
-                            <img src="${item.thumbnail}" class="w-10 h-10 rounded-lg object-cover">
-                            <div class="text-[10px] font-bold leading-tight">${item.title}</div>
-                        </div>`;
-                });
-            } catch(e) { cont.innerHTML = ''; }
-        }
-
-        // --- NOTAS ---
-        function showNoteForm() { document.getElementById('modal-note').classList.remove('hidden'); }
-        function closeNoteForm() { document.getElementById('modal-note').classList.add('hidden'); }
-        
-        function saveNote() {
-            const t = document.getElementById('note-title').value;
-            const f = document.getElementById('note-folder').value;
-            const c = document.getElementById('note-text').value;
-            if(!t) return;
-            app.notes.unshift({ id: Date.now(), title: t, folder: f, content: c, date: new Date().toISOString() });
-            localStorage.setItem('vp_notes', JSON.stringify(app.notes));
-            renderNotes(); renderDashboard(); closeNoteForm();
-            document.getElementById('note-title').value = ''; document.getElementById('note-text').value = '';
+            document.getElementById('label-events').innerText = `Eventos (${app.events.length})`;
+            
+            const area = document.getElementById('custom-buttons-dashboard');
+            area.innerHTML = app.btns.map(b => `
+                <div class="relative group">
+                    <button onclick="window.open('${b.url}', '_blank')" class="bg-blue-600/20 border border-blue-500/30 px-3 py-1.5 rounded-xl text-[10px] font-bold text-blue-400">${b.label}</button>
+                    <button onclick="delBtn(${b.id})" class="absolute -top-1 -right-1 bg-red-600 text-[8px] text-white w-3 h-3 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                </div>`).join('');
         }
 
         function renderNotes() {
+            const bar = document.getElementById('folder-bar');
+            bar.innerHTML = app.folders.map(f => `<button onclick="setFolder('${f}')" class="folder-btn px-4 py-1.5 rounded-full text-[10px] font-bold transition-all ${app.activeFolder === f ? 'active' : 'bg-slate-800 text-slate-500'}">${f}</button>`).join('');
+            
             const grid = document.getElementById('notes-grid');
-            const scroll = document.getElementById('folder-scroll');
+            const items = app.notes.filter(n => n.folder === app.activeFolder);
+            grid.innerHTML = items.length ? '' : '<p class="text-center text-[9px] text-slate-700 py-10">Folder vacío.</p>';
             
-            // Render carpetas
-            scroll.innerHTML = DUVI_FOLDERS.map(f => `
-                <button onclick="setFolder('${f}')" class="px-4 py-2 rounded-full text-[10px] font-bold transition-all ${app.activeFolder === f ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40' : 'glass text-slate-500'}">${f}</button>
-            `).join('');
-
-            const filtered = app.notes.filter(n => n.folder === app.activeFolder);
-            grid.innerHTML = filtered.length ? '' : '<p class="text-center text-[10px] text-slate-600 py-10">Sin datos en esta carpeta.</p>';
-            
-            filtered.forEach(n => {
+            items.forEach(n => {
                 grid.innerHTML += `
-                    <div class="glass p-4 rounded-2xl card-note">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="text-xs font-bold text-white">${n.title}</h4>
-                            <button onclick="deleteNote(${n.id})" class="text-slate-600"><i data-lucide="trash-2" size="12"></i></button>
+                    <div class="glass p-4 rounded-2xl flex justify-between items-start border-l-4 border-blue-500/50">
+                        <div class="flex-1">
+                            <h4 class="font-bold text-sm text-white">${n.title}</h4>
+                            <p class="text-[10px] text-slate-400 mt-1 line-clamp-3">${n.content}</p>
+                            <div class="text-[8px] text-slate-600 mt-3 font-mono uppercase">${n.date}</div>
                         </div>
-                        <p class="text-[10px] text-slate-400 line-clamp-3 leading-relaxed">${n.content}</p>
-                        <div class="mt-3 text-[8px] text-slate-600 font-mono uppercase">${new Date(n.date).toLocaleDateString()}</div>
+                        <button onclick="delNote(${n.id})" class="text-slate-600 hover:text-red-500"><i data-lucide="trash-2" size="14"></i></button>
                     </div>`;
             });
             lucide.createIcons();
         }
 
         function setFolder(f) { app.activeFolder = f; renderNotes(); }
-        function deleteNote(id) { if(confirm('¿Borrar dato?')) { app.notes = app.notes.filter(n => n.id !== id); localStorage.setItem('vp_notes', JSON.stringify(app.notes)); renderNotes(); renderDashboard(); } }
-
-        // --- AGENDA ---
-        function addEvent() {
-            const t = document.getElementById('evt-title').value;
-            const d = document.getElementById('evt-date').value;
-            if(!t || !d) return;
-            app.events.push({ id: Date.now(), title: t, date: d });
-            localStorage.setItem('vp_events', JSON.stringify(app.events));
-            renderEvents(); renderDashboard();
-            document.getElementById('evt-title').value = ''; document.getElementById('evt-date').value = '';
+        function openNoteModal() { document.getElementById('modal-note').classList.remove('hidden'); }
+        function closeNoteModal() { document.getElementById('modal-note').classList.add('hidden'); }
+        function saveNote() {
+            const t = document.getElementById('nt-title').value, c = document.getElementById('nt-text').value;
+            if(!t) return;
+            app.notes.unshift({ id: Date.now(), title: t, content: c, folder: app.activeFolder, date: new Date().toLocaleDateString() });
+            save(); renderAll(); renderNotes(); closeNoteModal();
+            document.getElementById('nt-title').value = ''; document.getElementById('nt-text').value = '';
         }
-        function renderEvents() {
-            const list = document.getElementById('events-list');
-            list.innerHTML = app.events.sort((a,b)=>new Date(a.date)-new Date(b.date)).map(e => `
-                <div class="glass p-3 rounded-xl flex justify-between items-center border-l-2 border-blue-500">
-                    <div>
-                        <div class="text-[10px] font-bold text-white">${e.title}</div>
-                        <div class="text-[8px] text-slate-500">${new Date(e.date).toLocaleString()}</div>
-                    </div>
-                    <button onclick="deleteEvent(${e.id})" class="text-slate-700"><i data-lucide="x" size="14"></i></button>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-        function deleteEvent(id) { app.events = app.events.filter(e => e.id !== id); localStorage.setItem('vp_events', JSON.stringify(app.events)); renderEvents(); renderDashboard(); }
+        function delNote(id) { app.notes = app.notes.filter(n => n.id !== id); save(); renderNotes(); renderDashboard(); }
 
-        // --- IA ROI & GRÁFICAS ---
-        async function startNeuralAnalysis() {
+        // --- IA ROI ENGINE ---
+        let charts = { l: null, r: null, p: null };
+        async function runROIAnalysis() {
             const q = document.getElementById('ai-query').value;
-            if(!q || !app.config.key) return alert("Pega tu API Key en Seguridad");
-            
-            const btn = document.getElementById('btn-analysis');
-            const output = document.getElementById('analysis-output');
-            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> ESCANEANDO RED NEURAL...';
+            if(!q || !app.cfg.key) return alert("Pega tu API Key en Settings");
+            const btn = document.getElementById('btn-ai');
+            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROCESANDO...';
             lucide.createIcons();
 
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.config.key}`, {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.cfg.key}`, {
                     method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Actúa como analista ROI. Genera un informe estratégico y comparativo sobre: ${q}. Resume en 3 puntos clave.` }] }] })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza mercado y ROI de: ${q}. Resume en 3 puntos clave.` }] }] })
                 });
-                const data = await res.json();
-                const aiMsg = data.candidates[0].content.parts[0].text;
+                const d = await res.json();
+                const aiTxt = d.candidates[0].content.parts[0].text;
                 
-                output.classList.remove('hidden');
-                document.getElementById('ai-report-text').innerText = aiMsg;
-                renderRadar(); // Generar gráfica de radar simulada
-                output.scrollIntoView({ behavior: 'smooth' });
+                document.getElementById('ai-results').classList.remove('hidden');
+                document.getElementById('ai-report').innerText = aiTxt;
+                renderCharts();
+                document.getElementById('ai-results').scrollIntoView({behavior:'smooth'});
             } catch(e) { alert("Error de enlace IA."); }
-            finally { btn.disabled = false; btn.innerText = "INICIAR ESCANEO"; lucide.createIcons(); }
+            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO NEURAL"; lucide.createIcons(); }
         }
 
-        function renderRadar() {
-            const ctx = document.getElementById('radarChart').getContext('2d');
-            if(app.chart) app.chart.destroy();
-            app.chart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Rendimiento', 'Costo', 'Innovación', 'Mercado', 'Escalabilidad'],
-                    datasets: [{
-                        label: 'Análisis Neural VICO',
-                        data: [80, 70, 90, 65, 85],
-                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                        borderColor: '#3b82f6',
-                        pointBackgroundColor: '#3b82f6'
-                    }]
-                },
-                options: { 
-                    scales: { r: { grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { color: '#64748b', font: { size: 9 } }, ticks: { display: false } } },
-                    plugins: { legend: { display: false } }
-                }
-            });
+        function renderCharts() {
+            const ctxL = document.getElementById('chartLine').getContext('2d');
+            if(charts.l) charts.l.destroy();
+            charts.l = new Chart(ctxL, { type: 'line', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{label:'Growth', data:[25,60,45,95], borderColor:'#3b82f6', tension:0.4}] }, options: { plugins:{legend:{display:false}}, scales:{y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{display:false}}, x:{grid:{display:false}}} } });
+            
+            const ctxR = document.getElementById('chartRadar').getContext('2d');
+            if(charts.r) charts.r.destroy();
+            charts.r = new Chart(ctxR, { type: 'radar', data: { labels: ['ROI','Riesgo','Viral','Cost','Uso'], datasets: [{data:[80,30,90,40,75], backgroundColor:'rgba(59,130,246,0.2)', borderColor:'#3b82f6'}] }, options: { scales:{r:{grid:{color:'rgba(255,255,255,0.1)'}, pointLabels:{color:'#64748b', font:{size:8}}, ticks:{display:false}}}, plugins:{legend:{display:false}} } });
+
+            const ctxP = document.getElementById('chartDoughnut').getContext('2d');
+            if(charts.p) charts.p.destroy();
+            charts.p = new Chart(ctxP, { type: 'doughnut', data: { labels: ['Pos','Neg'], datasets: [{data:[85,15], backgroundColor:['#10b981','#ef4444'], borderWidth:0}] }, options: { cutout:'80%', plugins:{legend:{display:false}} } });
         }
 
-        // --- POMODORO ---
-        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
-        function closePomo() { document.getElementById('modal-pomo').classList.add('hidden'); }
-        function togglePomo() {
-            const btn = document.getElementById('pomo-btn');
-            if(app.pomo.active) {
-                clearInterval(app.pomo.timer);
-                app.pomo.active = false;
-                btn.innerHTML = '<i data-lucide="play" fill="white"></i>';
-            } else {
-                app.pomo.active = true;
-                btn.innerHTML = '<i data-lucide="pause" fill="white"></i>';
-                app.pomo.timer = setInterval(() => {
-                    app.pomo.time--;
-                    updatePomoUI();
-                    if(app.pomo.time <= 0) resetPomo();
-                }, 1000);
-            }
-            lucide.createIcons();
-        }
-        function resetPomo() { clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false; updatePomoUI(); document.getElementById('pomo-btn').innerHTML = '<i data-lucide="play" fill="white"></i>'; lucide.createIcons(); }
-        function updatePomoUI() {
-            const m = Math.floor(app.pomo.time / 60);
-            const s = app.pomo.time % 60;
-            document.getElementById('pomo-timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-        }
-
-        // --- PACK DUVI: CHAT & SEGURIDAD ---
-        function toggleChat() { document.getElementById('chat-window').classList.toggle('hidden'); }
-        async function sendChat() {
-            const inp = document.getElementById('chat-in');
-            const box = document.getElementById('chat-msgs');
-            if(!inp.value || !app.config.key) return;
-            const ut = inp.value;
-            box.innerHTML += `<div class="bg-blue-600/20 p-3 rounded-2xl ml-8 text-white">${ut}</div>`;
-            inp.value = ''; box.scrollTop = box.scrollHeight;
-            try {
-                let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.config.key}`;
-                let b = { contents: [{ parts: [{ text: VICO_SYSTEM + " Pregunta: " + ut }] }] };
-                if(app.config.provider === 'groq') {
-                    url = "https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions";
-                    b = { model: "llama-3.3-70b-versatile", messages: [{role:"system", content: VICO_SYSTEM}, {role:"user", content: ut}] };
-                }
-                const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${app.config.key}` }, body: JSON.stringify(b) });
-                const d = await r.json();
-                const ai = app.config.provider === 'gemini' ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
-                box.innerHTML += `<div class="bg-white/5 p-3 rounded-2xl mr-8">VICO: ${ai}</div>`;
-            } catch(e) { box.innerHTML += `<div class="text-red-500 p-2">Error de señal...</div>`; }
-            box.scrollTop = box.scrollHeight;
-        }
-
+        // --- SETTINGS & PACK DUVI ---
         function detectProvider(v) {
-            const info = document.getElementById('key-info');
-            if(v.startsWith('AIza')) { info.innerText = "✅ GEMINI DETECTADO"; app.config.provider = 'gemini'; }
-            else if(v.startsWith('gsk')) { info.innerText = "✅ GROQ DETECTADO"; app.config.provider = 'groq'; }
-            else if(v.startsWith('sk-')) { info.innerText = "✅ OPENAI DETECTADO"; app.config.provider = 'openai'; }
-            else info.innerText = "Esperando clave...";
+            const s = document.getElementById('key-status');
+            if(v.startsWith('AIza')) { s.innerHTML = "✅ GEMINI DETECTADO"; app.cfg.provider = 'gemini'; }
+            else if(v.startsWith('gsk')) { s.innerHTML = "✅ GROQ DETECTADO"; app.cfg.provider = 'groq'; }
+            else if(v.startsWith('sk-')) { s.innerHTML = "✅ OPENAI DETECTADO"; app.cfg.provider = 'openai'; }
         }
 
-        function saveSettings() {
-            app.config.key = document.getElementById('api-key').value;
-            localStorage.setItem('vp_config', JSON.stringify(app.config));
-            alert("Sincronización Completa");
+        function saveApi() { app.cfg.key = document.getElementById('api-key-field').value; save(); alert("Sincronización OK"); }
+        function applyTheme(t) { document.body.className = 'theme-' + t; app.cfg.theme = t; save(); }
+        function addNewCustomBtn() {
+            const l = document.getElementById('btn-name').value, u = document.getElementById('btn-url').value;
+            if(!l || !u) return;
+            app.btns.push({ id: Date.now(), label: l, url: u.startsWith('http') ? u : 'https://'+u });
+            save(); renderDashboard();
+            document.getElementById('btn-name').value = ''; document.getElementById('btn-url').value = '';
+        }
+        function delBtn(id) { app.btns = app.btns.filter(b => b.id !== id); save(); renderDashboard(); }
+
+        // --- CHAT AI ---
+        function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); }
+        async function sendChat() {
+            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+            if(!inp.value || !app.cfg.key) return;
+            const ut = inp.value;
+            msgs.innerHTML += `<div class="bg-blue-600/20 p-2.5 rounded-2xl ml-10 text-white">${ut}</div>`;
+            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
+            try {
+                let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.cfg.key}`;
+                let b = { contents: [{ parts: [{ text: SYS_PROMPT + " Pregunta: " + ut }] }] };
+                if(app.cfg.provider === 'groq') {
+                    url = "https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions";
+                    b = { model: "llama-3.3-70b-versatile", messages: [{role:"system", content: SYS_PROMPT}, {role:"user", content: ut}] };
+                }
+                const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${app.cfg.key}` }, body: JSON.stringify(b) });
+                const d = await r.json();
+                const ai = app.cfg.provider === 'gemini' ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
+                msgs.innerHTML += `<div class="bg-white/5 p-2.5 rounded-2xl mr-10">VICO: ${ai}</div>`;
+            } catch(e) { msgs.innerHTML += `<div class="text-red-500">Error de señal.</div>`; }
+            msgs.scrollTop = msgs.scrollHeight;
         }
 
-        function setTheme(t) {
-            document.body.className = 'theme-' + t;
-            app.config.theme = t;
-            localStorage.setItem('vp_config', JSON.stringify(app.config));
-        }
-
-        function exportData() {
-            const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'vico_pocket_backup.json'; a.click();
+        function save() {
+            localStorage.setItem('vp_notes', JSON.stringify(app.notes));
+            localStorage.setItem('vp_events', JSON.stringify(app.events));
+            localStorage.setItem('vp_btns', JSON.stringify(app.btns));
+            localStorage.setItem('vp_cfg', JSON.stringify(app.cfg));
         }
     </script>
 </body>
-</html>
+    </html> 
