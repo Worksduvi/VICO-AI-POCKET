@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS </title>
+    <title>VICO POCKET OS - ELITE</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -16,46 +16,41 @@
     <style>
         :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
         
-        /* TEMAS DINÁMICOS */
+        /* TEMAS */
         body.theme-Cyber { --bg: #0b0f1a; --primary: #00fff7; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
         body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
         body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
 
-        /* ESCALADO DE FUENTE REAL */
+        /* ESCALADO FUENTES */
         body.font-sm { font-size: 11px; }
         body.font-normal { font-size: 14px; }
         body.font-lg { font-size: 17px; }
 
         body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
-        .glass-panel { background: rgba(11, 15, 26, 0.85); backdrop-filter: blur(25px); border: 1px solid var(--border); }
+        .glass-panel { background: rgba(11, 15, 26, 0.9); backdrop-filter: blur(25px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
-        /* BARRAS DE NAVEGACIÓN */
-        .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.9); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(5px); }
+        /* BARRAS */
+        .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.9); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active i { transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary)); }
 
-        input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 10px; }
+        input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 12px; appearance: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .chip-active { background: var(--primary); color: black; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
         
+        /* ALARMA POPUP ANIMATION */
+        @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.05); border-color: red; } 100% { transform: scale(1); } }
+        .alarm-active { animation: ring 0.5s infinite; border: 2px solid red !important; }
+
         .fade-in { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* BOTONES ACCIÓN NOTICIAS */
-        .btn-action { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 8px; transition: 0.2s; border: 1px solid transparent; }
-        .btn-action:hover { background: rgba(255,255,255,0.15); border-color: var(--primary); transform: translateY(-2px); }
-        
-        /* CHAT BUBBLES */
-        .chat-bubble { max-width: 80%; padding: 12px; border-radius: 20px; font-size: 12px; line-height: 1.5; margin-bottom: 10px; }
-        .chat-user { background: var(--primary); color: black; font-weight: 500; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-bot { background: rgba(255,255,255,0.05); color: #e2e8f0; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
     </style>
 </head>
 <body class="theme-Cyber font-normal">
@@ -64,7 +59,7 @@
         <div class="flex items-center gap-3 px-4 py-1 rounded-full bg-black/40 border border-white/5 shadow-inner">
             <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_red]"></div>
             <span id="mini-timer" class="text-[11px] font-mono font-bold text-white tracking-widest">25:00</span>
-            <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter" data-translate="focus_mode">ENFOQUE</span>
+            <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter" data-translate="focusing">Enfoque</span>
         </div>
     </div>
 
@@ -73,41 +68,41 @@
         <section id="view-dashboard" class="p-5 space-y-6 fade-in">
             <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent">
                 <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
-                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"Red Neural Activa."</p>
+                <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"Bienvenidos al Centro de Control Duvi."</p>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-                <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30">
-                    <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="quick_note">Nota Rápida</span>
+                <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30 transition-all active:scale-95">
+                    <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="quickNote">Nota Rápida</span>
                 </div>
-                <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="links">Links</span>
+                <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="links">Links Pocket</span>
                 </div>
-                <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
                     <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold" data-translate="agenda">Agenda</span>
                 </div>
-                <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
+                <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
                     <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="focus">Focus</span>
                 </div>
-                <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="roi">ROI</span>
+                <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="roi">Análisis ROI</span>
                 </div>
-                <div onclick="switchTab('view-discovery')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5">
-                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="discovery">Discovery</span>
+                <div onclick="switchTab('view-discovery')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+                    <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Discovery</span>
                 </div>
             </div>
 
             <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
 
-            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5">
-                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">NOTAS</div></div>
-                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">ENLACES</div></div>
+            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5 shadow-inner">
+                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">Notas</div></div>
+                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">Links</div></div>
             </div>
         </section>
 
         <section id="view-notes" class="hidden p-5 fade-in">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold orbitron" data-translate="notes">Notas Pocket</h2>
+                <h2 class="text-xl font-bold orbitron">Notas Pocket</h2>
                 <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl shadow-lg"><i data-lucide="plus"></i></button>
             </div>
             <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
@@ -119,16 +114,16 @@
                 <h2 class="text-xl font-bold orbitron">Links Pocket</h2>
                 <button onclick="openLinkModal()" class="bg-green-600 p-2.5 rounded-xl shadow-lg text-white"><i data-lucide="plus"></i></button>
             </div>
-            <div class="glass-panel p-4 rounded-2xl mb-4 flex items-center gap-2">
+            <div class="glass-panel p-4 rounded-xl mb-4 flex items-center gap-2">
                 <i data-lucide="search" class="text-slate-500" size="16"></i>
-                <input type="text" id="link-search" placeholder="Buscar enlaces compartidos..." class="flex-1 bg-transparent border-none p-0 text-xs" oninput="renderLinks()">
+                <input type="text" id="link-search" placeholder="Filtrar por etiqueta o título..." class="flex-1 bg-transparent border-none p-0 text-xs" oninput="renderLinks()">
             </div>
             <div id="links-list" class="space-y-3"></div>
         </section>
 
         <section id="view-discovery" class="hidden p-5 fade-in">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold orbitron">Discovery Pro</h2>
+                <h2 class="text-xl font-bold orbitron">Discovery Élite</h2>
                 <div class="flex gap-2">
                     <button onclick="fetchNews(app.activeRss)" class="text-blue-400 bg-blue-500/10 p-2 rounded-full"><i data-lucide="refresh-cw" size="18"></i></button>
                     <button onclick="openRssModal()" class="text-white bg-blue-600 p-2 rounded-full"><i data-lucide="plus" size="18"></i></button>
@@ -149,9 +144,9 @@
         <section id="view-analysis" class="hidden p-5 fade-in">
             <h2 class="text-xl font-bold orbitron mb-4 text-purple-400 flex items-center gap-2"><i data-lucide="brain-circuit"></i> IA ROI Engine</h2>
             <div class="glass-panel p-6 rounded-3xl mb-6">
-                <textarea id="ai-query" placeholder="Ej: Comparativa estratégica Apple vs Tesla 2026..." class="w-full h-24 text-sm mb-4 resize-none" data-translate="analysis_placeholder"></textarea>
+                <textarea id="ai-query" placeholder="Ej: Analizar impacto estratégico de Apple en 2026..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
                 <button id="btn-ai" onclick="runROIAnalysis()" class="w-full bg-blue-600 py-3 rounded-2xl font-bold orbitron text-[10px] tracking-widest flex items-center justify-center gap-2 uppercase text-white shadow-xl shadow-blue-500/20">
-                    <i data-lucide="cpu"></i> <span data-translate="run_analysis">Iniciar Escaneo</span>
+                    <i data-lucide="cpu"></i> <span data-translate="run_analysis">Iniciar Proceso</span>
                 </button>
             </div>
             <div id="ai-results" class="hidden space-y-6">
@@ -160,7 +155,7 @@
                     <div class="glass-panel p-4 rounded-3xl"><canvas id="chartRadar" height="150"></canvas></div>
                     <div class="glass-panel p-4 rounded-3xl"><canvas id="chartDoughnut" height="150"></canvas></div>
                 </div>
-                <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap font-mono"></div>
+                <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono"></div>
             </div>
         </section>
 
@@ -168,42 +163,50 @@
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             
             <div class="space-y-6">
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Motor de Inteligencia</h3>
+                    <div class="flex gap-2">
+                        <input type="password" id="api-key-input" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase text-white">Save</button>
+                    </div>
+                    <p id="key-status" class="text-[9px] text-slate-500 mt-2 italic">Detección: Gemini, Groq, OpenAI, DeepSeek.</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4">Diseñador de Botones</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-4"><input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs"><input type="text" id="btn-url" placeholder="https://..." class="text-xs"></div>
+                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase text-white">Crear Acceso</button>
+                </div>
+
                 <div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
                     <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest" data-translate="system">Sistema</h3>
-                    <div class="flex justify-between items-center mb-2"><span class="text-xs text-slate-300">Tema</span>
-                        <select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4">
-                            <option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-between items-center mb-2"><span class="text-xs text-slate-300">Texto</span>
-                        <select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4">
-                            <option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-between items-center mb-2"><span class="text-xs text-slate-300">Idioma / Language</span>
-                        <select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4">
-                            <option value="es">Español</option><option value="en">English</option><option value="zh">中文 (Chino)</option><option value="fil">Filipino</option><option value="ms">Melayu</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Sonido UI</span><input type="checkbox" id="sys-sound" onchange="updateSystem('sound', this.checked)" class="w-5 h-5 accent-blue-600"></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Sonido Alerta</span><select id="sys-alarm" onchange="updateSystem('alarmSound', this.value)" class="text-[10px] py-1 px-4"><option value="800">Cyber Beep</option><option value="1500">Minimalist</option><option value="pulsar">Pulse Red</option><option value="siren">Siren Pro</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Idioma / 语言</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
                 </div>
 
-                <div class="glass-panel p-5 rounded-3xl space-y-3">
-                    <button onclick="openManual()" class="w-full flex items-center justify-between text-left"><div class="flex items-center gap-3"><i data-lucide="book-open" class="text-blue-400"></i><span class="text-sm font-bold">Manual de Usuario</span></div><i data-lucide="chevron-right"></i></button>
-                    <div class="border-t border-white/5 pt-3">
-                        <h4 class="text-[10px] font-bold text-slate-400 uppercase mb-2">Aviso Legal y Privacidad</h4>
-                        <p class="text-[9px] text-slate-500 text-justify leading-relaxed">Esta es una PWA Local-First. Sus datos se almacenan exclusivamente en su dispositivo. El desarrollador no tiene acceso a sus llaves de API ni a sus notas. El uso de la IA es bajo responsabilidad del usuario.</p>
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-4">Data Vault</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="exportData()" class="flex flex-col items-center p-3 glass-panel rounded-2xl border-green-500/20 text-green-400 transition-all active:scale-95"><i data-lucide="download" class="mb-1" size="18"></i><span class="text-[9px] font-bold">EXPORTAR</span></button>
+                        <button onclick="document.getElementById('import-file').click()" class="flex flex-col items-center p-3 glass-panel rounded-2xl border-blue-500/20 text-blue-400 transition-all active:scale-95"><i data-lucide="upload" class="mb-1" size="18"></i><span class="text-[9px] font-bold">RESTAURAR</span></button>
+                        <input type="file" id="import-file" class="hidden" onchange="importData(this)">
                     </div>
                 </div>
 
-                <div class="text-center py-6 border-t border-white/5 space-y-4">
-                     <p class="text-[10px] font-bold text-blue-400 tracking-widest uppercase">© 2026 VICO POCKET OS</p>
-                     <p class="text-[9px] text-slate-600">Handcrafted by <br> <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" class="font-bold underline">Jaime Andrés Dueñas Vicuña</a></p>
-                     <a href="https://www.paypal.com/paypalme/texiduvi" target="_blank" class="inline-flex items-center gap-2 bg-[#0070ba] px-8 py-3 rounded-full font-bold text-xs text-white shadow-xl"><i data-lucide="coffee"></i> PayPal Support</a>
+                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
+                    <h4 class="font-bold text-slate-400 mb-2 uppercase">Aviso Legal y Políticas</h4>
+                    <p>VICO POCKET funciona bajo el modelo Local-First. Sus datos residen únicamente en su navegador. Handcrafted by Jaime Andrés Dueñas Vicuña.</p>
+                    <div class="mt-4 border-t border-white/5 pt-4 text-center">
+                        <p class="font-bold text-blue-400 underline">© 2026 Jaime Andrés Dueñas Vicuña</p>
+                        <a href="https://www.paypal.com/paypalme/proyectosduvi" target="_blank" class="inline-flex items-center gap-2 bg-[#0070ba] px-6 py-2 rounded-full font-bold text-[10px] text-white mt-3"><i data-lucide="coffee"></i> PayPal Support</a>
+                    </div>
                 </div>
             </div>
         </section>
-    </main>
+    </nav>
 
     <nav class="nav-bar">
         <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>HOME</span></div>
@@ -215,127 +218,180 @@
         <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="user"></i><span>CORE</span></div>
     </nav>
 
+    <div id="modal-alarm" class="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-[40px] p-8 text-center border-red-500/50 alarm-active">
+            <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_50px_red]">
+                <i data-lucide="bell-ring" class="text-red-500 animate-bounce" size="40"></i>
+            </div>
+            <h2 class="orbitron text-2xl font-bold text-white mb-2 uppercase">VICO AGENDA</h2>
+            <p id="alarm-title" class="text-slate-300 text-sm mb-8 font-bold tracking-widest"></p>
+            <button onclick="stopAlarm()" class="w-full bg-red-600 py-4 rounded-2xl font-bold text-white shadow-lg tracking-[0.2em] transition-all active:scale-95">DETENER ALARMA</button>
+        </div>
+    </div>
+
     <div id="vico-chat" class="fixed bottom-24 right-4 z-[150]">
         <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl transition-all border border-white/10 hover:scale-110"><i data-lucide="bot" class="text-white"></i></button>
-        <div id="chat-win" class="glass-panel fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden overflow-hidden animate-in shadow-2xl">
+        <div id="chat-win" class="glass-panel fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden overflow-hidden shadow-2xl border-blue-500/20">
             <div class="bg-blue-600 p-3.5 flex justify-between items-center text-white text-[10px] font-bold uppercase tracking-widest"><span>VICO AI Assistant</span><button onclick="toggleChat()"><i data-lucide="x" size="14"></i></button></div>
-            <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed"></div>
-            <div class="p-3 border-t border-white/5 flex gap-1"><input type="text" id="chat-in" placeholder="Escribe..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button></div>
+            <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed">
+                <div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5">Hola, soy VICO. He recuperado todas mis funciones de alta capacidad. ¿Qué analizamos hoy?</div>
+            </div>
+            <div class="p-3 border-t border-white/5 flex gap-1"><input type="text" id="chat-in" placeholder="Duda rápida..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button></div>
         </div>
     </div>
 
     <div id="modal-note" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
         <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-blue-500/30 shadow-2xl">
-            <h3 id="note-modal-title" class="font-bold orbitron text-blue-400 text-sm">Registro Neural</h3>
+            <h3 id="note-modal-title" class="font-bold orbitron text-blue-400 text-sm uppercase">Registro</h3>
             <input type="hidden" id="nt-id">
             <input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
             <div class="flex gap-2">
-                <select id="nt-folder-modal" class="flex-1 text-xs"></select>
-                <input type="color" id="nt-color" value="#3b82f6" class="w-10 h-10 rounded border-none bg-transparent">
+                <select id="nt-folder-modal" class="flex-1 text-[10px] font-bold text-blue-400"></select>
+                <input type="color" id="nt-color" value="#3b82f6" class="w-10 h-10 border-none bg-transparent cursor-pointer">
             </div>
-            <textarea id="nt-text" placeholder="Contenido..." class="w-full h-40 text-xs resize-none"></textarea>
-            <div class="flex gap-2"><button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-white">GUARDAR</button><button onclick="closeModal('modal-note')" class="flex-1 glass-panel py-3 rounded-xl">CERRAR</button></div>
+            <textarea id="nt-text" placeholder="Contenido neural..." class="w-full h-40 text-xs resize-none"></textarea>
+            <div class="flex gap-2 pt-2"><button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95">SAVE</button><button onclick="closeModal('modal-note')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CLOSE</button></div>
         </div>
     </div>
 
-    <div id="modal-event" class="fixed inset-0 z-[600] bg-black/90 flex items-center justify-center p-6 hidden">
-        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-yellow-500/30 shadow-2xl">
-            <h3 class="font-bold orbitron text-yellow-500 text-sm">Nueva Cita</h3>
-            <input type="text" id="ev-title" placeholder="¿Qué tienes planeado?" class="w-full text-sm">
-            <input type="datetime-local" id="ev-date" class="w-full text-sm">
-            <button onclick="saveEvent()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-white uppercase text-xs">Agendar Evento</button>
-            <button onclick="closeModal('modal-event')" class="w-full text-[10px] text-slate-500 uppercase tracking-widest">Cancelar</button>
+    <div id="modal-link" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-green-500/30 shadow-2xl">
+            <h3 class="font-bold orbitron text-green-400 text-sm uppercase">Guardar Enlace</h3>
+            <input type="text" id="lk-url" placeholder="https://..." class="w-full text-sm">
+            <input type="text" id="lk-title" placeholder="Título (Opcional)" class="w-full text-sm">
+            <input type="text" id="lk-tags" placeholder="Etiquetas (separadas por comas)" class="w-full text-sm">
+            <div class="flex gap-2 pt-2"><button onclick="saveLink()" class="flex-1 bg-green-600 py-3 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95">GUARDAR</button><button onclick="closeModal('modal-link')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CANCELAR</button></div>
         </div>
+    </div>
+
+    <div id="modal-event" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-yellow-500/30 shadow-2xl">
+            <h3 class="font-bold orbitron text-yellow-400 text-sm uppercase">Agendar Cita</h3>
+            <input type="text" id="ev-title" placeholder="Descripción de la cita..." class="w-full text-sm">
+            <input type="datetime-local" id="ev-date" class="w-full text-sm">
+            <button onclick="saveEvent()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-white shadow-lg shadow-yellow-500/20 uppercase text-xs transition-all active:scale-95">Confirmar</button>
+            <button onclick="closeModal('modal-event')" class="w-full text-[10px] text-slate-500 uppercase tracking-widest">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="modal-rss" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-orange-500/30 shadow-2xl">
+            <h3 class="font-bold orbitron text-orange-400 text-sm uppercase">Nuevo Feed</h3>
+            <input type="text" id="new-rss-name" placeholder="Nombre (ej: Wired)" class="w-full text-sm">
+            <input type="text" id="new-rss-url" placeholder="https://..." class="w-full text-sm">
+            <button onclick="addNewRss()" class="w-full bg-orange-600 py-3 rounded-xl font-bold text-white shadow-lg shadow-orange-500/20 uppercase text-xs transition-all active:scale-95">Añadir Fuente</button>
+            <button onclick="closeModal('modal-rss')" class="w-full text-[10px] text-slate-500 uppercase tracking-widest">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="modal-pomo" class="fixed inset-0 z-[600] bg-black/98 backdrop-blur flex items-center justify-center hidden">
+        <div class="text-center space-y-8"><div id="pomo-clock" class="text-8xl orbitron font-bold text-white">25:00</div>
+        <div class="flex justify-center gap-6"><button onclick="toggleFocus()" id="pomo-ctrl" class="bg-blue-600 p-8 rounded-full shadow-2xl transition-all active:scale-90"><i data-lucide="play" fill="white"></i></button><button onclick="resetFocus()" class="glass-panel p-8 rounded-full transition-all active:scale-90"><i data-lucide="rotate-ccw"></i></button></div>
+        <button onclick="closeModal('modal-pomo')" class="text-slate-500 uppercase text-[10px] underline tracking-[0.2em]">CERRAR SESIÓN</button></div>
     </div>
 
     <script>
-        // --- MOTOR DE DATOS (PERSISTENCIA TOTAL) ---
+        // --- MOTOR DE DATOS VICO OS ELITE ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
             links: JSON.parse(localStorage.getItem('vp_links')) || [],
-            favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
             btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
+            favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
             rss: JSON.parse(localStorage.getItem('vp_rss')) || [
                 {name:'AI News', url:'https://www.xataka.com/tag/inteligencia-artificial/feed'},
                 {name:'TechCrunch', url:'https://techcrunch.com/category/artificial-intelligence/feed/'},
-                {name:'MIT Review', url:'https://www.technologyreview.com/feed/'},
-                {name:'The Verge', url:'https://www.theverge.com/ai-artificial-intelligence/rss/index.xml'},
                 {name:'Wired AI', url:'https://www.wired.com/feed/tag/artificial-intelligence/latest/rss'},
-                {name:'Machine Learning', url:'https://machinelearningmastery.com/feed/'},
-                {name:'OpenAI Blog', url:'https://openai.com/news/rss.xml'},
-                {name:'Google AI', url:'https://blog.google/technology/ai/rss/'},
-                {name:'Ars Technica', url:'http://feeds.arstechnica.com/arstechnica/index'},
-                {name:'ZDNet AI', url:'https://www.zdnet.com/topic/artificial-intelligence/rss.xml'},
-                {name:'VentureBeat', url:'https://venturebeat.com/category/ai/feed/'},
-                {name:'Engadget AI', url:'https://www.engadget.com/tag/ai/rss.xml'},
-                {name:'ComputerHoy', url:'https://computerhoy.com/rss/tecnologia/inteligencia-artificial'},
-                {name:'Dev.to AI', url:'https://dev.to/feed/tag/ai'},
-                {name:'HackerNews AI', url:'https://hnrss.org/frontpage?q=AI'}
+                {name:'The Verge', url:'https://www.theverge.com/ai-artificial-intelligence/rss/index.xml'},
+                {name:'ComputerHoy', url:'https://computerhoy.com/rss/tecnologia/inteligencia-artificial'}
             ],
-            cfg: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'font-normal', sound: true, lang: 'es' },
+            config: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'font-normal', sound: true, lang: 'es', alarmSound: '800', showPopup: true },
             pomo: { time: 1500, active: false, timer: null },
-            folders: ["Fijadas", "Proyectos", "Ideas", "Links", "Varios"],
+            folders: ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Ideas", "Varios"],
             activeFolder: 'Fijadas',
             activeRss: 0,
-            notified: [] 
+            notified: [],
+            alarmInterval: null
         };
 
         const DICT = {
-            es: { quickNote: "Nota Rápida", links: "Links", focus: "Focus", roi: "IA ROI", discovery: "Discovery", notes: "Notas", resources: "Recursos", system: "Sistema", focusing: "Enfoque...", run_analysis: "Iniciar Escaneo", analysis_placeholder: "Ingrese prompt estratégico..." },
-            en: { quickNote: "Quick Note", links: "Links", focus: "Focus", roi: "AI ROI", discovery: "Discovery", notes: "Notes", resources: "Resources", system: "System", focusing: "Focusing...", run_analysis: "Start Scan", analysis_placeholder: "Enter strategic prompt..." },
-            zh: { quickNote: "快速笔记", links: "链接", focus: "专注", roi: "分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统", focusing: "专注中...", run_analysis: "开始扫描", analysis_placeholder: "输入分析指令..." },
-            fil: { quickNote: "Mabilisang Tala", links: "Mga Link", focus: "Focus", roi: "ROI", discovery: "Tuklasin", notes: "Tala", resources: "Resource", system: "Systema", focusing: "Naka-focus...", run_analysis: "Simulan", analysis_placeholder: "Ipasok ang prompt..." },
-            ms: { quickNote: "Nota Pantas", links: "Pautan", focus: "Fokus", roi: "ROI", discovery: "Temui", notes: "Nota", resources: "Sumber", system: "Sistem", focusing: "Fokus...", run_analysis: "Mula Imbas", analysis_placeholder: "Masukkan prompt..." }
+            es: { quickNote: "Nota Rápida", links: "Links", focus: "Focus", roi: "ROI", discovery: "Discovery", notes: "Notas", resources: "Links", system: "Sistema", focusing: "Enfoque", agenda: "Agenda" },
+            en: { quickNote: "Quick Note", links: "Links", focus: "Focus", roi: "ROI", discovery: "Discovery", notes: "Notes", resources: "Links", system: "System", focusing: "Focusing", agenda: "Agenda" },
+            zh: { quickNote: "快速笔记", links: "链接", focus: "专注", roi: "分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统", focusing: "专注中", agenda: "议程" }
         };
 
-        // --- AUDIO UI ---
+        // --- AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playBeep(f=800, t='sine', d=0.1, v=0.05) { if(!app.cfg.sound) return; const o=audioCtx.createOscillator(); const g=audioCtx.createGain(); o.type=t; o.frequency.value=f; g.gain.value=v; o.connect(g); g.connect(audioCtx.destination); o.start(); o.stop(audioCtx.currentTime + d); }
+        function playSound(type) {
+            if(!app.config.sound) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination);
+            if(type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); }
+            else if (type === 'siren') { o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(1400, audioCtx.currentTime + 0.4); }
+            else { o.frequency.value = parseInt(type) || 800; }
+            g.gain.value = 0.1; o.start(); o.stop(audioCtx.currentTime + 0.2);
+        }
+
+        function triggerAlarm(title) {
+            document.getElementById('alarm-title').innerText = title;
+            document.getElementById('modal-alarm').classList.remove('hidden');
+            if(app.alarmInterval) clearInterval(app.alarmInterval);
+            app.alarmInterval = setInterval(() => playSound(app.config.alarmSound), 600);
+        }
+
+        function stopAlarm() { clearInterval(app.alarmInterval); document.getElementById('modal-alarm').classList.add('hidden'); }
 
         window.addEventListener('load', () => {
             lucide.createIcons();
             applySystemConfig();
             renderAll();
-            setInterval(checkAgenda, 30000);
-            if ("Notification" in window) Notification.requestPermission();
+            setInterval(checkAgenda, 20000);
+            checkShareTarget();
         });
 
         function applySystemConfig() {
-            document.body.className = `theme-${app.cfg.theme} ${app.cfg.font}`;
-            document.getElementById('sys-theme').value = app.cfg.theme;
-            document.getElementById('sys-font').value = app.cfg.font;
-            document.getElementById('sys-lang').value = app.cfg.lang;
+            document.body.className = `theme-${app.config.theme} ${app.config.font}`;
+            document.getElementById('sys-theme').value = app.config.theme;
+            document.getElementById('sys-font').value = app.config.font;
+            document.getElementById('sys-alarm').value = app.config.alarmSound;
+            document.getElementById('sys-popup').checked = app.config.showPopup;
+            document.getElementById('sys-lang').value = app.config.lang;
+            document.getElementById('nt-folder-modal').innerHTML = app.folders.map(f=>`<option value="${f}">${f}</option>`).join('');
             translateUI();
         }
 
-        function translateUI() { document.querySelectorAll('[data-translate]').forEach(el => { el.innerText = DICT[app.cfg.lang][el.dataset.translate] || el.innerText; }); }
-        function updateSystem(k, v) { app.cfg[k]=v; save(); applySystemConfig(); playBeep(400); }
+        function translateUI() { document.querySelectorAll('[data-translate]').forEach(el => { el.innerText = DICT[app.config.lang][el.dataset.translate] || el.innerText; }); }
+        function updateSystem(k, v) { app.config[k]=v; save(); applySystemConfig(); playSound(800); }
+        function saveApi() { app.config.key = document.getElementById('api-key-input').value.trim(); save(); alert('API Sync'); playSound(1000); }
 
-        // --- NOTAS (CON COLOR) ---
+        // --- NOTAS (FIX: SELECTOR VISIBLE) ---
         function renderNotes() {
             const bar = document.getElementById('folder-bar');
             bar.innerHTML = app.folders.map(f => `<button onclick="setFolder('${f}')" class="px-5 py-2 rounded-full text-[10px] font-bold whitespace-nowrap transition-all ${app.activeFolder === f ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${f}</button>`).join('');
-            
             const grid = document.getElementById('notes-grid');
-            const items = app.notes.filter(n => n.folder === app.activeFolder);
-            grid.innerHTML = items.map(n => `
-                <div class="glass-panel p-5 rounded-3xl border-l-8 group shadow-xl" style="border-left-color: ${n.color || 'var(--primary)'}">
+            grid.innerHTML = app.notes.filter(n => n.folder === app.activeFolder).map(n => `
+                <div class="glass-panel p-5 rounded-3xl border-l-8 shadow-xl animate-in fade-in" style="border-left-color: ${n.color || 'var(--primary)'}">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="flex-1 cursor-pointer" onclick="openNoteModal(${n.id})">
+                        <div class="flex-1" onclick="openNoteModal('${n.id}')">
                             <h4 class="font-bold text-sm text-white">${n.title}</h4>
-                            <p class="text-[10px] text-slate-400 mt-2 line-clamp-3">${n.content}</p>
+                            <p class="text-[10px] text-slate-400 mt-2 line-clamp-3 leading-relaxed">${n.content}</p>
                         </div>
-                        <button onclick="delNote(${n.id})" class="text-slate-600 hover:text-red-500 p-2"><i data-lucide="trash-2" size="14"></i></button>
+                        <button onclick="delNote('${n.id}')" class="text-slate-600 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
                     </div>
-                    <div class="flex justify-between items-center text-[8px] text-slate-600 font-mono"><span>${n.date}</span><i data-lucide="palette" size="10"></i></div>
-                </div>`).join('') || '<p class="text-center py-20 text-slate-800">Sección Vacía</p>';
+                    <div class="flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5">
+                        <select onchange="moveNote('${n.id}', this.value)" class="text-[8px] bg-transparent border-none p-0 outline-none text-blue-400 font-bold appearance-none">
+                            ${app.folders.map(f=>`<option value="${f}" ${n.folder===f?'selected':''}>${f}</option>`).join('')}
+                        </select>
+                        <span class="text-[8px] text-slate-600 font-mono">${n.date}</span>
+                    </div>
+                </div>`).join('') || '<p class="text-center py-20 text-slate-800 text-xs">Vacio</p>';
             lucide.createIcons();
         }
 
-        function updateNoteColor(id, color) { const idx=app.notes.findIndex(n=>n.id===id); app.notes[idx].color=color; save(); renderNotes(); }
+        function setFolder(f) { app.activeFolder = f; renderNotes(); playSound(600); }
+        function moveNote(id, f) { const idx=app.notes.findIndex(n=>n.id===id); app.notes[idx].folder=f; save(); renderNotes(); renderDashboard(); playSound(1000); }
 
-        // --- DISCOVERY ÉLITE (REAL RSS PROXY) ---
+        // --- DISCOVERY (EXTRAER IMÁGENES REALES) ---
         async function fetchNews(idx=0) {
             app.activeRss = idx; renderChips();
             const list = document.getElementById('news-list');
@@ -344,123 +400,188 @@
             try {
                 const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(app.rss[idx].url)}`);
                 const data = await res.json();
-                list.innerHTML = data.items.slice(0,12).map((item, ix) => `
-                    <div class="glass-panel rounded-[32px] overflow-hidden shadow-2xl border-white/5 animate-in fade-in">
-                        <img src="${item.thumbnail || 'https://picsum.photos/400/200?sig='+ix}" class="h-44 w-full object-cover opacity-80">
+                list.innerHTML = data.items.slice(0,12).map((item, ix) => {
+                    // Limpieza y extracción de imagen
+                    const img = item.thumbnail || item.enclosure.link || null;
+                    return `
+                    <div class="glass-panel rounded-[32px] overflow-hidden shadow-2xl border-white/5">
+                        ${img ? `<img src="${img}" class="h-44 w-full object-cover opacity-80" onerror="this.style.display='none'">` : ''}
                         <div class="p-6">
                             <h4 class="text-sm font-bold text-white mb-4 line-clamp-2 leading-tight">${item.title}</h4>
                             <div class="flex justify-between items-center">
                                 <div class="flex gap-2">
-                                    <button class="btn-action text-slate-400" onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')"><i data-lucide="bookmark" size="18"></i></button>
-                                    <button class="btn-action text-slate-400" onclick="toggleFav('${item.link}')"><i data-lucide="heart" size="18"></i></button>
-                                    <button class="btn-action text-slate-400" onclick="navigator.share({url:'${item.link}'})"><i data-lucide="share-2" size="18"></i></button>
+                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')"><i data-lucide="bookmark" size="18"></i></button>
+                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="shareLink('${item.link}')"><i data-lucide="share-2" size="18"></i></button>
                                 </div>
-                                <button onclick="sendToROI('${item.title.replace(/'/g,"")}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-bold orbitron shadow-lg">ANALYZE</button>
+                                <button onclick="sendToROI('${item.title.replace(/'/g,"")}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[9px] font-bold orbitron active:scale-95 transition-all">ANALYZE</button>
                             </div>
                         </div>
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
                 lucide.createIcons();
             } catch(e) { list.innerHTML = '<p class="text-center py-20 text-red-500">Error de conexión con el Feed.</p>'; }
         }
 
         function renderChips() { document.getElementById('discovery-chips').innerHTML = app.rss.map((r,i) => `<button onclick="fetchNews(${i})" class="px-5 py-2 rounded-full text-[10px] whitespace-nowrap transition-all ${app.activeRss === i ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${r.name}</button>`).join(''); }
 
-        // --- AGENDA & NOTIFICACIONES ---
+        // --- AGENDA & ALARMAS ---
         function saveEvent() {
             const t = document.getElementById('ev-title').value, d = document.getElementById('ev-date').value;
             if(!t || !d) return;
-            app.events.push({ id: Date.now(), title: t, date: d });
-            save(); renderEvents(); renderDashboard(); closeModal('modal-event'); playBeep(1200);
+            app.events.push({ id: Date.now().toString(), title: t, date: d });
+            save(); renderEvents(); renderDashboard(); closeModal('modal-event'); playSound(800);
         }
-
         function checkAgenda() {
             const now = new Date();
             app.events.forEach(e => {
                 const evDate = new Date(e.date);
-                if (Math.abs(now - evDate) < 40000 && !app.notified.includes(e.id)) {
-                    if (Notification.permission === "granted") new Notification("VICO AGENDA", { body: `Cita: ${e.title}`, icon: 'icon.png' });
-                    app.notified.push(e.id); playBeep(1500, 'triangle', 0.8, 0.2);
+                if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
+                    if (app.config.showPopup) triggerAlarm(e.title);
+                    if (Notification.permission === "granted") new Notification("VICO AGENDA", { body: e.title });
+                    app.notified.push(e.id);
                 }
             });
         }
-
         function renderEvents() {
-            document.getElementById('events-list').innerHTML = app.events.sort((a,b)=>new Date(a.date)-new Date(b.date)).map(e => `
+            document.getElementById('events-list').innerHTML = app.events.sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime()).map(e => `
                 <div class="glass-panel p-4 rounded-xl border-l-4 border-yellow-500 flex justify-between items-center">
                     <div><div class="text-xs font-bold text-white">${e.title}</div><div class="text-[9px] text-slate-500">${new Date(e.date).toLocaleString()}</div></div>
-                    <button onclick="delEvent(${e.id})" class="text-slate-700 hover:text-red-400 p-2"><i data-lucide="x" size="16"></i></button>
+                    <button onclick="delEvent('${e.id}')" class="text-slate-700 hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" size="16"></i></button>
                 </div>`).join('') || '<p class="text-center text-xs text-slate-600 py-10">Agenda Vacía</p>';
             lucide.createIcons();
         }
+        function delEvent(id) { app.events = app.events.filter(e=>e.id!==id); save(); renderEvents(); renderDashboard(); }
 
-        // --- IA ROI AGÉNTICA (Texto Plano y Gráficos) ---
-        async function runROIAnalysis() {
-            const q = document.getElementById('ai-query').value;
-            if(!q || !app.cfg.key) return alert("Pega tu API Key en Settings");
-            const btn = document.getElementById('btn-ai');
-            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> ESCANEANDO...';
+        // --- LINKS POCKET (CORREGIDO) ---
+        function saveLink() {
+            const u = document.getElementById('lk-url').value, t = document.getElementById('lk-title').value, tags = document.getElementById('lk-tags').value;
+            if(!u) return;
+            const newLink = { id: Date.now().toString(), url: u, title: t || u, tags: tags.split(',').map(s=>s.trim()).filter(s=>s) };
+            app.links.unshift(newLink); save(); renderLinks(); renderDashboard(); closeModal('modal-link');
+            document.getElementById('lk-url').value=''; document.getElementById('lk-title').value=''; document.getElementById('lk-tags').value='';
+        }
+        function renderLinks() {
+            const q = document.getElementById('link-search').value.toLowerCase();
+            const filtered = app.links.filter(l => l.title.toLowerCase().includes(q) || l.tags.some(t=>t.toLowerCase().includes(q)));
+            document.getElementById('links-list').innerHTML = filtered.map(l => `
+                <div class="glass-panel p-4 rounded-2xl flex justify-between items-start border-l-2 border-green-500/30">
+                    <div class="flex-1 truncate">
+                        <a href="${l.url}" target="_blank" class="text-xs font-bold text-blue-400 truncate block underline">${l.title}</a>
+                        <div class="flex gap-1 mt-2">${l.tags.map(t=>`<span class="bg-black/30 text-[8px] px-2 py-0.5 rounded text-slate-500 border border-white/5">#${t}</span>`).join('')}</div>
+                    </div>
+                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-500"><i data-lucide="trash-2" size="14"></i></button>
+                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">Sin enlaces.</p>';
             lucide.createIcons();
-            try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.cfg.key}`, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Actúa como analista ROI agéntico. Analiza ${q}. Genera un informe de 3 párrafos de texto plano limpio SIN asteriscos, comillas ni almohadillas.` }] }] })
-                });
-                const d = await res.json();
-                const aiTxt = d.candidates[0].content.parts[0].text.replace(/[*#"`]/g, ""); // Limpieza Agéntica
-                document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = aiTxt;
-                renderCharts();
-            } catch(e) { alert("Fallo de enlace IA."); }
-            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO NEURAL"; lucide.createIcons(); }
         }
-
-        let charts = { l: null, r: null, d: null };
-        function renderCharts() {
-            const config = { plugins: {legend:{display:false}}, scales:{y:{display:false},x:{display:false}} };
-            const ctxL = document.getElementById('chartLine').getContext('2d');
-            if(charts.l) charts.l.destroy();
-            charts.l = new Chart(ctxL, { type: 'line', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{data:[30,70,50,90], borderColor:'#3b82f6', tension:0.4}] }, options: config });
-            
-            const ctxR = document.getElementById('chartRadar').getContext('2d');
-            if(charts.r) charts.r.destroy();
-            charts.r = new Chart(ctxR, { type: 'radar', data: { labels: ['ROI','Riesgo','Viral','Uso','Cost'], datasets: [{data:[80,40,95,60,70], borderColor:'#00fff7'}] }, options: { scales:{r:{display:false}}, plugins:{legend:{display:false}} } });
-        }
-
-        // --- CHAT MULTI-API (Enter + Alerts) ---
-        async function sendChat() {
-            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-            if(!inp.value) return;
-            const ut = inp.value;
-            msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
-            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
-
-            if(!app.cfg.key) {
-                msgs.innerHTML += `<div class="chat-bubble chat-bot text-red-400">⚠️ ERROR: No has configurado tu API KEY en Perfil. VICO no puede procesar tu petición.</div>`;
-                return;
-            }
-
-            try {
-                let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.cfg.key}`;
-                if(app.cfg.key.startsWith('gsk')) url = "https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions";
-                
-                const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: ut }] }] }) });
-                const d = await r.json();
-                const ai = app.cfg.key.startsWith('AIza') ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
-                msgs.innerHTML += `<div class="chat-bubble chat-bot">${ai}</div>`;
-            } catch(e) { msgs.innerHTML += `<div class="chat-bubble chat-bot text-red-500">❌ Error de conexión: La señal se ha perdido en el puente neural. Revisa tu llave.</div>`; }
-            msgs.scrollTop = msgs.scrollHeight;
+        function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
+        function checkShareTarget() {
+            const p = new URLSearchParams(window.location.search);
+            const u = p.get('url') || p.get('text');
+            if (u) { openLinkModal(); document.getElementById('lk-url').value = u; window.history.replaceState({},'',window.location.pathname); }
         }
 
         // --- AUXILIARES GLOBALES ---
-        function switchTab(id, el) { playBeep(600, 'sine', 0.05); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
+        function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); playBeep(); }
-        function openNoteModal(id=null) { document.getElementById('modal-note').classList.remove('hidden'); if(id){ /* edit logic */ } }
+        function openNoteModal(id=null) { 
+            playSound(400); document.getElementById('modal-note').classList.remove('hidden'); 
+            if(id) { const n = app.notes.find(x=>x.id===id); document.getElementById('nt-id').value=n.id; document.getElementById('nt-title').value=n.title; document.getElementById('nt-text').value=n.content; document.getElementById('nt-folder-modal').value=n.folder; document.getElementById('nt-color').value=n.color || '#3b82f6'; }
+            else { document.getElementById('nt-id').value=''; document.getElementById('nt-title').value=''; document.getElementById('nt-text').value=''; }
+        }
+        function saveNote() {
+            const id=document.getElementById('nt-id').value, t=document.getElementById('nt-title').value, c=document.getElementById('nt-text').value, f=document.getElementById('nt-folder-modal').value, col=document.getElementById('nt-color').value;
+            if(!t) return;
+            if(id) { const i=app.notes.findIndex(x=>x.id==id); app.notes[i]={...app.notes[i], title:t, content:c, folder:f, color:col}; }
+            else { app.notes.unshift({ id: Date.now().toString(), title: t, content: c, folder: f, color: col, date: new Date().toLocaleDateString() }); }
+            save(); renderNotes(); renderDashboard(); closeModal('modal-note');
+        }
+        function delNote(id) { app.notes = app.notes.filter(n => n.id !== id); save(); renderNotes(); renderDashboard(); }
+        function save() { 
+            localStorage.setItem('vp_notes', JSON.stringify(app.notes)); 
+            localStorage.setItem('vp_events', JSON.stringify(app.events)); 
+            localStorage.setItem('vp_links', JSON.stringify(app.links)); 
+            localStorage.setItem('vp_cfg', JSON.stringify(app.config)); 
+            localStorage.setItem('vp_btns', JSON.stringify(app.btns)); 
+            localStorage.setItem('vp_rss', JSON.stringify(app.rss)); 
+        }
+        function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); renderCustomBtns(); renderLinks(); renderEvents(); }
+        function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; document.getElementById('dash-events-label').innerText = `Agenda (${app.events.length})`; }
+        function renderCustomBtns() { document.getElementById('custom-buttons-dashboard').innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}','_blank')" class="bg-blue-600/20 border border-blue-500/30 px-5 py-2 rounded-2xl text-[10px] font-bold text-blue-400 m-1 active:scale-95 transition-all">${b.label}</button>`).join(''); }
+        function createCustomBtn() { const l=document.getElementById('btn-name').value, u=document.getElementById('btn-url').value; if(!l||!u) return; app.btns.push({id:Date.now().toString(),label:l,url:u}); save(); renderCustomBtns(); }
+        function exportData() { const b=new Blob([JSON.stringify(app)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='vico_backup.json'; a.click(); }
+        function importData(i) { const r = new FileReader(); r.onload = e => { app = JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(i.files[0]); }
+        function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); playSound(500); }
+        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
         function openEventModal() { document.getElementById('modal-event').classList.remove('hidden'); }
-        function renderAll() { renderNotes(); renderEvents(); renderDashboard(); fetchNews(0); renderCustomBtns(); }
-        function save() { localStorage.setItem('vp_notes', JSON.stringify(app.notes)); localStorage.setItem('vp_cfg', JSON.stringify(app.cfg)); localStorage.setItem('vp_btns', JSON.stringify(app.btns)); }
-        function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; }
-        function renderCustomBtns() { document.getElementById('custom-buttons-dashboard').innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}','_blank')" class="bg-blue-600/20 border border-blue-500/30 px-4 py-2 rounded-2xl text-[10px] font-bold text-blue-400 m-1">${b.label}</button>`).join(''); }
+        function openLinkModal() { document.getElementById('modal-link').classList.remove('hidden'); }
+        function openRssModal() { document.getElementById('modal-rss').classList.remove('hidden'); }
+        function addNewRss() {
+            const n=document.getElementById('new-rss-name').value, u=document.getElementById('new-rss-url').value;
+            if(!n||!u) return; app.rss.push({name:n, url:u}); save(); fetchNews(app.rss.length-1); closeModal('modal-rss');
+        }
+        function saveLinkToPocket(u, t) { app.links.unshift({ id: Date.now().toString(), url: u, title: t, tags: ['Discovery'] }); save(); renderLinks(); renderDashboard(); playSound(1000); alert("Enlace guardado."); }
+        function shareLink(u) { if(navigator.share) navigator.share({url:u}); else prompt("Link:", u); }
+        function sendToROI(t) { document.getElementById('ai-query').value = `Analiza ROI de: ${t}`; switchTab('view-analysis'); }
+        function toggleFocus() {
+            const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
+            if(app.pomo.active) { clearInterval(app.pomo.timer); app.pomo.active = false; tb.classList.add('hidden'); ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>'; }
+            else { app.pomo.active = true; tb.classList.remove('hidden'); ctrl.innerHTML = '<i data-lucide="pause" fill="white"></i>';
+                app.pomo.timer = setInterval(() => { app.pomo.time--; updatePomoUI(); if(app.pomo.time <= 0) { resetFocus(); alert("Sesión terminada."); } }, 1000);
+            }
+            lucide.createIcons();
+        }
+        function resetFocus() { clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false; document.getElementById('top-taskbar').classList.add('hidden'); updatePomoUI(); document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>'; lucide.createIcons(); }
+        function updatePomoUI() { const m = Math.floor(app.pomo.time/60), s = app.pomo.time%60; const str = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; document.getElementById('pomo-clock').innerText = str; document.getElementById('mini-timer').innerText = str; }
+        
+        async function sendChat() {
+            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+            if(!inp.value || !app.config.key) return alert("Pega tu API Key en Perfil");
+            const ut = inp.value; msgs.innerHTML += `<div class="bg-blue-600/20 p-3 rounded-2xl ml-10 text-white border border-blue-500/10 shadow-lg animate-in slide-in-from-right">${ut}</div>`;
+            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
+            try {
+                let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.config.key}`;
+                if(app.config.key.startsWith('gsk')) url = "https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions";
+                const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ contents: [{ parts: [{ text: ut }] }] }) });
+                const d = await r.json();
+                const ai = app.config.key.startsWith('AIza') ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
+                msgs.innerHTML += `<div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5 animate-in slide-in-from-left">VICO: ${ai}</div>`;
+            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error. Check Key.</div>`; }
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        async function runROIAnalysis() {
+            const q = document.getElementById('ai-query').value;
+            if(!q || !app.config.key) return alert("API Key requerida.");
+            const btn = document.getElementById('btn-ai');
+            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROCESANDO...';
+            lucide.createIcons();
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.config.key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza ROI y mercado de: ${q}. Genera un informe de 3 párrafos texto plano sin asteriscos ni Markdown.` }] }] })
+                });
+                const d = await res.json();
+                const aiTxt = d.candidates[0].content.parts[0].text.replace(/[*#"`]/g, "");
+                document.getElementById('ai-results').classList.remove('hidden');
+                document.getElementById('ai-report').innerText = aiTxt;
+                // Simulación de gráficas dinámicas
+                renderROICharts();
+            } catch(e) { alert("Fallo IA."); }
+            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
+        }
+
+        let roiCharts = [];
+        function renderROICharts() {
+            const ctxL = document.getElementById('chartLine').getContext('2d');
+            const ctxR = document.getElementById('chartRadar').getContext('2d');
+            const ctxD = document.getElementById('chartDoughnut').getContext('2d');
+            roiCharts.forEach(c => c.destroy());
+            roiCharts = [
+                new Chart(ctxL, { type: 'line', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{data:[40,65,55,95], borderColor:'#00fff7', tension:0.4}] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false},x:{grid:{display:false}}} } }),
+                new Chart(ctxR, { type: 'radar', data: { labels: ['ROI','Riesgo','Viral','Uso','Costo'], datasets: [{data:[80,30,90,40,75], borderColor:'#3b82f6'}] }, options: { scales:{r:{display:false}}, plugins:{legend:{display:false}} } }),
+                new Chart(ctxD, { type: 'doughnut', data: { labels: ['Pos','Neg'], datasets: [{data:[85,15], backgroundColor:['#10b981','#ef4444'], borderWidth:0}] }, options: { cutout:'80%', plugins:{legend:{display:false}} } })
+            ];
+        }
     </script>
 </body>
 </html>
