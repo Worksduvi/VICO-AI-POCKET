@@ -163,14 +163,21 @@
             </div>
         </section>
 
-        <section id="view-notes" class="hidden p-5 fade-in">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold orbitron">Notas Pocket</h2>
-                <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl shadow-lg"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
-            <div id="notes-grid" class="space-y-4"></div>
-        </section>
+      <section id="view-notes" class="hidden p-5 fade-in">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold orbitron">Notas Pocket</h2>
+        <div class="flex gap-2">
+            <button onclick="createNewFolder()" class="bg-slate-700 p-2.5 rounded-xl shadow-lg text-white">
+                <i data-lucide="folder-plus"></i>
+            </button>
+            <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl shadow-lg">
+                <i data-lucide="plus"></i>
+            </button>
+        </div>
+    </div>
+    <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
+    <div id="notes-grid" class="space-y-4"></div>
+</section>
 
         <section id="view-links" class="hidden p-5 fade-in">
             <div class="flex justify-between items-center mb-6">
