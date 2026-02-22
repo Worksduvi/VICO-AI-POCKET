@@ -1,4 +1,4 @@
-const CACHE_NAME = 'vico-pwa-v8.7'; // Cambia este número para forzar actualización
+const CACHE_NAME = 'vico-pwa-v8.9'; // Cambia este número para forzar actualización
 const ASSETS = [
   './',
   './index.html',
