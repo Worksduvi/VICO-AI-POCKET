@@ -516,95 +516,70 @@
         function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
 
         // --- CHAT MULTI-API (FIX API KEY) ---
-        async function sendChat() {
-    const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+        // --- FUNCIÓN MAESTRA MULTI-API (CHAT Y ROI) ---
+async function vicoNeuralLink(promptText) {
     const key = app.config.key.trim();
+    if (!key) throw new Error("API Key faltante");
+
+    let url, body, headers = { "Content-Type": "application/json" };
+    let provider = "";
+
+    if (key.startsWith('gsk_')) {
+        provider = "GROQ";
+        url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
+        headers["Authorization"] = `Bearer ${key}`;
+        body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: promptText}] };
+    } else if (key.startsWith('sk-')) {
+        provider = "OPENAI/DEEPSEEK";
+        url = "https://api.openai.com/v1/chat/completions";
+        headers["Authorization"] = `Bearer ${key}`;
+        body = { model: "gpt-4o-mini", messages: [{role: "user", content: promptText}] };
+    } else {
+        provider = "GEMINI";
+        url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+        body = { contents: [{ parts: [{ text: promptText }] }] };
+    }
+
+    console.log(`VICO MEDIA: ${provider} Link Establecido`);
     
-    if(!inp.value || !key) return alert("VICO ENGINE: Inserta API Key en CORE.");
-    
-    const userText = inp.value; 
-    msgs.innerHTML += `<div class="chat-bubble chat-user">${userText}</div>`;
-    inp.value = ''; 
-    msgs.scrollTop = msgs.scrollHeight;
+    const response = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
+    const data = await response.json();
+
+    if (provider === "GEMINI") return data.candidates[0].content.parts[0].text;
+    return data.choices[0].message.content;
+}
+
+// --- ACTUALIZACIÓN DEL CHAT ---
+async function sendChat() {
+    const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+    if(!inp.value) return;
+    const ut = inp.value; 
+    msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
+    inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
 
     try {
-        let url, body, headers = { "Content-Type": "application/json" };
-        let provider = "";
-
-        // DETECCIÓN AUTOMÁTICA DE PROVEEDOR
-        if(key.startsWith('gsk_')) {
-            provider = "GROQ";
-            // Usamos proxy para evitar errores de CORS en móviles
-            url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions"); 
-            headers["Authorization"] = `Bearer ${key}`;
-            body = { 
-                model: "llama-3.3-70b-versatile", 
-                messages: [{role: "user", content: userText}] 
-            };
-        } else if(key.startsWith('sk-')) {
-            // Detección para OpenAI o DeepSeek
-            provider = key.includes("deepseek") ? "DEEPSEEK" : "OPEN AI";
-            url = provider === "DEEPSEEK" ? "https://api.deepseek.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
-            headers["Authorization"] = `Bearer ${key}`;
-            body = { 
-                model: provider === "DEEPSEEK" ? "deepseek-chat" : "gpt-4o-mini", 
-                messages: [{role: "user", content: userText}] 
-            };
-        } else {
-            provider = "GEMINI";
-            url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-            body = { contents: [{ parts: [{ text: userText }] }] };
-        }
-
-        // MENSAJE DE VICO MEDIA (Log de sistema)
-        console.log(`VICO MEDIA: Clave API ${provider} detectada.`);
-        msgs.innerHTML += `<div class="text-[7px] text-blue-400 text-center font-bold orbitron py-1">NEURAL LINK: ${provider} ACTIVE</div>`;
-
-        const response = await fetch(url, { 
-            method: "POST", 
-            headers: headers, 
-            body: JSON.stringify(body) 
-        });
-
-        if (!response.ok) throw new Error("Network response was not ok");
-
-        const data = await response.json();
-        
-        let aiResponse = "";
-        if(provider === "GEMINI") {
-            aiResponse = data.candidates[0].content.parts[0].text;
-        } else {
-            // Formato estándar OpenAI/Groq/DeepSeek
-            aiResponse = data.choices[0].message.content;
-        }
-
+        const aiResponse = await vicoNeuralLink(ut);
         msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
-        
     } catch(e) { 
-        console.error("VICO ENGINE ERROR:", e);
-        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold uppercase">Sync Error. Check Key.</div>`; 
+        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error: Revisa tu API Key en CORE.</div>`; 
     }
     msgs.scrollTop = msgs.scrollHeight;
 }
-        async function runROIAnalysis() {
-            const q = document.getElementById('ai-query').value;
-            if(!q || !app.config.key) return alert("API Key requerida.");
-            const btn = document.getElementById('btn-ai');
-            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROCESANDO...';
-            lucide.createIcons();
-            try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${app.config.key}`, {
-                    method: "POST", headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Analiza ROI y mercado de: ${q}. Genera un informe de 3 párrafos texto plano sin asteriscos ni Markdown.` }] }] })
-                });
-                const d = await res.json();
-                const aiTxt = d.candidates[0].content.parts[0].text.replace(/[*#"`]/g, "");
-                document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = aiTxt;
-                renderROICharts();
-            } catch(e) { alert("Fallo IA."); }
-            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
-        }
+
+// --- ACTUALIZACIÓN DEL ROI ENGINE ---
+async function runROIAnalysis() {
+    const q = document.getElementById('ai-query').value;
+    if(!q) return alert("Escribe un tema de análisis.");
+    const btn = document.getElementById('btn-ai');
+    btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROCESANDO...';
+    try {
+        const aiTxt = await vicoNeuralLink(`Analiza ROI y mercado de: ${q}. Resumen ejecutivo, sin asteriscos.`);
+        document.getElementById('ai-results').classList.remove('hidden');
+        document.getElementById('ai-report').innerText = aiTxt;
+        renderROICharts();
+    } catch(e) { alert("Error en el escaneo ROI."); }
+    finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
+}
 
         let roiCharts = [];
         function renderROICharts() {
