@@ -403,6 +403,28 @@
             setInterval(checkAgenda, 20000);
             checkShareTarget();
         });
+        // Detectar si venimos de "Compartir"
+const params = new URLSearchParams(window.location.search);
+const sharedUrl = params.get('url') || params.get('text');
+const sharedTitle = params.get('title');
+
+if (sharedUrl) {
+    // Limpiar el texto si viene mezclado título y url
+    const cleanUrl = sharedUrl.match(/https?:\/\/[^\s]+/)?.[0] || sharedUrl;
+    app.links.unshift({
+        id: Date.now().toString(),
+        url: cleanUrl,
+        title: sharedTitle || "Link Externo",
+        tags: ["Externo"]
+    });
+    save();
+    renderLinks();
+    renderDashboard();
+    switchTab('view-links');
+    alert("VICO POCKET: Link guardado en la Memory Card.");
+    // Limpiar URL para no repetir al recargar
+    window.history.replaceState({}, '', window.location.pathname);
+}
 
         function applySystemConfig() {
             const cfg = app.config;
@@ -522,6 +544,7 @@
 
         // --- CHAT MULTI-API (FIX API KEY) ---
         // --- FUNCIÓN MAESTRA MULTI-API (CHAT Y ROI) ---
+// --- MOTOR NEURAL MULTI-API ---
 async function vicoNeuralLink(promptText) {
     const key = app.config.key.trim();
     if (!key) throw new Error("API Key faltante");
@@ -533,40 +556,40 @@ async function vicoNeuralLink(promptText) {
         provider = "GROQ";
         url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
         headers["Authorization"] = `Bearer ${key}`;
-        body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: promptText}] };
-    } else if (key.startsWith('sk-')) {
-        provider = "OPENAI/DEEPSEEK";
-        url = "https://api.openai.com/v1/chat/completions";
-        headers["Authorization"] = `Bearer ${key}`;
-        body = { model: "gpt-4o-mini", messages: [{role: "user", content: promptText}] };
+        body = { 
+            model: "llama-3.3-70b-versatile", 
+            messages: [{role: "user", content: promptText}],
+            temperature: 0.7 
+        };
     } else {
         provider = "GEMINI";
         url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
         body = { contents: [{ parts: [{ text: promptText }] }] };
     }
 
-    console.log(`VICO MEDIA: ${provider} Link Establecido`);
+    console.log(`VICO MEDIA: ${provider} detectado.`);
     
     const response = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
     const data = await response.json();
 
     if (provider === "GEMINI") return data.candidates[0].content.parts[0].text;
-    return data.choices[0].message.content;
+    if (provider === "GROQ") return data.choices[0].message.content;
 }
 
-// --- ACTUALIZACIÓN DEL CHAT ---
+// Reemplaza tu sendChat por este
 async function sendChat() {
     const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
     if(!inp.value) return;
     const ut = inp.value; 
     msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
-    inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
+    inp.value = ''; 
+    msgs.scrollTop = msgs.scrollHeight;
 
     try {
         const aiResponse = await vicoNeuralLink(ut);
         msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
     } catch(e) { 
-        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error: Revisa tu API Key en CORE.</div>`; 
+        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error. Check Key en CORE.</div>`; 
     }
     msgs.scrollTop = msgs.scrollHeight;
 }
@@ -681,6 +704,34 @@ async function runROIAnalysis() {
     if(app.pomo.active) {
         document.getElementById('top-taskbar').classList.remove('hidden');
     }
+        }
+        function saveNote() {
+    const id = document.getElementById('nt-id').value;
+    const title = document.getElementById('nt-title').value;
+    const content = document.getElementById('nt-text').value;
+    const folder = document.getElementById('nt-folder-modal').value;
+    const color = document.getElementById('nt-color').value;
+
+    if (!title || !content) return alert("Completa los campos.");
+
+    if (id) {
+        // Editar existente
+        const idx = app.notes.findIndex(n => n.id === id);
+        app.notes[idx] = { ...app.notes[idx], title, content, folder, color };
+    } else {
+        // Nueva nota
+        app.notes.unshift({
+            id: Date.now().toString(),
+            title, content, folder, color,
+            date: new Date().toLocaleDateString()
+        });
+    }
+
+    save();
+    renderNotes();
+    renderDashboard();
+    closeModal('modal-note');
+    playSound(800);
         }
     </script>
 </body>
