@@ -462,26 +462,59 @@
 
         // --- CHAT MULTI-API (FIX API KEY) ---
         async function sendChat() {
-            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-            const key = app.config.key;
-            if(!inp.value || !key) return alert("Pega tu API Key en Perfil");
-            const ut = inp.value; msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
-            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
-            try {
-                let url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-                let b = { contents: [{ parts: [{ text: ut }] }] };
-                if(key.startsWith('gsk')) {
-                    url = "https://corsproxy.io/?https://api.groq.com/openai/v1/chat/completions";
-                    b = { model: "llama-3.3-70b-versatile", messages: [{role:"user", content: ut}] };
-                }
-                const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) });
-                const d = await r.json();
-                const ai = key.startsWith('AIza') ? d.candidates[0].content.parts[0].text : d.choices[0].message.content;
-                msgs.innerHTML += `<div class="chat-bubble chat-bot">${ai}</div>`;
-            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error. Check Key.</div>`; }
-            msgs.scrollTop = msgs.scrollHeight;
+    const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+    const key = app.config.key;
+    
+    if(!inp.value || !key) return alert("Error: API Key no detectada. Ve a CORE.");
+    
+    const userText = inp.value; 
+    msgs.innerHTML += `<div class="chat-bubble chat-user">${userText}</div>`;
+    inp.value = ''; 
+    msgs.scrollTop = msgs.scrollHeight;
+
+    try {
+        let url, body, headers = { "Content-Type": "application/json" };
+        let provider = "";
+
+        // LÓGICA DE DETECCIÓN MULTI-API
+        if(key.startsWith('gsk_')) {
+            provider = "GROQ";
+            url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions"); 
+            headers["Authorization"] = `Bearer ${key}`;
+            body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: userText}] };
+        } else if(key.startsWith('sk-')) {
+            provider = key.includes("deepseek") ? "DEEPSEEK" : "OPEN AI";
+            url = provider === "DEEPSEEK" ? "https://api.deepseek.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+            headers["Authorization"] = `Bearer ${key}`;
+            body = { model: provider === "DEEPSEEK" ? "deepseek-chat" : "gpt-4o-mini", messages: [{role: "user", content: userText}] };
+        } else {
+            provider = "GEMINI";
+            url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+            body = { contents: [{ parts: [{ text: userText }] }] };
         }
 
+        // MENSAJE VICO MEDIA (Log de sistema)
+        console.log(`VICO POCKET: Clave API ${provider} detectada correctamente.`);
+        msgs.innerHTML += `<div class="text-[8px] text-blue-400 text-center font-bold orbitron uppercase py-1">Neural Link: ${provider} Active</div>`;
+
+        const response = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
+        const data = await response.json();
+        
+        let aiResponse = "";
+        if(provider === "GEMINI") {
+            aiResponse = data.candidates[0].content.parts[0].text;
+        } else {
+            aiResponse = data.choices[0].message.content;
+        }
+
+        msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
+        
+    } catch(e) { 
+        console.error("VICO ENGINE ERROR:", e);
+        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold">Sync Error. Check Key.</div>`; 
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+}
         async function runROIAnalysis() {
             const q = document.getElementById('ai-query').value;
             if(!q || !app.config.key) return alert("API Key requerida.");
