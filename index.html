@@ -469,9 +469,9 @@
         // --- CHAT MULTI-API (FIX API KEY) ---
         async function sendChat() {
     const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-    const key = app.config.key;
+    const key = app.config.key.trim();
     
-    if(!inp.value || !key) return alert("API Key no detectada. Ve a CORE.");
+    if(!inp.value || !key) return alert("VICO: Inserta API Key en CORE.");
     
     const userText = inp.value; 
     msgs.innerHTML += `<div class="chat-bubble chat-user">${userText}</div>`;
@@ -482,18 +482,22 @@
         let url, body, headers = { "Content-Type": "application/json" };
         let provider = "";
 
-        // DETECCIÓN INTELIGENTE DE PROVEEDOR
+        // DETECCIÓN DE PROVEEDOR
         if(key.startsWith('gsk_')) {
             provider = "GROQ";
+            // Usamos un proxy diferente y más estable para Groq
             url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions"); 
             headers["Authorization"] = `Bearer ${key}`;
-            body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: userText}] };
+            body = { 
+                model: "llama-3.3-70b-versatile", 
+                messages: [{role: "user", content: userText}],
+                temperature: 0.7
+            };
         } else if(key.startsWith('sk-')) {
-            // Distinguimos entre OpenAI y DeepSeek por la longitud o contenido si es posible
-            provider = key.length > 50 ? "DEEPSEEK" : "OPEN AI"; 
-            url = provider === "DEEPSEEK" ? "https://api.deepseek.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
+            provider = "OPENAI";
+            url = "https://api.openai.com/v1/chat/completions";
             headers["Authorization"] = `Bearer ${key}`;
-            body = { model: provider === "DEEPSEEK" ? "deepseek-chat" : "gpt-4o-mini", messages: [{role: "user", content: userText}] };
+            body = { model: "gpt-4o-mini", messages: [{role: "user", content: userText}] };
         } else {
             provider = "GEMINI";
             url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
@@ -501,10 +505,19 @@
         }
 
         // MENSAJE VICO MEDIA
-        console.log(`VICO MEDIA: Clave API ${provider} detectada.`);
-        msgs.innerHTML += `<div class="text-[8px] text-blue-400 text-center font-bold orbitron py-1">Neural Link: ${provider} Active</div>`;
+        msgs.innerHTML += `<div class="text-[7px] text-blue-400 text-center font-bold orbitron py-1">Neural Link: ${provider} Active</div>`;
 
-        const response = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
+        const response = await fetch(url, { 
+            method: "POST", 
+            headers: headers, 
+            body: JSON.stringify(body) 
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error?.message || "Error de respuesta");
+        }
+
         const data = await response.json();
         
         let aiResponse = "";
@@ -517,8 +530,9 @@
         msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
         
     } catch(e) { 
-        console.error("VICO ENGINE:", e);
-        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold">Sync Error. Check Key.</div>`; 
+        console.error("VICO ENGINE ERROR:", e);
+        // Mensaje de error más detallado para ayudarte a depurar
+        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold uppercase">Sync Error: ${e.message}</div>`; 
     }
     msgs.scrollTop = msgs.scrollHeight;
 }
