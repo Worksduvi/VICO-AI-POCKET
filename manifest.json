@@ -1,9 +1,9 @@
 {
-  "name": "VICO POCKET",
-  "short_name": "VICO OS",
+  "name": "VICO POCKET OS",
+  "short_name": "VicoPocket",
+  "description": "Neural Bridge OS for Pocket Data",
   "start_url": "./index.html",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "minimal-ui"],
   "background_color": "#0b0f1a",
   "theme_color": "#0b0f1a",
   "orientation": "portrait-primary",
@@ -30,4 +30,4 @@
       "url": "url"
     }
   }
-} 
+}
