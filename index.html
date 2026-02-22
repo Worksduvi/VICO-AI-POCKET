@@ -113,20 +113,18 @@
 
     <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
         
-        <section id="view-dashboard" class="p-5 space-y-6 fade-in">
+  <section id="view-dashboard" class="p-5 space-y-6 fade-in">
     <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent text-center">
-        
-        <div class="logo-container">
+        <div class="logo-container" onmouseover="playSound('pulsar')">
             <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
             <div class="matrix-rain">
                 0101101<br>VICO-OS<br>ELITE<br>1011010
-                <div class="logo-container" onmouseover="playSound('pulsar')">
             </div>
         </div>
         <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"Initializing secure neural bridge..."</p>
     </div>
-
             <div class="grid grid-cols-3 gap-2">
+            </div>
                 <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30 transition-all active:scale-95">
                     <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="quick_note">Nota Rápida</span>
                 </div>
