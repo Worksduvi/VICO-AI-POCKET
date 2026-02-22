@@ -297,13 +297,18 @@
 
     <div id="vico-chat" class="fixed bottom-24 right-4 z-[150]">
         <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl transition-all border border-white/10 hover:scale-110 active:scale-90"><i data-lucide="bot" class="text-white"></i></button>
-        <div id="chat-win" class="glass-panel fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden overflow-hidden shadow-2xl border-blue-500/20">
-            <div class="bg-blue-600 p-3.5 flex justify-between items-center text-white text-[10px] font-bold uppercase tracking-widest"><span>VICO AI Assistant</span><button onclick="toggleChat()"><i data-lucide="x" size="14"></i></button></div>
-            <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed">
-                <div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5 shadow-inner">Hola, soy VICO. Protocolo Blindaje v8.5 activado. ¿Qué analizamos hoy?</div>
-            </div>
-            <div class="p-3 border-t border-white/5 flex gap-1"><input type="text" id="chat-in" placeholder="..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()"><button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button></div>
-        </div>
+  <div id="chat-win" class="glass-panel fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden overflow-hidden shadow-2xl border-blue-500/20">
+    <div class="bg-blue-600 p-4 flex justify-center items-center text-white text-[10px] font-bold uppercase tracking-widest">
+        <span>VICO AI ASSISTANT</span>
+    </div>
+    <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed">
+        <div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5 shadow-inner">VICO v8.9: Enlace neural activo. ¿Qué analizamos hoy?</div>
+    </div>
+    <div class="p-3 border-t border-white/5 flex gap-1">
+        <input type="text" id="chat-in" placeholder="..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()">
+        <button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button>
+    </div>
+</div>
     </div>
 
     <div id="modal-note" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
@@ -555,12 +560,12 @@ async function vicoNeuralLink(promptText) {
 
     if (key.startsWith('gsk_')) {
         provider = "GROQ";
+        // Proxy para evitar CORS
         url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
         headers["Authorization"] = `Bearer ${key}`;
         body = { 
             model: "llama-3.3-70b-versatile", 
-            messages: [{role: "user", content: promptText}],
-            temperature: 0.7 
+            messages: [{role: "user", content: promptText}] 
         };
     } else {
         provider = "GEMINI";
@@ -568,13 +573,14 @@ async function vicoNeuralLink(promptText) {
         body = { contents: [{ parts: [{ text: promptText }] }] };
     }
 
-    console.log(`VICO MEDIA: ${provider} detectado.`);
-    
+    console.log(`VICO MEDIA: ${provider} Link Establecido`);
     const response = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
+    
+    if (!response.ok) throw new Error("Error en la respuesta");
     const data = await response.json();
 
     if (provider === "GEMINI") return data.candidates[0].content.parts[0].text;
-    if (provider === "GROQ") return data.choices[0].message.content;
+    return data.choices[0].message.content;
 }
 
 // Reemplaza tu sendChat por este
@@ -659,7 +665,33 @@ async function runROIAnalysis() {
         function sendToROI(t) { document.getElementById('ai-query').value = `ROI: ${t}`; switchTab('view-analysis'); }
         function toggleFav(u) { if(app.favs.includes(u)) app.favs=app.favs.filter(x=>x!==u); else app.favs.push(u); save(); fetchNews(app.activeRss); }
         function delNote(id) { app.notes = app.notes.filter(n => n.id !== id); save(); renderNotes(); renderDashboard(); }
-        function checkShareTarget() { const p=new URLSearchParams(window.location.search); const u=p.get('url')||p.get('text'); if(u){ openLinkModal(); document.getElementById('lk-url').value=u; window.history.replaceState({},'',window.location.pathname); } }
+        function checkShareTarget() {
+    const params = new URLSearchParams(window.location.search);
+    const sharedTitle = params.get('title');
+    const sharedText = params.get('text');
+    const sharedUrl = params.get('url');
+
+    if (sharedTitle || sharedText || sharedUrl) {
+        // Extraer la URL del texto si viene mezclada
+        const finalUrl = sharedUrl || (sharedText && sharedText.match(/https?:\/\/[^\s]+/)?.[0]) || sharedText;
+        
+        if (finalUrl) {
+            app.links.unshift({
+                id: Date.now().toString(),
+                url: finalUrl,
+                title: sharedTitle || "Link Compartido Externo",
+                tags: ["Externo"]
+            });
+            save();
+            renderLinks();
+            renderDashboard();
+            switchTab('view-links');
+            alert("VICO POCKET: Link guardado en la Memory Card.");
+            // Limpiar la URL para evitar que se guarde de nuevo al recargar
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }
+}
         function toggleFocus() {
             const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
             if(app.pomo.active) { clearInterval(app.pomo.timer); app.pomo.active = false; tb.classList.add('hidden'); ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>'; }
