@@ -668,6 +668,22 @@ async function runROIAnalysis() {
         location.reload(true);
     }, 500);
     }
+        function createNewFolder() {
+    const name = prompt("Nombre de la nueva categoría:");
+    if (name && !app.folders.includes(name)) {
+        app.folders.push(name);
+        save();
+        renderNotes(); // Actualiza la barra superior
+        applySystemConfig(); // Actualiza el selector dentro del modal de notas
+        alert("Categoría '" + name + "' creada.");
+    }
+        }
+        function minimizePomo() {
+    document.getElementById('modal-pomo').classList.add('hidden');
+    if(app.pomo.active) {
+        document.getElementById('top-taskbar').classList.remove('hidden');
+    }
+        }
     </script>
 </body>
 </html>
