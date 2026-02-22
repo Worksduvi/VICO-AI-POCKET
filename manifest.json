@@ -1,3 +1,10 @@
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      registration.update(); // Fuerza la búsqueda de nueva versión
+    }
+  });
+}
 {
   "name": "VICO POCKET OS",
   "short_name": "VICO OS",
