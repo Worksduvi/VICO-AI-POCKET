@@ -199,7 +199,13 @@
                     <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
                     <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
                 </div>
-
+<div class="glass-panel p-5 rounded-3xl border-orange-500/30">
+    <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-4">Mantenimiento de Núcleo</h3>
+    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase shadow-lg active:scale-95 transition-all">
+        Forzar Actualización (Clear Cache)
+    </button>
+    <p class="text-[8px] text-slate-600 mt-2 text-center">Usa esto si los cambios no se reflejan en tu APK.</p>
+    </div>
                 <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
                     <h4 class="font-bold text-slate-400 mb-2 uppercase">Aviso Legal y Políticas</h4>
                     <p>VICO POCKET funciona bajo el modelo Local-First. Sus datos residen únicamente en su dispositivo. Handcrafted by Jaime Andrés Dueñas Vicuña.</p>
@@ -465,7 +471,7 @@
     const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
     const key = app.config.key;
     
-    if(!inp.value || !key) return alert("Error: API Key no detectada. Ve a CORE.");
+    if(!inp.value || !key) return alert("API Key no detectada. Ve a CORE.");
     
     const userText = inp.value; 
     msgs.innerHTML += `<div class="chat-bubble chat-user">${userText}</div>`;
@@ -476,14 +482,15 @@
         let url, body, headers = { "Content-Type": "application/json" };
         let provider = "";
 
-        // LÓGICA DE DETECCIÓN MULTI-API
+        // DETECCIÓN INTELIGENTE DE PROVEEDOR
         if(key.startsWith('gsk_')) {
             provider = "GROQ";
             url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions"); 
             headers["Authorization"] = `Bearer ${key}`;
             body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: userText}] };
         } else if(key.startsWith('sk-')) {
-            provider = key.includes("deepseek") ? "DEEPSEEK" : "OPEN AI";
+            // Distinguimos entre OpenAI y DeepSeek por la longitud o contenido si es posible
+            provider = key.length > 50 ? "DEEPSEEK" : "OPEN AI"; 
             url = provider === "DEEPSEEK" ? "https://api.deepseek.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
             headers["Authorization"] = `Bearer ${key}`;
             body = { model: provider === "DEEPSEEK" ? "deepseek-chat" : "gpt-4o-mini", messages: [{role: "user", content: userText}] };
@@ -493,9 +500,9 @@
             body = { contents: [{ parts: [{ text: userText }] }] };
         }
 
-        // MENSAJE VICO MEDIA (Log de sistema)
-        console.log(`VICO POCKET: Clave API ${provider} detectada correctamente.`);
-        msgs.innerHTML += `<div class="text-[8px] text-blue-400 text-center font-bold orbitron uppercase py-1">Neural Link: ${provider} Active</div>`;
+        // MENSAJE VICO MEDIA
+        console.log(`VICO MEDIA: Clave API ${provider} detectada.`);
+        msgs.innerHTML += `<div class="text-[8px] text-blue-400 text-center font-bold orbitron py-1">Neural Link: ${provider} Active</div>`;
 
         const response = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
         const data = await response.json();
@@ -510,7 +517,7 @@
         msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
         
     } catch(e) { 
-        console.error("VICO ENGINE ERROR:", e);
+        console.error("VICO ENGINE:", e);
         msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold">Sync Error. Check Key.</div>`; 
     }
     msgs.scrollTop = msgs.scrollHeight;
@@ -598,6 +605,23 @@
         function minimizePomo() { document.getElementById('modal-pomo').classList.add('hidden'); if(app.pomo.active) document.getElementById('top-taskbar').classList.remove('hidden'); }
         let deferredPrompt; window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('install-banner').classList.remove('hidden'); });
         async function triggerPwaInstall(){ if(!deferredPrompt)return; deferredPrompt.prompt(); const {outcome}=await deferredPrompt.userChoice; if(outcome==='accepted')document.getElementById('install-banner').classList.add('hidden'); deferredPrompt=null; }
+    function forceSystemUpdate() {
+    playSound('siren');
+    if ('serviceWorker' in navigator) {
+        caches.keys().then(function(names) {
+            for (let name of names) caches.delete(name);
+        });
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+    // Forzar recarga completa desde el servidor ignorando caché
+    setTimeout(() => {
+        location.reload(true);
+    }, 500);
+    }
     </script>
 </body>
 </html>
