@@ -1,3 +1,10 @@
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(let registration of registrations) {
+      registration.update(); // Fuerza la búsqueda de nueva versión
+    }
+  });
+}
 const CACHE_NAME = 'vico-pwa-v6';
 const ASSETS = [
   './',
