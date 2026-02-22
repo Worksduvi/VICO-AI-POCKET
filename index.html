@@ -471,7 +471,7 @@
     const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
     const key = app.config.key.trim();
     
-    if(!inp.value || !key) return alert("VICO: Inserta API Key en CORE.");
+    if(!inp.value || !key) return alert("VICO ENGINE: Inserta API Key en CORE.");
     
     const userText = inp.value; 
     msgs.innerHTML += `<div class="chat-bubble chat-user">${userText}</div>`;
@@ -482,30 +482,34 @@
         let url, body, headers = { "Content-Type": "application/json" };
         let provider = "";
 
-        // DETECCIÓN DE PROVEEDOR
+        // DETECCIÓN AUTOMÁTICA DE PROVEEDOR
         if(key.startsWith('gsk_')) {
             provider = "GROQ";
-            // Usamos un proxy diferente y más estable para Groq
+            // Usamos proxy para evitar errores de CORS en móviles
             url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions"); 
             headers["Authorization"] = `Bearer ${key}`;
             body = { 
                 model: "llama-3.3-70b-versatile", 
-                messages: [{role: "user", content: userText}],
-                temperature: 0.7
+                messages: [{role: "user", content: userText}] 
             };
         } else if(key.startsWith('sk-')) {
-            provider = "OPENAI";
-            url = "https://api.openai.com/v1/chat/completions";
+            // Detección para OpenAI o DeepSeek
+            provider = key.includes("deepseek") ? "DEEPSEEK" : "OPEN AI";
+            url = provider === "DEEPSEEK" ? "https://api.deepseek.com/v1/chat/completions" : "https://api.openai.com/v1/chat/completions";
             headers["Authorization"] = `Bearer ${key}`;
-            body = { model: "gpt-4o-mini", messages: [{role: "user", content: userText}] };
+            body = { 
+                model: provider === "DEEPSEEK" ? "deepseek-chat" : "gpt-4o-mini", 
+                messages: [{role: "user", content: userText}] 
+            };
         } else {
             provider = "GEMINI";
             url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
             body = { contents: [{ parts: [{ text: userText }] }] };
         }
 
-        // MENSAJE VICO MEDIA
-        msgs.innerHTML += `<div class="text-[7px] text-blue-400 text-center font-bold orbitron py-1">Neural Link: ${provider} Active</div>`;
+        // MENSAJE DE VICO MEDIA (Log de sistema)
+        console.log(`VICO MEDIA: Clave API ${provider} detectada.`);
+        msgs.innerHTML += `<div class="text-[7px] text-blue-400 text-center font-bold orbitron py-1">NEURAL LINK: ${provider} ACTIVE</div>`;
 
         const response = await fetch(url, { 
             method: "POST", 
@@ -513,10 +517,7 @@
             body: JSON.stringify(body) 
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error?.message || "Error de respuesta");
-        }
+        if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
         
@@ -524,6 +525,7 @@
         if(provider === "GEMINI") {
             aiResponse = data.candidates[0].content.parts[0].text;
         } else {
+            // Formato estándar OpenAI/Groq/DeepSeek
             aiResponse = data.choices[0].message.content;
         }
 
@@ -531,8 +533,7 @@
         
     } catch(e) { 
         console.error("VICO ENGINE ERROR:", e);
-        // Mensaje de error más detallado para ayudarte a depurar
-        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold uppercase">Sync Error: ${e.message}</div>`; 
+        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2 font-bold uppercase">Sync Error. Check Key.</div>`; 
     }
     msgs.scrollTop = msgs.scrollHeight;
 }
