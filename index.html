@@ -218,14 +218,22 @@
                     <i data-lucide="cpu"></i> <span data-translate="run_analysis">Iniciar Proceso Neural</span>
                 </button>
             </div>
-            <div id="ai-results" class="hidden space-y-6">
-                <div class="glass-panel p-4 rounded-3xl"><canvas id="chartLine" height="180"></canvas></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="glass-panel p-4 rounded-3xl"><canvas id="chartRadar" height="150"></canvas></div>
-                    <div class="glass-panel p-4 rounded-3xl"><canvas id="chartDoughnut" height="150"></canvas></div>
-                </div>
-                <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono"></div>
-            </div>
+            <div class="flex justify-between items-center mb-2">
+    <span class="text-xs text-slate-300" data-translate="ui_sounds">Sonidos de Interfaz</span>
+    <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
+</div>
+
+<div id="ai-results" class="hidden space-y-6 animate-in slide-in-from-bottom">
+    <div class="glass-panel p-4 rounded-3xl border-t-2 border-cyan-500/50">
+        <h4 class="text-[10px] font-bold text-cyan-400 uppercase mb-4 flex items-center gap-2"><i data-lucide="trending-up" size="14"></i> Proyección Bursátil y Mercado</h4>
+        <canvas id="chartStock" height="200"></canvas>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+        <div class="glass-panel p-4 rounded-3xl"><canvas id="chartRadarPro" height="150"></canvas></div>
+        <div class="glass-panel p-4 rounded-3xl"><canvas id="chartComparison" height="150"></canvas></div>
+    </div>
+    <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono"></div>
+</div>
         </section>
 
         <section id="view-profile" class="hidden p-5 fade-in">
@@ -348,6 +356,7 @@
 
     <script>
         // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
+        // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
@@ -367,7 +376,11 @@
                 {name:'WIRED', url:'https://www.wired.com/feed/rss'},
                 {name:'MIT Tech Review', url:'https://www.technologyreview.com/feed/'}
             ],
-            config: JSON.parse(localStorage.getItem('vp_cfg')) || { key: '', theme: 'Cyber', font: 'font-normal', sound: true, lang: 'es', alarmSound: '800', showPopup: true },
+            config: JSON.parse(localStorage.getItem('vp_cfg')) || { 
+                key: '', theme: 'Cyber', font: 'font-normal', 
+                sound: true, lang: 'es', alarmSound: '800', 
+                showPopup: true, uiSounds: true 
+            },
             pomo: { time: 1500, active: false, timer: null },
             folders: ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Varios"],
             activeFolder: 'Fijadas',
@@ -377,9 +390,9 @@
         };
 
         const DICT = {
-            es: { quickNote: "Nota Rápida", links: "Links Pocket", focus: "Focus", roi: "ROI", discovery: "Feeds", notes: "Notas", resources: "Links", system: "Sistema", focusing: "Enfoque", agenda: "Agenda", ai_engine: "Motor IA", button_designer: "Diseñador", theme: "Tema", text_size: "Texto", alarm_tone: "Alarma", language: "Idioma", run_analysis: "Iniciar Escaneo" },
-            en: { quickNote: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "AI ROI", discovery: "Feeds", notes: "Notes", resources: "Links", system: "System", focusing: "Focusing", agenda: "Agenda", ai_engine: "AI Engine", button_designer: "Designer", theme: "Theme", text_size: "Font", alarm_tone: "Alarm", language: "Language", run_analysis: "Start Scan" },
-            zh: { quickNote: "快速笔记", links: "链接口袋", focus: "专注模式", roi: "AI 分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统设置", focusing: "专注中...", agenda: "议程", ai_engine: "引擎", button_designer: "设计", theme: "主题", text_size: "字体", alarm_tone: "警报", language: "语言", run_analysis: "开始扫描" }
+            es: { quickNote: "Nota Rápida", links: "Links Pocket", focus: "Focus", roi: "ROI", discovery: "Feeds", notes: "Notas", resources: "Links", system: "Sistema", ui_sounds: "Sonidos UI", run_analysis: "Análisis Bursátil" },
+            en: { quickNote: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "ROI", discovery: "Feeds", notes: "Notes", resources: "Links", system: "System", ui_sounds: "UI Sounds", run_analysis: "Stock Analysis" },
+            zh: { quickNote: "快速笔记", links: "链接口袋", focus: "专注", roi: "分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统", ui_sounds: "界面声音", run_analysis: "深度分析" }
         };
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -539,11 +552,20 @@ if (sharedUrl) {
         }
         function renderLinks() {
             const q = document.getElementById('link-search').value.toLowerCase();
-            document.getElementById('links-list').innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q)).map(l => `
-                <div class="glass-panel p-4 rounded-2xl flex justify-between items-start border-l-2 border-green-500/30">
-                    <div class="flex-1 truncate"><a href="${l.url}" target="_blank" class="text-xs font-bold text-blue-400 block truncate underline">${l.title}</a><div class="flex gap-1 mt-2">${l.tags.map(t=>`<span class="text-[8px] text-slate-500">#${t}</span>`).join('')}</div></div>
-                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
-                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">Sin enlaces.</p>';
+            const list = document.getElementById('links-list');
+            list.innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q)).map(l => `
+                <div class="glass-panel p-5 rounded-3xl border-l-2 border-green-500/30 animate-in fade-in">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1 truncate">
+                            <a href="${l.url}" target="_blank" class="text-sm font-bold text-blue-400 block truncate hover:underline">${l.title}</a>
+                            <p class="text-[9px] text-slate-500 mt-1 font-mono truncate italic opacity-70">${l.url}</p>
+                        </div>
+                        <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
+                    </div>
+                    <div class="flex gap-1 mt-3">
+                        ${(l.tags || []).map(t => `<span class="bg-blue-900/20 text-[8px] px-2 py-0.5 rounded border border-blue-500/20 text-blue-300">#${t}</span>`).join('')}
+                    </div>
+                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">No hay enlaces guardados.</p>';
             lucide.createIcons();
         }
         function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
@@ -585,48 +607,141 @@ async function vicoNeuralLink(promptText) {
 
 // Reemplaza tu sendChat por este
 async function sendChat() {
-    const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-    if(!inp.value) return;
-    const ut = inp.value; 
-    msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
-    inp.value = ''; 
-    msgs.scrollTop = msgs.scrollHeight;
+            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+            if(!inp.value) return;
+            const ut = inp.value; 
+            msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
+            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
 
-    try {
-        const aiResponse = await vicoNeuralLink(ut);
-        msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
-    } catch(e) { 
-        msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Sync Error. Check Key en CORE.</div>`; 
-    }
-    msgs.scrollTop = msgs.scrollHeight;
-}
+            try {
+                const promptFinal = `Actúa como VICO, un asistente inteligente de élite. Responde a: "${ut}". 
+                NORMAS: 
+                1. No uses NINGÚN símbolo de Markdown (asteriscos, almohadillas, etc.). Usa solo texto plano estructurado con saltos de línea.
+                2. Si el concepto es complejo y crees que un diagrama visual (flujo, proceso o datos) ayudaría, añade exactamente al final: [SUGESTION_VISUAL]`;
+                
+                const aiResponse = await vicoNeuralLink(promptFinal);
+                let cleanResponse = aiResponse.replace(/[*#"`]/g, ""); 
+                
+                if (cleanResponse.includes("[SUGESTION_VISUAL]")) {
+                    cleanResponse = cleanResponse.replace("[SUGESTION_VISUAL]", "");
+                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${cleanResponse}</div>`;
+                    msgs.innerHTML += `
+                        <div class="glass-panel p-3 border-blue-500/50 my-2 rounded-xl animate-pulse">
+                            <p class="text-[10px] text-blue-300 font-bold mb-2">He deducido que una explicación visual sería óptima. ¿Quieres un diagrama dinámico?</p>
+                            <div class="flex gap-2">
+                                <button onclick="renderChatDiagram()" class="bg-blue-600 text-[9px] px-4 py-1.5 rounded-full font-bold">GENERAR DIAGRAMA</button>
+                                <button onclick="this.parentElement.parentElement.remove()" class="text-[9px] text-slate-500 px-3">DESCARTAR</button>
+                            </div>
+                        </div>`;
+                } else {
+                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${cleanResponse}</div>`;
+                }
+            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error de Sincronización Neural.</div>`; }
+            msgs.scrollTop = msgs.scrollHeight;
+        }
 
+        function renderChatDiagram() {
+            const msgs = document.getElementById('chat-msgs');
+            msgs.innerHTML += `
+                <div class="glass-panel p-4 rounded-2xl border-blue-500/30 my-2 bg-blue-900/10">
+                    <div class="flex justify-between items-center mb-3"><span class="text-[10px] font-bold text-blue-400 uppercase">Flujo de Proceso VICO</span><i data-lucide="activity" size="14"></i></div>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="p-2 glass-panel border-blue-500/50 rounded text-[9px]">ENTRADA DATOS</div>
+                        <i data-lucide="arrow-down" size="12" class="text-slate-600"></i>
+                        <div class="p-2 bg-blue-600 rounded text-[9px] font-bold animate-pulse text-white">PROCESO NEURAL</div>
+                        <i data-lucide="arrow-down" size="12" class="text-slate-600"></i>
+                        <div class="p-2 glass-panel border-green-500/50 rounded text-[9px]">RESULTADO ROI</div>
+                    </div>
+                </div>`;
+            lucide.createIcons();
+            msgs.scrollTop = msgs.scrollHeight;
+        }
 // --- ACTUALIZACIÓN DEL ROI ENGINE ---
 async function runROIAnalysis() {
-    const q = document.getElementById('ai-query').value;
-    if(!q) return alert("Escribe un tema de análisis.");
-    const btn = document.getElementById('btn-ai');
-    btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> PROCESANDO...';
-    try {
-        const aiTxt = await vicoNeuralLink(`Analiza ROI y mercado de: ${q}. Resumen ejecutivo, sin asteriscos.`);
-        document.getElementById('ai-results').classList.remove('hidden');
-        document.getElementById('ai-report').innerText = aiTxt;
-        renderROICharts();
-    } catch(e) { alert("Error en el escaneo ROI."); }
-    finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
-}
+            const q = document.getElementById('ai-query').value;
+            if(!q) return alert("Define un objetivo de análisis.");
+            const btn = document.getElementById('btn-ai');
+            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> ESCANEANDO MERCADOS...';
+            
+            try {
+                const megaPrompt = `Realiza un análisis estratégico y bursátil profundo de: ${q}. 
+                REQUISITOS:
+                1. Incluye comparativa detallada con competencia.
+                2. Cita fuentes fiables, autores y fechas (Datos 2026).
+                3. Responde en texto plano, sin NINGÚN símbolo de Markdown (* o #).
+                ESTRUCTURA: Resumen Ejecutivo, Análisis Competitivo, Proyección de Bolsa, Fuentes y Links.`;
 
-        let roiCharts = [];
-        function renderROICharts() {
-            const ctxL = document.getElementById('chartLine').getContext('2d');
-            const ctxR = document.getElementById('chartRadar').getContext('2d');
-            const ctxD = document.getElementById('chartDoughnut').getContext('2d');
-            roiCharts.forEach(c => c.destroy());
-            roiCharts = [
-                new Chart(ctxL, { type: 'line', data: { labels: ['Q1','Q2','Q3','Q4'], datasets: [{data:[40,65,55,95], borderColor:'#00fff7', tension:0.4}] }, options: { plugins:{legend:{display:false}}, scales:{y:{display:false},x:{grid:{display:false}}} } }),
-                new Chart(ctxR, { type: 'radar', data: { labels: ['ROI','Riesgo','Viral','Uso','Costo'], datasets: [{data:[80,30,90,40,75], borderColor:'#3b82f6'}] }, options: { scales:{r:{display:false}}, plugins:{legend:{display:false}} } }),
-                new Chart(ctxD, { type: 'doughnut', data: { labels: ['Pos','Neg'], datasets: [{data:[85,15], backgroundColor:['#10b981','#ef4444'], borderWidth:0}] }, options: { cutout:'80%', plugins:{legend:{display:false}} } })
-            ];
+                const aiTxt = await vicoNeuralLink(megaPrompt);
+                const cleanTxt = aiTxt.replace(/[*#"`]/g, "");
+
+                document.getElementById('ai-results').classList.remove('hidden');
+                document.getElementById('ai-report').innerText = cleanTxt;
+                
+                renderProfessionalROICharts();
+            } catch(e) { alert("Error en el escaneo estratégico."); }
+            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
+        }
+
+        function renderProfessionalROICharts() {
+            const ctxStock = document.getElementById('chartStock').getContext('2d');
+            const ctxRadar = document.getElementById('chartRadarPro').getContext('2d');
+            const ctxComp = document.getElementById('chartComparison').getContext('2d');
+
+            // 1. Gráfico Bursátil (Stock Market Style)
+            new Chart(ctxStock, {
+                type: 'line',
+                data: {
+                    labels: ['09:00', '11:00', '13:00', '15:00', '17:00', '19:00'],
+                    datasets: [{
+                        label: 'Market Index',
+                        data: [152, 158, 149, 164, 160, 172],
+                        borderColor: '#00fff7',
+                        borderWidth: 1.5,
+                        fill: true,
+                        backgroundColor: 'rgba(0, 255, 247, 0.05)',
+                        pointRadius: 0,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#64748b', font: { size: 8 } } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 8 } } }
+                    }
+                }
+            });
+
+            // 2. Gráfico Radar Excel Style
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['ROI', 'Riesgo', 'Escala', 'Marketing', 'Innovación'],
+                    datasets: [{
+                        data: [85, 20, 90, 60, 95],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)'
+                    }]
+                },
+                options: {
+                    scales: { r: { grid: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { color: '#64748b', font: { size: 7 } }, ticks: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 3. Gráfico de Rosca de Distribución
+            new Chart(ctxComp, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Propio', 'Competencia', 'Mercado'],
+                    datasets: [{
+                        data: [45, 30, 25],
+                        backgroundColor: ['#00fff7', '#3b82f6', '#1e293b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { cutout: '80%', plugins: { legend: { display: false } } }
+            });
         }
 
         // --- AUXILIARES GLOBALES ---
