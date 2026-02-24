@@ -99,7 +99,17 @@
     padding: 5px;
     border: 1px solid #0ff; /* Marco Cyberpunk */
 }
-.logo-container:hover .matrix-rain { display: block; }</style>
+.logo-container:hover .matrix-rain { display: block; }
+    /* --- ESTILOS EXTRA ELITE --- */
+.microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; }
+.thinking-text { font-family: 'Courier New', monospace; font-size: 9px; color: #0f0; text-shadow: 0 0 5px #0f0; animation: scrollText 10s linear infinite; }
+@keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+
+.timer-knob { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #334155; position: relative; background: conic-gradient(var(--primary) var(--progress), transparent 0deg); }
+.timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0f172a; border-radius: 50%; }
+
+.notification-active { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    </style>
 </head>
 <body class="theme-Cyber font-normal">
 
