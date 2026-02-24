@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 10</title>
+    <title>VICO POCKET OS - ELITE Final 10.1</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -257,19 +257,59 @@
         </div>
     </div>
 
-    <div id="ai-results" class="hidden space-y-4">
-        <div class="glass-panel p-4 rounded-3xl border-t-2 border-cyan-500/50"><canvas id="chartStock" height="180"></canvas></div>
-        <div class="grid grid-cols-2 gap-3">
-            <div class="glass-panel p-4 rounded-3xl"><canvas id="chartRadarPro" height="140"></canvas></div>
-            <div class="glass-panel p-4 rounded-3xl"><canvas id="chartPiePro" height="140"></canvas></div>
-        </div>
-        <div class="glass-panel p-4 rounded-3xl"><canvas id="chartBarPro" height="140"></canvas></div>
-        <div class="grid grid-cols-2 gap-3">
-            <div class="glass-panel p-4 rounded-3xl"><canvas id="chartAreaPro" height="140"></canvas></div>
-            <div class="glass-panel p-4 rounded-3xl"><canvas id="chartComparison" height="140"></canvas></div>
-        </div>
-        <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono shadow-2xl"></div>
+ <div id="ai-results" class="hidden space-y-6 animate-in slide-in-from-bottom pb-10">
+    
+    <div class="flex gap-2 justify-end mb-4">
+        <button onclick="window.print()" class="bg-slate-800 p-2.5 rounded-xl border border-white/10 text-white flex items-center gap-2 text-[10px] font-bold">
+            <i data-lucide="printer" size="14"></i> IMPRIMIR
+        </button>
+        <button onclick="shareAsPDF()" class="bg-blue-600 p-2.5 rounded-xl text-white flex items-center gap-2 text-[10px] font-bold shadow-lg">
+            <i data-lucide="share-2" size="14"></i> COMPARTIR PDF
+        </button>
     </div>
+
+    <div class="glass-panel p-6 rounded-[32px] border-l-4 border-blue-500 shadow-2xl bg-black/40">
+        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em]">Resumen Ejecutivo VICO</span>
+            <span class="text-[9px] text-slate-500 font-mono" id="report-date"></span>
+        </div>
+        <div id="ai-report" class="text-[12px] leading-relaxed text-slate-200 font-mono whitespace-pre-wrap"></div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+        <div class="glass-panel p-4 rounded-3xl border-t-2 border-cyan-500/30">
+            <h4 class="text-[9px] font-bold text-cyan-400 mb-3 uppercase">Proyección de Crecimiento Bursátil</h4>
+            <div class="h-48"><canvas id="chartStock"></canvas></div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3">
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Atributos Clave</h4>
+                <div class="h-32"><canvas id="chartRadarPro"></canvas></div>
+            </div>
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Cuota de Mercado %</h4>
+                <div class="h-32"><canvas id="chartPiePro"></canvas></div>
+            </div>
+        </div>
+
+        <div class="glass-panel p-4 rounded-3xl border-t-2 border-blue-500/30">
+            <h4 class="text-[9px] font-bold text-blue-400 mb-3 uppercase">Comparativa de Rendimiento Operativo</h4>
+            <div class="h-40"><canvas id="chartBarPro"></canvas></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Varianza de Riesgo</h4>
+                <div class="h-32"><canvas id="chartAreaPro"></canvas></div>
+            </div>
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Impacto Global</h4>
+                <div class="h-32"><canvas id="chartComparison"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
 </section>
         <section id="view-profile" class="hidden p-5 fade-in">
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
@@ -710,7 +750,7 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
 
         async function runROIAnalysis() {
             const q = document.getElementById('ai-query').value;
-            if(!q) return alert("Escribe un tema de análisis.");
+            if(!q) return alert("Define el objetivo.");
             const btn = document.getElementById('btn-ai');
             const micro = document.getElementById('vico-microwave');
             const microContent = document.getElementById('microwave-content');
@@ -718,54 +758,96 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
             btn.disabled = true;
             micro.classList.remove('hidden');
             
-            // Simular pensamiento en tiempo real
-            const thoughtPool = ["Analizando pautas bursátiles...", "Extrayendo datos de autores 2026...", "Calculando varianza de mercado...", "Comparando con competidores directos...", "Buscando fuentes en MIT Review...", "Estructurando diagramas Excel..."];
+            // Animación Microondas
             let progress = 0;
+            const thoughts = ["Accediendo a base de datos 2026...", "Calculando proyecciones bursátiles...", "Analizando competencia internacional...", "Estructurando informe ejecutivo...", "Sincronizando diagramas dinámicos..."];
             const interval = setInterval(() => {
                 progress += 1;
                 document.getElementById('pomo-knob').style.setProperty('--p', (progress * 3.6) + 'deg');
                 document.getElementById('micro-percent').innerText = progress + '%';
-                if(progress % 10 === 0) microContent.innerHTML = thoughtPool[Math.floor(Math.random() * thoughtPool.length)] + "<br>" + microContent.innerHTML;
+                if(progress % 15 === 0) microContent.innerHTML = thoughts[Math.floor(progress/20)] + "<br>" + microContent.innerHTML;
                 if(progress >= 100) clearInterval(interval);
-            }, 50);
+            }, 60);
 
             try {
-                const megaPrompt = `Actúa como Consultor Senior. Realiza un análisis estratégico profesional de: ${q}. INCLUYE: 1. Comparativa autores y fechas 2026. 2. Links fuentes fiables. 3. Sin símbolos Markdown (* o #).`;
-                const aiTxt = await vicoNeuralLink(megaPrompt);
-                
-                // SONIDO DING FINAL
-                playSound('800'); 
-                setTimeout(() => playSound('1500'), 150); 
+                // Prompt optimizado para obtener DATOS numéricos
+                const megaPrompt = `Realiza un análisis estratégico y bursátil profesional de: ${q}. 
+                INCLUYE: Comparativa autores 2026 y fuentes fiables.
+                IMPORTANTE: Al final del texto, añade una línea con este formato exacto para los gráficos:
+                DATA_BLOCK[80, 60, 45, 90, 70] 
+                Responde sin símbolos Markdown (* o #).`;
 
+                const aiResponse = await vicoNeuralLink(megaPrompt);
+                
+                // Extraer datos del bloque de la IA
+                const dataMatch = aiResponse.match(/DATA_BLOCK\[(.*?)\]/);
+                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [50, 40, 60, 70, 50];
+                const cleanText = aiResponse.replace(/DATA_BLOCK\[.*?\]/, "");
+
+                // Sonido Ding
+                playSound('800'); setTimeout(() => playSound('1500'), 150);
+
+                document.getElementById('report-date').innerText = new Date().toLocaleDateString();
                 document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = aiTxt;
-                renderAllChartsPro(); // Llamada a los 6 gráficos
-            } catch(e) { alert("VICO: Error de enlace neural."); }
-            finally { btn.disabled = false; }
+                document.getElementById('ai-report').innerText = cleanText;
+                
+                // Pasar datos reales a los gráficos
+                renderAllChartsPro(chartData);
+                
+                // Scroll automático al informe
+                document.getElementById('ai-results').scrollIntoView({ behavior: 'smooth' });
+            } catch(e) { alert("VICO: Fallo en el enlace neural."); }
+            finally { btn.disabled = false; micro.classList.add('hidden'); }
         }
 
-        function renderAllChartsPro() {
+        function renderAllChartsPro(dataArray) {
             const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
-            chartIds.forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                const ctx = el.getContext('2d');
-                // Limpiar si ya existe
+            
+            // Estilos de colores VICO
+            const colors = { primary: '#3b82f6', secondary: '#00fff7', glass: 'rgba(0, 255, 247, 0.1)' };
+
+            chartIds.forEach((id, index) => {
+                const ctx = document.getElementById(id).getContext('2d');
                 const existing = Chart.getChart(id);
                 if (existing) existing.destroy();
 
+                // Lógica de datos: usamos el valor base y le aplicamos una varianza lógica por gráfico
+                const finalData = dataArray.map(v => v + (index * 2)); 
+
                 new Chart(ctx, {
-                    type: id === 'chartStock' ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
+                    type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
                     data: {
-                        labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
+                        labels: ['MKT', 'ROI', 'VAR', 'GROW', 'RISK'],
                         datasets: [{
-                            data: Array.from({length: 5}, () => Math.floor(Math.random() * 100)),
-                            borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2, fill: true
+                            data: finalData,
+                            borderColor: colors.secondary,
+                            backgroundColor: id.includes('Pie') ? [colors.primary, colors.secondary, '#1e293b', '#334155', '#475569'] : colors.glass,
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
                         }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: id.includes('Radar') || id.includes('Pie') ? {} : { y: { display: false }, x: { display: false } } }
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: { enabled: true, backgroundColor: '#0b0f1a', titleFont: { family: 'Orbitron' } }
+                        },
+                        scales: (id.includes('Radar') || id.includes('Pie')) ? {} : {
+                            y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#475569', font: { size: 8 } } },
+                            x: { display: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 8 } } }
+                        }
+                    }
                 });
             });
+        }
+
+        function shareAsPDF() {
+            if (navigator.share) {
+                alert("VICO: Preparando captura del informe ejecutivo para compartir...");
+                window.print(); // En móviles esto abre el diálogo de Guardar como PDF
+            }
         }
 
         // --- AUXILIARES GLOBALES ---
