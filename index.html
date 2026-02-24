@@ -567,19 +567,21 @@ if (sharedUrl) {
         function renderLinks() {
             const q = document.getElementById('link-search').value.toLowerCase();
             const list = document.getElementById('links-list');
-            list.innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q)).map(l => `
-                <div class="glass-panel p-5 rounded-3xl border-l-2 border-green-500/30 animate-in fade-in">
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1 truncate">
-                            <a href="${l.url}" target="_blank" class="text-sm font-bold text-blue-400 block truncate hover:underline">${l.title}</a>
-                            <p class="text-[9px] text-slate-500 mt-1 font-mono truncate italic opacity-70">${l.url}</p>
-                        </div>
-                        <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
+            list.innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q)).map(l => {
+                const domain = new URL(l.url).hostname;
+                const thumb = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+                return `
+                <div class="glass-panel p-4 rounded-[28px] flex gap-4 items-center border-l-2 border-green-500/30 animate-in fade-in">
+                    <div class="w-14 h-14 rounded-2xl bg-black/40 p-2 flex items-center justify-center shadow-inner border border-white/5">
+                        <img src="${thumb}" class="w-full h-full object-contain rounded-lg" onerror="this.src='https://lucide.dev/api/icons/link-2'">
                     </div>
-                    <div class="flex gap-1 mt-3">
-                        ${(l.tags || []).map(t => `<span class="bg-blue-900/20 text-[8px] px-2 py-0.5 rounded border border-blue-500/20 text-blue-300">#${t}</span>`).join('')}
+                    <div class="flex-1 truncate">
+                        <a href="${l.url}" target="_blank" class="text-sm font-bold text-blue-400 block truncate hover:underline">${l.title}</a>
+                        <p class="text-[9px] text-slate-500 font-mono truncate mt-1 italic opacity-80">${l.url}</p>
                     </div>
-                </div>`).join('') || '<p class="text-center text-[10px] text-slate-700 py-10">No hay enlaces guardados.</p>';
+                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" size="14"></i></button>
+                </div>`;
+            }).join('') || '<p class="text-center py-20 text-slate-700 text-xs">Memory Card Vacía.</p>';
             lucide.createIcons();
         }
         function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
@@ -634,7 +636,6 @@ async function vicoNeuralLink(promptText) {
             } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error de enlace neural.</div>`; }
             msgs.scrollTop = msgs.scrollHeight;
         }
-
         function renderChatDiagram() {
             const msgs = document.getElementById('chat-msgs');
             msgs.innerHTML += `
