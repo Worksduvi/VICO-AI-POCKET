@@ -210,19 +210,37 @@
             <div id="events-list" class="space-y-3"></div>
         </section>
 
-     <section id="view-analysis" class="hidden p-5 fade-in">
-    <h2 class="text-xl font-bold orbitron mb-4 text-purple-400 flex items-center gap-2"><i data-lucide="line-chart"></i> IA ROI Pro</h2>
+  <section id="view-analysis" class="hidden p-5 fade-in">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold orbitron text-purple-400 flex items-center gap-2"><i data-lucide="line-chart"></i> IA ROI Pro</h2>
+        <button onclick="toggleMicrowave()" class="p-2 glass-panel rounded-xl text-cyan-400 border-cyan-500/30 hover:bg-cyan-500/10 transition-all">
+            <i data-lucide="layout-template"></i>
+        </button>
+    </div>
     
     <div class="glass-panel p-6 rounded-3xl mb-6 shadow-2xl border-purple-500/20">
-        <textarea id="ai-query" placeholder="Ej: Análisis Tesla vs BYD 2026. Comparativa bursátil..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
-        <div class="flex gap-2 mb-4">
+        <textarea id="ai-query" placeholder="Ej: Análisis bursátil Tesla vs BYD 2026..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
+        <div class="flex gap-2">
             <button id="btn-ai" onclick="runROIAnalysis()" class="flex-1 bg-blue-600 py-3 rounded-2xl font-bold orbitron text-[10px] uppercase text-white shadow-lg">Analizar Prompt</button>
             <label class="bg-slate-800 p-3 rounded-2xl cursor-pointer border border-white/5"><i data-lucide="file-up" class="text-purple-400"></i><input type="file" class="hidden" onchange="analyzeFile(this)"></label>
         </div>
     </div>
 
+    <div id="vico-microwave" class="hidden glass-panel p-4 rounded-[32px] border-cyan-500/50 mb-6 animate-in zoom-in">
+        <div class="flex gap-4">
+            <div class="microwave-door flex-1 h-32 rounded-2xl p-2 bg-black">
+                <div id="microwave-content" class="thinking-text"></div>
+            </div>
+            <div class="flex flex-col items-center justify-between py-2">
+                <div class="timer-knob" id="pomo-knob" style="--progress: 0deg;"></div>
+                <div class="text-[10px] font-mono text-cyan-400" id="micro-percent">0%</div>
+                <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
     <div id="ai-results" class="hidden space-y-4">
-        <div class="glass-panel p-4 rounded-3xl border-t-2 border-cyan-500/50"><h4 class="text-[9px] font-bold text-cyan-400 mb-2 uppercase">Proyección Bursátil (Stock Market)</h4><canvas id="chartStock" height="180"></canvas></div>
+        <div class="glass-panel p-4 rounded-3xl border-t-2 border-cyan-500/50"><canvas id="chartStock" height="180"></canvas></div>
         <div class="grid grid-cols-2 gap-3">
             <div class="glass-panel p-4 rounded-3xl"><canvas id="chartRadarPro" height="140"></canvas></div>
             <div class="glass-panel p-4 rounded-3xl"><canvas id="chartPiePro" height="140"></canvas></div>
@@ -230,12 +248,11 @@
         <div class="glass-panel p-4 rounded-3xl"><canvas id="chartBarPro" height="140"></canvas></div>
         <div class="grid grid-cols-2 gap-3">
             <div class="glass-panel p-4 rounded-3xl"><canvas id="chartAreaPro" height="140"></canvas></div>
-            <div class="glass-panel p-4 rounded-3xl"><canvas id="chartBubblePro" height="140"></canvas></div>
+            <div class="glass-panel p-4 rounded-3xl"><canvas id="chartComparison" height="140"></canvas></div>
         </div>
-        <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono"></div>
-</div>
-        </section>
-
+        <div id="ai-report" class="glass-panel p-6 rounded-3xl border-l-4 border-blue-500 text-[11px] leading-relaxed text-slate-300 font-mono shadow-2xl"></div>
+    </div>
+</section>
         <section id="view-profile" class="hidden p-5 fade-in">
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             
@@ -262,14 +279,11 @@
                     <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
                     <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
                 </div>
-<div class="glass-panel p-5 rounded-3xl border-orange-500/30">
-    <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest mb-4">Mantenimiento de Núcleo</h3>
-    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase shadow-lg active:scale-95 transition-all">
-        Forzar Actualización (Clear Cache)
-    </button>
-    <div class="flex justify-between items-center mb-2">
-    <span class="text-xs text-slate-300">Sonidos de Interfaz</span>
-    <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
+<div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
+    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Configuración OS</h3>
+    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Minimal">Black Minimal</option></select></div>
+    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tamaño Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
+    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option></select></div>
 </div>
 
 <div class="glass-panel p-5 rounded-3xl border-orange-500/30 space-y-4">
@@ -279,7 +293,15 @@
         <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase">Importar JSON</button>
         <input type="file" id="import-file" class="hidden" onchange="importOSData(this)">
     </div>
-    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-2 rounded-xl text-[9px] font-bold text-orange-400 uppercase">Limpiar Caché Nucleo</button>
+    <div class="flex justify-between items-center border-t border-white/5 pt-3">
+        <span class="text-[10px] text-slate-400 uppercase font-bold">Notificaciones Android</span>
+        <input type="checkbox" id="sys-notify" onchange="updateSystem('notifications', this.checked)" class="w-5 h-5 accent-green-600">
+    </div>
+    <div class="flex justify-between items-center">
+        <span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos de Interfaz</span>
+        <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
+    </div>
+    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase">Limpiar Caché</button>
 </div>
     <p class="text-[8px] text-slate-600 mt-2 text-center">Usa esto si los cambios no se reflejan en tu APK.</p>
     </div>
@@ -534,8 +556,23 @@ if (sharedUrl) {
             app.events.forEach(e => {
                 const evDate = new Date(e.date);
                 if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
-                    if (app.config.showPopup) triggerAlarm(e.title);
-                    if (Notification.permission === "granted") new Notification("VICO AGENDA", { body: e.title });
+                    if (app.config.notifications) {
+                        // Notificación Nativa Android via Service Worker
+                        if ('serviceWorker' in navigator && 'PushManager' in window) {
+                            navigator.serviceWorker.ready.then(registration => {
+                                registration.showNotification("VICO POCKET AGENDA", {
+                                    body: e.title,
+                                    icon: "icon.png",
+                                    vibrate: [200, 100, 200],
+                                    tag: e.id, // Evita duplicados
+                                    persist: true
+                                });
+                            });
+                        } else {
+                            new Notification("VICO AGENDA", { body: e.title });
+                        }
+                    }
+                    triggerAlarm(e.title);
                     app.notified.push(e.id);
                 }
             });
@@ -653,27 +690,59 @@ async function vicoNeuralLink(promptText) {
             msgs.scrollTop = msgs.scrollHeight;
         }
 // --- ACTUALIZACIÓN DEL ROI ENGINE ---
-async function runROIAnalysis() {
+function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
+
+        async function runROIAnalysis() {
             const q = document.getElementById('ai-query').value;
-            if(!q) return alert("Define un objetivo de análisis.");
+            if(!q) return alert("Escribe un tema de análisis.");
             const btn = document.getElementById('btn-ai');
-            btn.disabled = true; btn.innerHTML = '<i data-lucide="loader" class="animate-spin"></i> ESCANEANDO MERCADO...';
+            const micro = document.getElementById('vico-microwave');
+            const microTxt = document.getElementById('microwave-content');
+            
+            btn.disabled = true;
+            micro.classList.remove('hidden');
+            
+            // Animación de pensamiento Microondas
+            let progress = 0;
+            const thoughts = ["Escaneando mercados bursátiles...", "Analizando competencia real...", "Calculando EBITDA proyectado...", "Extrayendo fuentes de Wired y MIT...", "Modelando gráficos dinámicos..."];
+            const interval = setInterval(() => {
+                progress += 2;
+                document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
+                document.getElementById('micro-percent').innerText = progress + '%';
+                microTxt.innerHTML = thoughts[Math.floor(progress/20)] + "<br>" + microTxt.innerHTML;
+                if(progress >= 100) clearInterval(interval);
+            }, 100);
+
             try {
-                const megaPrompt = `Realiza un análisis estratégico y bursátil profesional de: ${q}. 
-                REQUISITOS: 1. Cita fuentes (Verge, MIT, etc), autores y fechas (2026). 2. Comparativa competitiva detallada. 3. Sin símbolos Markdown (*, #). 4. Estructura de informe ejecutivo.`;
+                const megaPrompt = `Realiza un análisis bursátil profesional de: ${q}. INCLUYE: 1. Comparativa autores y fechas 2026. 2. Links fuentes fiables. 3. Sin símbolos Markdown (* o #).`;
                 const aiTxt = await vicoNeuralLink(megaPrompt);
+                
+                // Sonido Ding de Microondas
+                playBeep(1200, 'sine', 0.1, 0.2); 
+                
                 document.getElementById('ai-results').classList.remove('hidden');
                 document.getElementById('ai-report').innerText = aiTxt;
-                renderProfessionalCharts();
-            } catch(e) { alert("Error en el escaneo."); }
-            finally { btn.disabled = false; btn.innerText = "INICIAR PROCESO"; lucide.createIcons(); }
+                renderAllCharts();
+            } catch(e) { alert("VICO: Error de enlace neural."); }
+            finally { btn.disabled = false; }
         }
 
-        function renderProfessionalCharts() {
-            // Render de los 6 gráficos con datos simulados profesionales
-            const ctxStock = document.getElementById('chartStock').getContext('2d');
-            new Chart(ctxStock, { type: 'line', data: { labels: ['09:00','12:00','15:00','18:00','21:00'], datasets: [{label:'Market', data:[150,165,158,174,182], borderColor:'#00fff7', fill:true, backgroundColor:'rgba(0,255,247,0.05)', tension:0.1, pointRadius:0}] }, options: { plugins:{legend:{display:false}}, scales:{y:{grid:{color:'rgba(255,255,255,0.02)'},ticks:{color:'#475569',font:{size:8}}},x:{grid:{display:false},ticks:{color:'#475569',font:{size:8}}}} } });
-            // ... (Resto de los 5 gráficos con lógica similar para Radar, Pie, Bar, Area, Bubble)
+        function renderAllCharts() {
+            const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
+            chartIds.forEach(id => {
+                const ctx = document.getElementById(id).getContext('2d');
+                new Chart(ctx, {
+                    type: id === 'chartStock' ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'pie' : 'bar')),
+                    data: {
+                        labels: ['A', 'B', 'C', 'D', 'E'],
+                        datasets: [{
+                            data: [Math.random()*100, Math.random()*100, Math.random()*100, Math.random()*100, Math.random()*100],
+                            borderColor: '#00fff7', backgroundColor: 'rgba(0, 255, 247, 0.1)'
+                        }]
+                    },
+                    options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
+                });
+            });
         }
 
         // --- AUXILIARES GLOBALES ---
