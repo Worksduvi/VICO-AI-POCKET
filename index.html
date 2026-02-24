@@ -109,6 +109,14 @@
 .timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0f172a; border-radius: 50%; }
 
 .notification-active { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    /* --- COMPONENTES ELITE VICO --- */
+.microwave-chassis { border: 3px solid #3b82f6; box-shadow: 0 0 20px #00fff7, inset 0 0 10px #3b82f6; position: relative; background: #0b0f1a; }
+.microwave-window { background: rgba(0, 255, 247, 0.05); border: 2px solid #1e293b; height: 120px; overflow: hidden; position: relative; }
+.ai-brain-scroll { position: absolute; width: 100%; color: #0f0; font-family: monospace; font-size: 8px; line-height: 1.2; text-shadow: 0 0 5px #0f0; animation: brainScroll 15s linear infinite; }
+@keyframes brainScroll { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+
+.dial-container { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #1e293b; position: relative; background: conic-gradient(#3b82f6 var(--p), #0f172a 0deg); }
+.dial-container::after { content: ''; position: absolute; inset: 5px; background: #0b0f1a; border-radius: 50%; border: 1px solid #1e293b; }
     </style>
 </head>
 <body class="theme-Cyber font-normal">
