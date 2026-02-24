@@ -570,19 +570,20 @@ if (sharedUrl) {
                 const evDate = new Date(e.date);
                 if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
                     if (app.config.notifications) {
-                        // Notificación Nativa Android via Service Worker
+                        // NOTIFICACIÓN NATIVA ANDROID/iOS
                         if ('serviceWorker' in navigator && 'PushManager' in window) {
                             navigator.serviceWorker.ready.then(registration => {
-                                registration.showNotification("VICO POCKET AGENDA", {
-                                    body: e.title,
+                                registration.showNotification("VICO OS: AGENDA", {
+                                    body: "Evento activo: " + e.title,
                                     icon: "icon.png",
-                                    vibrate: [200, 100, 200],
-                                    tag: e.id, // Evita duplicados
-                                    persist: true
+                                    badge: "icon.png",
+                                    vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40],
+                                    requireInteraction: true, // Se mantiene en el panel hasta que se borre
+                                    tag: e.id 
                                 });
                             });
                         } else {
-                            new Notification("VICO AGENDA", { body: e.title });
+                            new Notification("VICO POCKET", { body: e.title });
                         }
                     }
                     triggerAlarm(e.title);
@@ -705,55 +706,64 @@ async function vicoNeuralLink(promptText) {
 // --- ACTUALIZACIÓN DEL ROI ENGINE ---
 function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
 
+        function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
+
         async function runROIAnalysis() {
             const q = document.getElementById('ai-query').value;
             if(!q) return alert("Escribe un tema de análisis.");
             const btn = document.getElementById('btn-ai');
             const micro = document.getElementById('vico-microwave');
-            const microTxt = document.getElementById('microwave-content');
+            const microContent = document.getElementById('microwave-content');
             
             btn.disabled = true;
             micro.classList.remove('hidden');
             
-            // Animación de pensamiento Microondas
+            // Simular pensamiento en tiempo real
+            const thoughtPool = ["Analizando pautas bursátiles...", "Extrayendo datos de autores 2026...", "Calculando varianza de mercado...", "Comparando con competidores directos...", "Buscando fuentes en MIT Review...", "Estructurando diagramas Excel..."];
             let progress = 0;
-            const thoughts = ["Escaneando mercados bursátiles...", "Analizando competencia real...", "Calculando EBITDA proyectado...", "Extrayendo fuentes de Wired y MIT...", "Modelando gráficos dinámicos..."];
             const interval = setInterval(() => {
-                progress += 2;
-                document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
+                progress += 1;
+                document.getElementById('pomo-knob').style.setProperty('--p', (progress * 3.6) + 'deg');
                 document.getElementById('micro-percent').innerText = progress + '%';
-                microTxt.innerHTML = thoughts[Math.floor(progress/20)] + "<br>" + microTxt.innerHTML;
+                if(progress % 10 === 0) microContent.innerHTML = thoughtPool[Math.floor(Math.random() * thoughtPool.length)] + "<br>" + microContent.innerHTML;
                 if(progress >= 100) clearInterval(interval);
-            }, 100);
+            }, 50);
 
             try {
-                const megaPrompt = `Realiza un análisis bursátil profesional de: ${q}. INCLUYE: 1. Comparativa autores y fechas 2026. 2. Links fuentes fiables. 3. Sin símbolos Markdown (* o #).`;
+                const megaPrompt = `Actúa como Consultor Senior. Realiza un análisis estratégico profesional de: ${q}. INCLUYE: 1. Comparativa autores y fechas 2026. 2. Links fuentes fiables. 3. Sin símbolos Markdown (* o #).`;
                 const aiTxt = await vicoNeuralLink(megaPrompt);
                 
-                // Sonido Ding de Microondas
-                playBeep(1200, 'sine', 0.1, 0.2); 
-                
+                // SONIDO DING FINAL
+                playSound('800'); 
+                setTimeout(() => playSound('1500'), 150); 
+
                 document.getElementById('ai-results').classList.remove('hidden');
                 document.getElementById('ai-report').innerText = aiTxt;
-                renderAllCharts();
+                renderAllChartsPro(); // Llamada a los 6 gráficos
             } catch(e) { alert("VICO: Error de enlace neural."); }
             finally { btn.disabled = false; }
         }
 
-        function renderAllCharts() {
+        function renderAllChartsPro() {
             const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
             chartIds.forEach(id => {
-                const ctx = document.getElementById(id).getContext('2d');
+                const el = document.getElementById(id);
+                if (!el) return;
+                const ctx = el.getContext('2d');
+                // Limpiar si ya existe
+                const existing = Chart.getChart(id);
+                if (existing) existing.destroy();
+
                 new Chart(ctx, {
-                    type: id === 'chartStock' ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'pie' : 'bar')),
+                    type: id === 'chartStock' ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
                     data: {
-                        labels: ['A', 'B', 'C', 'D', 'E'],
+                        labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
                         datasets: [{
-                            data: [Math.random()*100, Math.random()*100, Math.random()*100, Math.random()*100, Math.random()*100],
-                            borderColor: '#00fff7', backgroundColor: 'rgba(0, 255, 247, 0.1)'
+                            data: Array.from({length: 5}, () => Math.floor(Math.random() * 100)),
+                            borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2, fill: true
                         }]
                     },
-                    options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: id.includes('Radar') || id.includes('Pie') ? {} : { y: { display: false }, x: { display: false } } }
                 });
             });
         }
