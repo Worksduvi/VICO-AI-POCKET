@@ -288,29 +288,23 @@
                     <div class="grid grid-cols-2 gap-3 mb-4"><input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs"><input type="text" id="btn-url" placeholder="URL" class="text-xs"></div>
                     <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase text-white shadow-lg">Añadir Botón</button>
                 </div>
-
-                <div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
-                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest" data-translate="system">Sistema</h3>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="theme">Tema</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Nebula">Cosmic Nebula</option><option value="Minimal">Black Minimal</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="text_size">Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="alarm_tone">Tono Alerta</span><select id="sys-alarm" onchange="updateSystem('alarmSound', this.value)" class="text-[10px] py-1 px-4"><option value="800">Cyber Beep</option><option value="pulsar">Pulse Red</option><option value="siren">Siren Pro</option><option value="zen">Zen Morning</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
-                </div>
-<div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
+            
+    <div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
     <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Configuración OS</h3>
     <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Minimal">Black Minimal</option></select></div>
     <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tamaño Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
-    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option></select></div>
-</div>
+     <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
+                </div>
 
 <div class="glass-panel p-5 rounded-3xl border-orange-500/30 space-y-4">
     <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Data Vault & Sync</h3>
     <div class="grid grid-cols-2 gap-2">
-        <button onclick="exportOSData()" class="bg-green-600/20 border border-green-500/50 py-2 rounded-xl text-[9px] font-bold text-green-400 uppercase">Exportar JSON</button>
-        <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase">Importar JSON</button>
+        <button onclick="exportOSData()" class="bg-green-600/20 border border-green-500/50 py-2 rounded-xl text-[9px] font-bold text-green-400 uppercase flex items-center justify-center gap-1"><i data-lucide="download" size="12"></i> Exportar</button>
+        <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase flex items-center justify-center gap-1"><i data-lucide="upload" size="12"></i> Importar</button>
         <input type="file" id="import-file" class="hidden" onchange="importOSData(this)">
     </div>
+    
     <div class="flex justify-between items-center border-t border-white/5 pt-3">
         <span class="text-[10px] text-slate-400 uppercase font-bold">Notificaciones Android</span>
         <input type="checkbox" id="sys-notify" onchange="updateSystem('notifications', this.checked)" class="w-5 h-5 accent-green-600">
@@ -319,7 +313,8 @@
         <span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos de Interfaz</span>
         <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
     </div>
-    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase">Limpiar Caché</button>
+    
+    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase shadow-lg active:scale-95 transition-all">Limpiar Caché Nucleo</button>
 </div>
     <p class="text-[8px] text-slate-600 mt-2 text-center">Usa esto si los cambios no se reflejan en tu APK.</p>
     </div>
