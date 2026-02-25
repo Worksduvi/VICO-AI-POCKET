@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 10.2</title>
+    <title>VICO POCKET OS - ELITE Final 10.3</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -462,45 +462,62 @@ body.mode-light .orbitron { color: #1e293b; }
 
     <script>
         // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
-        // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
-        let app = {
-            notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
-            events: JSON.parse(localStorage.getItem('vp_events')) || [],
-            links: JSON.parse(localStorage.getItem('vp_links')) || [],
-            btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
-            favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
-            rss: JSON.parse(localStorage.getItem('vp_rss')) || [
-                {name:'The Verge', url:'https://www.theverge.com/rss/index.xml'},
-                {name:'MIT News', url:'https://news.mit.edu/rss/feed'},
-                {name:'TechCrunch', url:'https://techcrunch.com/feed/'},
-                {name:'Nature', url:'https://www.nature.com/nature/articles?type=rss'},
-                {name:'El Mundo', url:'https://e00-elmundo.uecdn.es/rss/portada.xml'},
-                {name:'CNN', url:'http://rss.cnn.com/rss/cnn_topstories.rss'},
-                {name:'Infobae', url:'https://www.infobae.com/feeds/rss/'},
-                {name:'Ecoinventos', url:'https://ecoinventos.com/feed/'},
-                {name:'Computer Hoy', url:'https://computerhoy.com/rss.xml'},
-                {name:'WIRED', url:'https://www.wired.com/feed/rss'},
-                {name:'MIT Tech Review', url:'https://www.technologyreview.com/feed/'}
-            ],
-            config: JSON.parse(localStorage.getItem('vp_cfg')) || { 
-                key: '', theme: 'Cyber', font: 'font-normal', 
-                sound: true, lang: 'es', alarmSound: '800', 
-                showPopup: true, uiSounds: true 
-            },
-            pomo: { time: 1500, active: false, timer: null },
-            folders: ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Varios"],
-            activeFolder: 'Fijadas',
-            activeRss: 0,
-            notified: [],
-            alarmInterval: null
-        };
+        // --- PROTOCOLO SEGURIDAD PACK DUVI ---
+if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") {
+    document.body.innerHTML = "<div style='background:#000;color:#0ff;height:100vh;display:flex;align-items:center;justify-content:center;font-family:Orbitron;text-align:center;'><h1>ACCESO DENEGADO<br>VICO POCKET NUCLEUS PROTECTED</h1></div>";
+}
 
-        const DICT = {
-            es: { quickNote: "Nota Rápida", links: "Links Pocket", focus: "Focus", roi: "ROI", discovery: "Feeds", notes: "Notas", resources: "Links", system: "Sistema", ui_sounds: "Sonidos UI", run_analysis: "Análisis Bursátil" },
-            en: { quickNote: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "ROI", discovery: "Feeds", notes: "Notes", resources: "Links", system: "System", ui_sounds: "UI Sounds", run_analysis: "Stock Analysis" },
-            zh: { quickNote: "快速笔记", links: "链接口袋", focus: "专注", roi: "分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统", ui_sounds: "界面声音", run_analysis: "深度分析" }
-        };
+// --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
+let app = {
+    notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
+    events: JSON.parse(localStorage.getItem('vp_events')) || [],
+    links: JSON.parse(localStorage.getItem('vp_links')) || [],
+    btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
+    favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
+    // TUS 11 FEEDS PREDETERMINADOS (RESTAURADOS)
+    rss: JSON.parse(localStorage.getItem('vp_rss')) || [
+        {name:'The Verge', url:'https://www.theverge.com/rss/index.xml'},
+        {name:'MIT News', url:'https://news.mit.edu/rss/feed'},
+        {name:'TechCrunch', url:'https://techcrunch.com/feed/'},
+        {name:'Nature', url:'https://www.nature.com/nature/articles?type=rss'},
+        {name:'El Mundo', url:'https://e00-elmundo.uecdn.es/rss/portada.xml'},
+        {name:'CNN', url:'http://rss.cnn.com/rss/cnn_topstories.rss'},
+        {name:'Infobae', url:'https://www.infobae.com/feeds/rss/'},
+        {name:'Ecoinventos', url:'https://ecoinventos.com/feed/'},
+        {name:'Computer Hoy', url:'https://computerhoy.com/rss.xml'},
+        {name:'WIRED', url:'https://www.wired.com/feed/rss'},
+        {name:'MIT Tech Review', url:'https://www.technologyreview.com/feed/'}
+    ],
+    // CONFIGURACIÓN UNIFICADA (FIX BORRADO API)
+    config: JSON.parse(localStorage.getItem('vp_config')) || { 
+        key: '', theme: 'Cyber', font: 'font-normal', 
+        sound: true, uiSounds: true, lang: 'es', 
+        alarmSound: '800', showPopup: true, mode: 'dark',
+        notifications: true, adScript: '', adPos: 'footer'
+    },
+    pomo: { time: 1500, active: false, timer: null },
+    folders: JSON.parse(localStorage.getItem('vp_folders')) || ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Varios"],
+    activeFolder: 'Fijadas',
+    activeRss: 0,
+    notified: [],
+    alarmInterval: null
+};
 
+// PAQUETE DE IDIOMAS TOTAL
+const DICT = {
+    es: { 
+        quickNote: "Nota Rápida", links: "Links Pocket", focus: "Enfoque", roi: "IA ROI", discovery: "Feeds", 
+        notes: "Notas", resources: "Links", system: "Sistema", ui_sounds: "Sonidos UI", run_analysis: "Análisis Bursátil",
+        home: "INICIO", data: "DATOS", agenda: "AGENDA", core: "NÚCLEO", notify: "Notificaciones", 
+        export: "Exportar JSON", import: "Importar JSON", theme_toggle: "Modo Día", ad_manager: "Gestor Ads"
+    },
+    en: { 
+        quickNote: "Quick Note", links: "Links Pocket", focus: "Focus", roi: "AI ROI", discovery: "Feeds", 
+        notes: "Notes", resources: "Links", system: "System", ui_sounds: "UI Sounds", run_analysis: "Stock Analysis",
+        home: "HOME", data: "DATA", agenda: "SCHEDULE", core: "CORE", notify: "Notifications",
+        export: "Export JSON", import: "Import JSON", theme_toggle: "Light Mode", ad_manager: "Ad Manager"
+    }
+};
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if(!app.config.sound) return;
@@ -552,19 +569,70 @@ if (sharedUrl) {
 }
 
         function applySystemConfig() {
-            const cfg = app.config;
-            document.body.className = `theme-${cfg.theme} ${cfg.font}`;
-            document.getElementById('sys-theme').value = cfg.theme;
-            document.getElementById('sys-font').value = cfg.font;
-            document.getElementById('sys-alarm').value = cfg.alarmSound;
-            document.getElementById('sys-popup').checked = cfg.showPopup;
-            document.getElementById('sys-lang').value = cfg.lang;
-            document.getElementById('api-key-input').value = cfg.key;
-            document.getElementById('nt-folder-modal').innerHTML = app.folders.map(f=>`<option value="${f}">${f}</option>`).join('');
-            translateUI();
+    const cfg = app.config;
+    document.body.className = `theme-${cfg.theme} ${cfg.font}`;
+    document.body.classList.toggle('mode-light', cfg.mode === 'light');
+
+    // LÓGICA DE COLORES DINÁMICOS (Verde Activo / Rojo Apagado)
+    const toggles = [
+        { id: 'sys-ui-sounds', val: cfg.uiSounds },
+        { id: 'sys-notify', val: cfg.notifications }
+    ];
+
+    toggles.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (el) {
+            const container = el.parentElement;
+            if (t.val) {
+                container.style.background = "rgba(16, 185, 129, 0.2)";
+                container.style.borderColor = "#10b981";
+            } else {
+                container.style.background = "rgba(239, 68, 68, 0.2)";
+                container.style.borderColor = "#ef4444";
+            }
+        }
+    });
+
+    // Inyectar Publicidad si existe
+    if (cfg.adScript) injectAds();
+    translateUI();
+}
+
+       function saveAdSettings() {
+            app.config.adScript = document.getElementById('ad-script-input').value;
+            app.config.adPos = document.getElementById('ad-position').value;
+            save();
+            alert("VICO: Configuración de Publicidad guardada.");
+            location.reload();
         }
 
-        function translateUI() { document.querySelectorAll('[data-translate]').forEach(el => { el.innerText = DICT[app.config.lang][el.dataset.translate] || el.innerText; }); }
+        function injectAds() {
+            const script = app.config.adScript;
+            if(!script) return;
+            const container = document.getElementById(`ad-${app.config.adPos}-zone`) || document.createElement('div');
+            container.id = `ad-${app.config.adPos}-zone`;
+            container.innerHTML = script;
+            if (app.config.adPos === 'top') document.body.prepend(container);
+            if (app.config.adPos === 'footer') document.querySelector('main').append(container);
+        }
+
+        function toggleThemeMode() {
+            app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark';
+            save();
+            applySystemConfig();
+            playSound('800');
+        }function translateUI() {
+    const lang = app.config.lang;
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.dataset.translate;
+        if (DICT[lang][key]) el.innerText = DICT[lang][key];
+    });
+    
+    // Traducir Nav-Bar Inferior
+    const navItems = document.querySelectorAll('.nav-item span');
+    const labels = lang === 'es' ? ["HOME", "DATA", "LINKS", "ROI", "FEEDS", "AGENDA", "CORE"] : ["HOME", "DATA", "LINKS", "ROI", "FEEDS", "SCHED", "CORE"];
+    navItems.forEach((span, i) => { if(labels[i]) span.innerText = labels[i]; });
+}
         function updateSystem(k, v) { app.config[k]=v; save(); applySystemConfig(); playSound(800); }
         function saveApi() { app.config.key = document.getElementById('api-key-input').value.trim(); save(); alert('API Sync OK'); playSound(1000); }
 
