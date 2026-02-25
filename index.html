@@ -599,22 +599,24 @@ if (sharedUrl) {
 }
 
        function saveAdSettings() {
-            app.config.adScript = document.getElementById('ad-script-input').value;
-            app.config.adPos = document.getElementById('ad-position').value;
-            save();
-            alert("VICO: Configuración de Publicidad guardada.");
-            location.reload();
-        }
+    app.config.adScript = document.getElementById('ad-script-input').value;
+    app.config.adPos = document.getElementById('ad-position').value;
+    save();
+    location.reload(); // Recarga para inyectar el script
+}
 
-        function injectAds() {
-            const script = app.config.adScript;
-            if(!script) return;
-            const container = document.getElementById(`ad-${app.config.adPos}-zone`) || document.createElement('div');
-            container.id = `ad-${app.config.adPos}-zone`;
-            container.innerHTML = script;
-            if (app.config.adPos === 'top') document.body.prepend(container);
-            if (app.config.adPos === 'footer') document.querySelector('main').append(container);
-        }
+function injectAds() {
+    const zoneId = `ad-${app.config.adPos}-zone`;
+    let zone = document.getElementById(zoneId);
+    if (!zone) {
+        zone = document.createElement('div');
+        zone.id = zoneId;
+        zone.className = "p-2 text-center";
+        if (app.config.adPos === 'top') document.body.prepend(zone);
+        else document.querySelector('main').append(zone);
+    }
+    zone.innerHTML = app.config.adScript;
+}
 
         function toggleThemeMode() {
             app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark';
@@ -1073,14 +1075,14 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
     playSound(800);
         }
    function save() {
-            localStorage.setItem('vp_notes', JSON.stringify(app.notes));
-            localStorage.setItem('vp_events', JSON.stringify(app.events));
-            localStorage.setItem('vp_links', JSON.stringify(app.links));
-            localStorage.setItem('vp_config', JSON.stringify(app.config)); // UNIFICADO
-            localStorage.setItem('vp_btns', JSON.stringify(app.btns));
-            localStorage.setItem('vp_rss', JSON.stringify(app.rss));
-            localStorage.setItem('vp_folders', JSON.stringify(app.folders));
-        }
+    localStorage.setItem('vp_notes', JSON.stringify(app.notes));
+    localStorage.setItem('vp_events', JSON.stringify(app.events));
+    localStorage.setItem('vp_links', JSON.stringify(app.links));
+    localStorage.setItem('vp_config', JSON.stringify(app.config)); // CLAVE UNIFICADA
+    localStorage.setItem('vp_btns', JSON.stringify(app.btns));
+    localStorage.setItem('vp_rss', JSON.stringify(app.rss));
+    localStorage.setItem('vp_folders', JSON.stringify(app.folders));
+}
 
         function exportOSData() {
             const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
