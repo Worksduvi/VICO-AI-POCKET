@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 10.1</title>
+    <title>VICO POCKET OS - ELITE Final 10.2</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -117,6 +117,23 @@
 
 .dial-container { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #1e293b; position: relative; background: conic-gradient(#3b82f6 var(--p), #0f172a 0deg); }
 .dial-container::after { content: ''; position: absolute; inset: 5px; background: #0b0f1a; border-radius: 50%; border: 1px solid #1e293b; }
+    /* --- NUEVOS ESTILOS v11 --- */
+/* Modo Claro (Normal) */
+body.mode-light { --bg: #f8fafc; --glass: rgba(0,0,0,0.03); --border: rgba(0,0,0,0.1); color: #1e293b; }
+body.mode-light .glass-panel { background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); }
+body.mode-light input, body.mode-light textarea, body.mode-light select { background: #fff !important; color: #000 !important; border: 1px solid #ddd !important; }
+body.mode-light .nav-bar { background: #fff; border-top: 1px solid #ddd; }
+body.mode-light .orbitron { color: #1e293b; }
+
+/* Toggles Dinámicos */
+.toggle-btn { transition: 0.4s; cursor: pointer; border: 2px solid transparent; }
+.toggle-on { background-color: #10b981 !important; box-shadow: 0 0 10px #10b981; }
+.toggle-off { background-color: #ef4444 !important; }
+
+/* Contenedores de Anuncios */
+#ad-top-zone { width: 100%; text-align: center; margin-bottom: 10px; }
+#ad-footer-zone { width: 100%; text-align: center; padding: 10px 0; }
+#ad-popup-zone { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; }
     </style>
 </head>
 <body class="theme-Cyber font-normal">
