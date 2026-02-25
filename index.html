@@ -134,7 +134,18 @@ body.mode-light .orbitron { color: #1e293b; }
 #ad-top-zone { width: 100%; text-align: center; margin-bottom: 10px; }
 #ad-footer-zone { width: 100%; text-align: center; padding: 10px 0; }
 #ad-popup-zone { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; }
-    </style>
+    /* --- ESTILOS DE IMPRESIÓN PRO --- */
+@media print {
+    body * { visibility: hidden; }
+    #ai-results, #ai-results * { visibility: visible; }
+    #ai-results { position: absolute; left: 0; top: 0; width: 100%; }
+    .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; }
+    canvas { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
+}
+
+/* Diagramas Complejos Chat */
+.vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; }
+.diagram-btn-float { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; }</style>
 </head>
 <body class="theme-Cyber font-normal">
 
@@ -370,10 +381,14 @@ body.mode-light .orbitron { color: #1e293b; }
         <span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos de Interfaz</span>
         <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
     </div>
-    
+    <div class="glass-panel p-5 rounded-3xl border-blue-500/20 space-y-4 mt-4">
+    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Alertas Discovery (RSS)</h3>
+    <div id="rss-notify-controls" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar">
+        </div>
+    </div>
     <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase shadow-lg active:scale-95 transition-all">Limpiar Caché Nucleo</button>
 </div>
-    <p class="text-[8px] text-slate-600 mt-2 text-center">Usa esto si los cambios no se reflejan en tu APK.</p>
+    <p class="text-[8px] text-slate-600 mt-2 text-center">Usa esto si los cambios no se reflejan en tu dispositivo.</p>
     </div>
                 <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
                     <h4 class="font-bold text-slate-400 mb-2 uppercase">Aviso Legal y Políticas</h4>
@@ -937,11 +952,43 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
         // --- AUXILIARES GLOBALES ---
         function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        function openNoteModal(id=null) { 
-            playSound(400); document.getElementById('modal-note').classList.remove('hidden'); 
-            if(id) { const n = app.notes.find(x=>x.id===id); document.getElementById('nt-id').value=n.id; document.getElementById('nt-title').value=n.title; document.getElementById('nt-text').value=n.content; document.getElementById('nt-folder-modal').value=n.folder; document.getElementById('nt-color').value=n.color || '#3b82f6'; }
-            else { document.getElementById('nt-id').value=''; document.getElementById('nt-title').value=''; document.getElementById('nt-text').value=''; }
-        }
+        // BUSCA openNoteModal y REEMPLAZA:
+function openNoteModal(id=null) { 
+    // Sincronizar selector de carpetas
+    const folderSelect = document.getElementById('nt-folder-modal');
+    folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
+    
+    vicoTouchSound(); // Sonido de apertura
+    document.getElementById('modal-note').classList.remove('hidden'); 
+    
+    if(id) { 
+        const n = app.notes.find(x=>x.id===id); 
+        document.getElementById('nt-id').value=n.id; 
+        document.getElementById('nt-title').value=n.title; 
+        document.getElementById('nt-text').value=n.content; 
+        document.getElementById('nt-folder-modal').value=n.folder; 
+        document.getElementById('nt-color').value=n.color || '#3b82f6'; 
+    } else { 
+        document.getElementById('nt-id').value=''; 
+        document.getElementById('nt-title').value=''; 
+        document.getElementById('nt-text').value=''; 
+    }
+}
+
+// BUSCA playSound y REEMPLAZA:
+function playSound(type) {
+    if(!app.config.uiSounds) return; // SI ESTÁ APAGADO EN AJUSTES, NO SUENA
+    const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+    o.connect(g); g.connect(audioCtx.destination);
+    
+    if(type === 'pulsar') { o.frequency.setValueAtTime(600, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); }
+    else if (type === '1500') { o.frequency.value = 1500; } // Sonido Ding
+    else { o.frequency.value = parseInt(type) || 800; }
+    
+    g.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+    o.start(); o.stop(audioCtx.currentTime + 0.3);
+}
         function save() { 
             localStorage.setItem('vp_notes', JSON.stringify(app.notes)); 
             localStorage.setItem('vp_events', JSON.stringify(app.events)); 
