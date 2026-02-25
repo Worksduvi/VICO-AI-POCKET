@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 10.3</title>
+    <title>VICO POCKET OS - ELITE Final 10.4</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -692,32 +692,29 @@ function injectAds() {
         function renderChips() { document.getElementById('discovery-chips').innerHTML = app.rss.map((r,i) => `<button onclick="fetchNews(${i})" class="px-5 py-2 rounded-full text-[10px] whitespace-nowrap transition-all ${app.activeRss === i ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${r.name}</button>`).join(''); }
 
         function checkAgenda() {
-            const now = new Date();
-            app.events.forEach(e => {
-                const evDate = new Date(e.date);
-                if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
-                    if (app.config.notifications) {
-                        // NOTIFICACIÓN NATIVA ANDROID/iOS
-                        if ('serviceWorker' in navigator && 'PushManager' in window) {
-                            navigator.serviceWorker.ready.then(registration => {
-                                registration.showNotification("VICO OS: AGENDA", {
-                                    body: "Evento activo: " + e.title,
-                                    icon: "icon.png",
-                                    badge: "icon.png",
-                                    vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40],
-                                    requireInteraction: true, // Se mantiene en el panel hasta que se borre
-                                    tag: e.id 
-                                });
-                            });
-                        } else {
-                            new Notification("VICO POCKET", { body: e.title });
-                        }
-                    }
-                    triggerAlarm(e.title);
-                    app.notified.push(e.id);
+    const now = new Date();
+    app.events.forEach(e => {
+        const evDate = new Date(e.date);
+        if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
+            if (app.config.notifications) {
+                // NOTIFICACIÓN PERSISTENTE ANDROID
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready.then(reg => {
+                        reg.showNotification("VICO OS: AGENDA", {
+                            body: "Evento: " + e.title,
+                            icon: "icon.png",
+                            vibrate: [200, 100, 200, 100, 400],
+                            requireInteraction: true, // Se queda hasta que la toques
+                            tag: e.id
+                        });
+                    });
                 }
-            });
+            }
+            triggerAlarm(e.title);
+            app.notified.push(e.id);
         }
+    });
+}
         function renderEvents() {
             document.getElementById('events-list').innerHTML = app.events.sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime()).map(e => `
                 <div class="glass-panel p-4 rounded-xl border-l-4 border-yellow-500 flex justify-between items-center">
@@ -1097,6 +1094,38 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
             };
             reader.readAsText(input.files[0]);
     }
-    </script>
+    function renderVicoDiagram(data) {
+    const msgs = document.getElementById('chat-msgs');
+    const id = "diag-" + Date.now();
+    msgs.innerHTML += `
+        <div class="vico-diagram-container my-3" id="${id}">
+            <div class="diagram-btn-float">
+                <button onclick="printElement('${id}')" class="p-1 bg-white/10 rounded"><i data-lucide="printer" size="10"></i></button>
+                <button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded"><i data-lucide="download" size="10"></i></button>
+            </div>
+            <h5 class="text-[9px] orbitron text-blue-400 mb-2">Análisis Visual VICO</h5>
+            <canvas id="canvas-${id}"></canvas>
+        </div>`;
+    
+    lucide.createIcons();
+    const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
+    new Chart(ctx, {
+        type: 'radar',
+        data: { labels: ['A','B','C','D','E'], datasets: [{ data: [80, 90, 70, 60, 85], borderColor: '#00fff7' }] },
+        options: { plugins: { legend: { display: false } } }
+    });
+}
+
+function shareAsPDF() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'VICO ROI REPORT',
+            text: document.getElementById('ai-report').innerText,
+            url: window.location.href
+        }).catch(() => window.print());
+    } else {
+        window.print();
+    }
+                         }</script>
 </body>
 </html>
