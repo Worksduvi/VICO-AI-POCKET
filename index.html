@@ -1173,6 +1173,19 @@ function shareAsPDF() {
     } else {
         window.print();
     }
-                         }</script>
+                         }
+    /* --- ESTILOS DE IMPRESIÓN PRO --- */
+@media print {
+    body * { visibility: hidden; }
+    #ai-results, #ai-results * { visibility: visible; }
+    #ai-results { position: absolute; left: 0; top: 0; width: 100%; }
+    .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; }
+    canvas { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
+}
+
+/* Diagramas Complejos Chat */
+.vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; }
+.diagram-btn-float { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; }
+    </script>
 </body>
 </html>
