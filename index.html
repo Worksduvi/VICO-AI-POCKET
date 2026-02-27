@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 10.4</title>
+    <title>VICO POCKET OS - ELITE Final 10.5</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -706,7 +706,7 @@ function injectAds() {
         }
         function renderChips() { document.getElementById('discovery-chips').innerHTML = app.rss.map((r,i) => `<button onclick="fetchNews(${i})" class="px-5 py-2 rounded-full text-[10px] whitespace-nowrap transition-all ${app.activeRss === i ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${r.name}</button>`).join(''); }
 
-        function checkAgenda() {
+       function checkAgenda() {
     const now = new Date();
     app.events.forEach(e => {
         const evDate = new Date(e.date);
@@ -724,6 +724,12 @@ function injectAds() {
                         });
                     });
                 }
+            }
+            triggerAlarm(e.title);
+            app.notified.push(e.id);
+        }
+    });
+}
             }
             triggerAlarm(e.title);
             app.notified.push(e.id);
@@ -952,7 +958,7 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
         // --- AUXILIARES GLOBALES ---
         function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        // BUSCA openNoteModal y REEMPLAZA:
+// BUSCA openNoteModal y REEMPLAZA:
 function openNoteModal(id=null) { 
     // Sincronizar selector de carpetas
     const folderSelect = document.getElementById('nt-folder-modal');
@@ -974,7 +980,6 @@ function openNoteModal(id=null) {
         document.getElementById('nt-text').value=''; 
     }
 }
-
 // BUSCA playSound y REEMPLAZA:
 function playSound(type) {
     if(!app.config.uiSounds) return; // SI ESTÁ APAGADO EN AJUSTES, NO SUENA
