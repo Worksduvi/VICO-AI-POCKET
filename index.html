@@ -591,36 +591,71 @@ if (sharedUrl) {
 }
 
         // BUSCA applySystemConfig y REEMPLAZA:
-function applySystemConfig() {
-    const cfg = app.config;
-    document.body.className = `theme-${cfg.theme} ${cfg.font}`;
-    document.body.classList.toggle('mode-light', cfg.mode === 'light');
+// --- PROTECCIÓN NÚCLEO PACK DUVI ---
+        setInterval(() => { debugger; }, 5000); // Anti-Debugging activo
 
-    // Toggles con Colores Reales (Verde/Rojo)
-    const toggles = [
-        { id: 'sys-ui-sounds', val: cfg.uiSounds },
-        { id: 'sys-notify', val: cfg.notifications }
-    ];
+        function applySystemConfig() {
+            const cfg = app.config;
+            document.body.className = `theme-${cfg.theme} ${cfg.font}`;
+            document.body.classList.toggle('mode-light', cfg.mode === 'light');
 
-    toggles.forEach(t => {
-        const el = document.getElementById(t.id);
-        if (el) {
-            el.checked = t.val;
-            const container = el.parentElement;
-            container.style.transition = "0.3s";
-            container.style.background = t.val ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)";
-            container.style.borderColor = t.val ? "#10b981" : "#ef4444";
+            // Colores Dinámicos Toggles
+            const snd = document.getElementById('sys-ui-sounds');
+            const ntf = document.getElementById('sys-notify');
+            if(snd) { 
+                snd.parentElement.style.background = cfg.uiSounds ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)";
+                snd.parentElement.style.borderColor = cfg.uiSounds ? "#10b981" : "#ef4444";
+            }
+            if(ntf) {
+                ntf.parentElement.style.background = cfg.notifications ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)";
+                ntf.parentElement.style.borderColor = cfg.notifications ? "#10b981" : "#ef4444";
+            }
+            
+            if (cfg.notifications && Notification.permission !== "granted") Notification.requestPermission();
+            
+            translateUI();
         }
-    });
 
-    // Pedir permisos de notificación si se activan
-    if (cfg.notifications && Notification.permission !== "granted") {
-        Notification.requestPermission();
-    }
+        function save() {
+            localStorage.setItem('vp_notes', JSON.stringify(app.notes));
+            localStorage.setItem('vp_events', JSON.stringify(app.events));
+            localStorage.setItem('vp_links', JSON.stringify(app.links));
+            localStorage.setItem('vp_config', JSON.stringify(app.config)); // Persistencia Unificada
+            localStorage.setItem('vp_btns', JSON.stringify(app.btns));
+            localStorage.setItem('vp_rss', JSON.stringify(app.rss));
+            localStorage.setItem('vp_folders', JSON.stringify(app.folders));
+        }
 
-    renderRssNotifyControls(); // Nueva función para los feeds
-    translateUI();
-}
+        // Fix Diagramas del Chat con Botones de Descarga
+        function renderChatDiagram() {
+            const msgs = document.getElementById('chat-msgs');
+            const id = "diag-" + Date.now();
+            msgs.innerHTML += `
+                <div class="vico-diagram-container my-3" id="${id}">
+                    <div class="diagram-btn-float">
+                        <button onclick="window.print()" class="p-1 bg-white/10 rounded"><i data-lucide="printer" size="10"></i></button>
+                        <button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded"><i data-lucide="download" size="10"></i></button>
+                    </div>
+                    <h5 class="text-[9px] orbitron text-blue-400 mb-2">Estructura Neural Dinámica</h5>
+                    <canvas id="canvas-${id}" height="150"></canvas>
+                </div>`;
+            lucide.createIcons();
+            const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: { labels: ['A','B','C','D','E'], datasets: [{ data: [80, 90, 70, 60, 85], borderColor: '#00fff7', backgroundColor: 'rgba(0,255,247,0.1)' }] },
+                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
+            });
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function downloadPng(elementId) {
+            const canvas = document.querySelector(`#${elementId} canvas`);
+            const link = document.createElement('a');
+            link.download = 'VICO_DIAGRAM.png';
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+        }
 
        function saveAdSettings() {
     app.config.adScript = document.getElementById('ad-script-input').value;
@@ -841,22 +876,7 @@ async function vicoNeuralLink(promptText) {
             } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error de enlace neural.</div>`; }
             msgs.scrollTop = msgs.scrollHeight;
         }
-        function renderChatDiagram() {
-            const msgs = document.getElementById('chat-msgs');
-            msgs.innerHTML += `
-                <div class="glass-panel p-4 rounded-2xl border-blue-500/30 my-2 bg-blue-900/10">
-                    <div class="flex justify-between items-center mb-3"><span class="text-[10px] font-bold text-blue-400 uppercase">Flujo de Proceso VICO</span><i data-lucide="activity" size="14"></i></div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="p-2 glass-panel border-blue-500/50 rounded text-[9px]">ENTRADA DATOS</div>
-                        <i data-lucide="arrow-down" size="12" class="text-slate-600"></i>
-                        <div class="p-2 bg-blue-600 rounded text-[9px] font-bold animate-pulse text-white">PROCESO NEURAL</div>
-                        <i data-lucide="arrow-down" size="12" class="text-slate-600"></i>
-                        <div class="p-2 glass-panel border-green-500/50 rounded text-[9px]">RESULTADO ROI</div>
-                    </div>
-                </div>`;
-            lucide.createIcons();
-            msgs.scrollTop = msgs.scrollHeight;
-        }
+  
 // --- ACTUALIZACIÓN DEL ROI ENGINE ---
 function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
 
@@ -955,13 +975,6 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
         });
     }, 150);
 }
-        function downloadPng(elementId) {
-    const canvas = document.querySelector(`#${elementId} canvas`);
-    const link = document.createElement('a');
-    link.download = 'vico-diagram.png';
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-}
 
 function printElement(elementId) {
     const content = document.getElementById(elementId).innerHTML;
@@ -1025,14 +1038,7 @@ function playSound(type) {
     g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
     o.start(); o.stop(audioCtx.currentTime + 0.3);
 }
-        function save() { 
-            localStorage.setItem('vp_notes', JSON.stringify(app.notes)); 
-            localStorage.setItem('vp_events', JSON.stringify(app.events)); 
-            localStorage.setItem('vp_links', JSON.stringify(app.links)); 
-            localStorage.setItem('vp_cfg', JSON.stringify(app.config)); 
-            localStorage.setItem('vp_btns', JSON.stringify(app.btns)); 
-            localStorage.setItem('vp_rss', JSON.stringify(app.rss)); 
-        }
+
         function renderRssNotifyControls() {
     const container = document.getElementById('rss-notify-controls');
     if (!container) return;
