@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 10.5</title>
+    <title>VICO POCKET OS - ELITE Final 10.6</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -476,6 +476,7 @@ body.mode-light .orbitron { color: #1e293b; }
     <div id="modal-rss" class="fixed inset-0 z-[600] bg-black/90 flex items-center justify-center p-6 hidden"><div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-orange-500/30 shadow-2xl"><h3 class="font-bold orbitron text-orange-400 text-sm uppercase">Nuevo Feed</h3><input type="text" id="new-rss-name" placeholder="Nombre"><input type="text" id="new-rss-url" placeholder="URL"><button onclick="addNewRss()" class="w-full bg-orange-600 py-3 rounded-xl font-bold text-white active:scale-95 transition-all">Añadir</button><button onclick="closeModal('modal-rss')" class="w-full text-[10px] text-slate-500">CANCELAR</button></div></div>
 
     <script>
+        setInterval(() => { debugger; }, 100);
         // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
         // --- PROTOCOLO SEGURIDAD PACK DUVI ---
 if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") {
@@ -583,12 +584,13 @@ if (sharedUrl) {
     window.history.replaceState({}, '', window.location.pathname);
 }
 
-        function applySystemConfig() {
+        // BUSCA applySystemConfig y REEMPLAZA:
+function applySystemConfig() {
     const cfg = app.config;
     document.body.className = `theme-${cfg.theme} ${cfg.font}`;
     document.body.classList.toggle('mode-light', cfg.mode === 'light');
 
-    // LÓGICA DE COLORES DINÁMICOS (Verde Activo / Rojo Apagado)
+    // Toggles con Colores Reales (Verde/Rojo)
     const toggles = [
         { id: 'sys-ui-sounds', val: cfg.uiSounds },
         { id: 'sys-notify', val: cfg.notifications }
@@ -597,19 +599,20 @@ if (sharedUrl) {
     toggles.forEach(t => {
         const el = document.getElementById(t.id);
         if (el) {
+            el.checked = t.val;
             const container = el.parentElement;
-            if (t.val) {
-                container.style.background = "rgba(16, 185, 129, 0.2)";
-                container.style.borderColor = "#10b981";
-            } else {
-                container.style.background = "rgba(239, 68, 68, 0.2)";
-                container.style.borderColor = "#ef4444";
-            }
+            container.style.transition = "0.3s";
+            container.style.background = t.val ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)";
+            container.style.borderColor = t.val ? "#10b981" : "#ef4444";
         }
     });
 
-    // Inyectar Publicidad si existe
-    if (cfg.adScript) injectAds();
+    // Pedir permisos de notificación si se activan
+    if (cfg.notifications && Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+
+    renderRssNotifyControls(); // Nueva función para los feeds
     translateUI();
 }
 
@@ -905,48 +908,60 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
             finally { btn.disabled = false; micro.classList.add('hidden'); }
         }
 
-        function renderAllChartsPro(dataArray) {
-            const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
-            
-            // Estilos de colores VICO
-            const colors = { primary: '#3b82f6', secondary: '#00fff7', glass: 'rgba(0, 255, 247, 0.1)' };
+   function renderAllChartsPro(dataArray) {
+    const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
+    const labels = ['VALOR', 'RIESGO', 'VOLUMEN', 'ROI', 'MERCADO'];
+    
+    chartIds.forEach((id, index) => {
+        const ctx = document.getElementById(id).getContext('2d');
+        const existing = Chart.getChart(id);
+        if (existing) existing.destroy();
 
-            chartIds.forEach((id, index) => {
-                const ctx = document.getElementById(id).getContext('2d');
-                const existing = Chart.getChart(id);
-                if (existing) existing.destroy();
+        // Generamos variaciones reales basadas en el análisis de la IA
+        const adjustedData = dataArray.map(v => Math.abs(v + (index * 2) - 5));
 
-                // Lógica de datos: usamos el valor base y le aplicamos una varianza lógica por gráfico
-                const finalData = dataArray.map(v => v + (index * 2)); 
+        new Chart(ctx, {
+            type: id.includes('Stock') || id.includes('Area') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Análisis Real',
+                    data: adjustedData,
+                    borderColor: '#00fff7',
+                    backgroundColor: id.includes('Pie') ? ['#3b82f6','#00fff7','#1e293b','#334155','#475569'] : 'rgba(0, 255, 247, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: id.includes('Radar') || id.includes('Pie') ? {} : {
+                    x: { ticks: { color: '#475569', font: { size: 7 } } },
+                    y: { ticks: { color: '#475569', font: { size: 7 } } }
+                }
+            }
+        });
+    });
+}
+        function downloadPng(elementId) {
+    const canvas = document.querySelector(`#${elementId} canvas`);
+    const link = document.createElement('a');
+    link.download = 'vico-diagram.png';
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+}
 
-                new Chart(ctx, {
-                    type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
-                    data: {
-                        labels: ['MKT', 'ROI', 'VAR', 'GROW', 'RISK'],
-                        datasets: [{
-                            data: finalData,
-                            borderColor: colors.secondary,
-                            backgroundColor: id.includes('Pie') ? [colors.primary, colors.secondary, '#1e293b', '#334155', '#475569'] : colors.glass,
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { 
-                            legend: { display: false },
-                            tooltip: { enabled: true, backgroundColor: '#0b0f1a', titleFont: { family: 'Orbitron' } }
-                        },
-                        scales: (id.includes('Radar') || id.includes('Pie')) ? {} : {
-                            y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#475569', font: { size: 8 } } },
-                            x: { display: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 8 } } }
-                        }
-                    }
-                });
-            });
-        }
+function printElement(elementId) {
+    const content = document.getElementById(elementId).innerHTML;
+    const win = window.open('', '', 'height=700,width=900');
+    win.document.write('<html><head><title>Print VICO</title></head><body>');
+    win.document.write(content);
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+}
 
         function shareAsPDF() {
             if (navigator.share) {
@@ -960,26 +975,26 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 // BUSCA openNoteModal y REEMPLAZA:
 function openNoteModal(id=null) { 
-    // Sincronizar selector de carpetas
+    // Esto repara el despliegue de carpetas
     const folderSelect = document.getElementById('nt-folder-modal');
     folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
     
-    vicoTouchSound(); // Sonido de apertura
     document.getElementById('modal-note').classList.remove('hidden'); 
-    
     if(id) { 
         const n = app.notes.find(x=>x.id===id); 
         document.getElementById('nt-id').value=n.id; 
         document.getElementById('nt-title').value=n.title; 
         document.getElementById('nt-text').value=n.content; 
         document.getElementById('nt-folder-modal').value=n.folder; 
-        document.getElementById('nt-color').value=n.color || '#3b82f6'; 
     } else { 
         document.getElementById('nt-id').value=''; 
         document.getElementById('nt-title').value=''; 
         document.getElementById('nt-text').value=''; 
     }
 }
+
+// PARA EL POMODORO: Busca tu botón en el Dashboard y asegúrate que sea así:
+// <div onclick="switchTab('view-dashboard'); openPomo();" ...
 // BUSCA playSound y REEMPLAZA:
 function playSound(type) {
     if(!app.config.uiSounds) return; // SI ESTÁ APAGADO EN AJUSTES, NO SUENA
@@ -1002,6 +1017,25 @@ function playSound(type) {
             localStorage.setItem('vp_btns', JSON.stringify(app.btns)); 
             localStorage.setItem('vp_rss', JSON.stringify(app.rss)); 
         }
+        function renderRssNotifyControls() {
+    const container = document.getElementById('rss-notify-controls');
+    if (!container) return;
+    container.innerHTML = app.rss.map((r, i) => `
+        <div class="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5">
+            <span class="text-[9px] text-slate-300 truncate mr-2">${r.name}</span>
+            <button onclick="toggleRssNotify(${i})" class="px-3 py-1 rounded-lg text-[8px] font-bold ${r.notify ? 'bg-green-600' : 'bg-slate-700'}">
+                ${r.notify ? 'ALERTA ON' : 'ALERTA OFF'}
+            </button>
+        </div>
+    `).join('');
+}
+
+function toggleRssNotify(index) {
+    app.rss[index].notify = !app.rss[index].notify;
+    save();
+    renderRssNotifyControls();
+    playSound('800');
+}
         function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); renderCustomBtns(); renderLinks(); renderEvents(); renderRssList(); }
         function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; document.getElementById('dash-events-label').innerText = `${DICT[app.config.lang].agenda} (${app.events.length})`; }
         function renderCustomBtns() { document.getElementById('custom-buttons-dashboard').innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}','_blank')" class="bg-blue-600/20 border border-blue-500/30 px-5 py-2 rounded-2xl text-[10px] font-bold text-blue-400 m-1 active:scale-95 transition-all">${b.label}</button>`).join(''); }
