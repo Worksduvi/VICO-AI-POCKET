@@ -34,7 +34,6 @@
         .glass-panel { background: rgba(11, 15, 26, 0.92); backdrop-filter: blur(25px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
-        /* BARRAS */
         .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.92); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
@@ -44,7 +43,12 @@
         input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 12px; appearance: none; }
         .chip-active { background: var(--primary); color: black; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
         
-        /* LOGO Y MATRIX */
+        @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.03); border-color: red; } 100% { transform: scale(1); } }
+        .alarm-active { animation: ring 0.5s infinite; border: 2px solid red !important; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* LOGO MATRIX HALO */
         .logo-container { position: relative; padding: 10px; border-radius: 20px; transition: 0.5s; overflow: hidden; }
         .logo-container::before { content: ''; position: absolute; inset: 0; border: 2px solid transparent; border-radius: 20px; transition: 0.5s; }
         .logo-container:hover::before { border-color: #fff; box-shadow: 0 0 20px #fff, inset 0 0 10px #fff; animation: borderHalo 2s linear infinite; }
@@ -52,18 +56,23 @@
         .matrix-rain { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #0f0; font-family: monospace; font-size: 8px; display: none; pointer-events: none; z-index: 10; padding: 5px; border: 1px solid #0ff; }
         .logo-container:hover .matrix-rain { display: block; }
 
-        /* MICROONDAS */
-        .microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; }
+        /* MICROONDAS CYBERPUNK */
+        .microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; border-radius: 15px; }
         .thinking-text { font-family: 'Courier New', monospace; font-size: 9px; color: #0f0; text-shadow: 0 0 5px #0f0; animation: scrollText 10s linear infinite; }
         @keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
         .timer-knob { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #334155; position: relative; background: conic-gradient(var(--primary) var(--progress), transparent 0deg); }
-        .timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0f172a; border-radius: 50%; }
+        .timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0b0f1a; border-radius: 50%; }
+
+        /* DIAGRAMAS CHAT */
+        .vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; height: 250px; width: 100%; }
+        .diagram-btn-float { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 20; }
 
         @media print {
             body * { visibility: hidden; }
             #ai-results, #ai-results * { visibility: visible; }
-            #ai-results { position: absolute; left: 0; top: 0; width: 100%; }
-            .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; }
+            #ai-results { position: absolute; left: 0; top: 0; width: 100%; height: auto; }
+            .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; box-shadow: none !important; }
+            canvas { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
         }
     </style>
 </head>
