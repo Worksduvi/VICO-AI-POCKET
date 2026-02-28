@@ -429,16 +429,37 @@
     <div id="modal-rss" class="fixed inset-0 z-[600] bg-black/90 flex items-center justify-center p-6 hidden"><div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-orange-500/30 shadow-2xl"><h3 class="font-bold orbitron text-orange-400 text-sm uppercase">Nuevo Feed</h3><input type="text" id="new-rss-name" placeholder="Nombre"><input type="text" id="new-rss-url" placeholder="URL"><button onclick="addNewRss()" class="w-full bg-orange-600 py-3 rounded-xl font-bold text-white active:scale-95 transition-all">Añadir</button><button onclick="closeModal('modal-rss')" class="w-full text-[10px] text-slate-500">CANCELAR</button></div></div>
 
     <script>
-  // --- PROTOCOLO DE PROTECCIÓN NÚCLEO VICO ---
-// --- PROTECCIÓN NÚCLEO PACK DUVI ---
+  // --- PROTECCIÓN NÚCLEO PACK DUVI ---
 setInterval(() => {
     const start = Date.now();
-    debugger; // Anti-Debugging: Ralentiza al intruso
+    debugger; // Ralentiza cualquier intento de inspección
     if (Date.now() - start > 100) {
-        document.body.innerHTML = "<h1>SISTEMA BLOQUEADO: INTENTO DE DEBUG DETECTADO</h1>";
+        document.body.innerHTML = "<h1 style='color:red; text-align:center; padding-top:20%; font-family:Orbitron;'>ERROR CRÍTICO: VIOLACIÓN DE NÚCLEO DETECTADA</h1>";
     }
 }, 1000);
 
+    function openNoteModal(id = null) {
+    // FIX CARPETAS: Inyectar las carpetas actuales en el selector antes de mostrar
+    const folderSelect = document.getElementById('nt-folder-modal');
+    if (folderSelect) {
+        folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
+    }
+    
+    document.getElementById('modal-note').classList.remove('hidden');
+    if (id) {
+        const n = app.notes.find(x => x.id === id);
+        document.getElementById('nt-id').value = n.id;
+        document.getElementById('nt-title').value = n.title;
+        document.getElementById('nt-text').value = n.content;
+        document.getElementById('nt-folder-modal').value = n.folder;
+    } else {
+        document.getElementById('nt-id').value = '';
+        document.getElementById('nt-title').value = '';
+        document.getElementById('nt-text').value = '';
+    }
+    playSound('800');
+}
+        
 if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") {
     document.body.innerHTML = "<div style='background:#000;color:#0ff;height:100vh;display:flex;align-items:center;justify-content:center;font-family:Orbitron;text-align:center;'><h1>ACCESO DENEGADO<br>VICO POCKET NUCLEUS PROTECTED</h1></div>";
 }
@@ -950,28 +971,6 @@ function shareAsPDF() {
         // --- AUXILIARES GLOBALES ---
         function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-// BUSCA openNoteModal y REEMPLAZA:
-function openNoteModal(id = null) {
-    // FIX CARPETAS: Refrescar el selector con las carpetas actuales
-    const folderSelect = document.getElementById('nt-folder-modal');
-    if (folderSelect) {
-        folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
-    }
-    
-    document.getElementById('modal-note').classList.remove('hidden');
-    if (id) {
-        const n = app.notes.find(x => x.id === id);
-        document.getElementById('nt-id').value = n.id;
-        document.getElementById('nt-title').value = n.title;
-        document.getElementById('nt-text').value = n.content;
-        document.getElementById('nt-folder-modal').value = n.folder;
-    } else {
-        document.getElementById('nt-id').value = '';
-        document.getElementById('nt-title').value = '';
-        document.getElementById('nt-text').value = '';
-    }
-    playSound('800');
-}
 
 function playSound(type) {
     // FIX: Ahora obedece estrictamente al botón de Ajustes
