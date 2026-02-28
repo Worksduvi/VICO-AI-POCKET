@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,23 +15,28 @@
 
     <style>
         :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
+        
+        /* TEMAS DINÁMICOS */
         body.theme-Cyber { --bg: #0b0f1a; --primary: #00fff7; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
         body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
         body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
 
-        /* MODO CLARO ÉLITE */
-        body.mode-light { --bg: #f1f5f9; --glass: rgba(255,255,255,0.8); --border: rgba(0,0,0,0.1); color: #1e293b; }
-        body.mode-light .glass-panel { background: rgba(255,255,255,0.9) !important; border: 1px solid rgba(0,0,0,0.1); color: #1e293b; }
+        /* MODO CLARO ÉLITE (PACK DUVI) */
+        body.mode-light { --bg: #f8fafc; --glass: rgba(0,0,0,0.03); --border: rgba(0,0,0,0.1); color: #1e293b; }
+        body.mode-light .glass-panel { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(0,0,0,0.1); color: #1e293b; }
         body.mode-light input, body.mode-light textarea, body.mode-light select { background: #fff !important; color: #000 !important; border: 1px solid #cbd5e1 !important; }
         body.mode-light .nav-bar { background: #ffffff; border-top: 1px solid #e2e8f0; }
+        body.mode-light .nav-item { color: #64748b; }
+        body.mode-light .orbitron { color: #0f172a; }
 
         body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
         .glass-panel { background: rgba(11, 15, 26, 0.92); backdrop-filter: blur(25px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
+        /* NAVEGACIÓN Y BARRAS */
         .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.92); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
@@ -38,9 +44,10 @@
         .nav-item i { margin-bottom: 4px; transition: 0.3s; }
         .nav-item.active i { transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary)); }
 
-        input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 12px; }
+        input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 12px; appearance: none; }
         .chip-active { background: var(--primary); color: black; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
-
+        
+        /* LOGO MATRIX & HALO */
         .logo-container { position: relative; padding: 10px; border-radius: 20px; transition: 0.5s; overflow: hidden; }
         .logo-container::before { content: ''; position: absolute; inset: 0; border: 2px solid transparent; border-radius: 20px; transition: 0.5s; }
         .logo-container:hover::before { border-color: #fff; box-shadow: 0 0 20px #fff; animation: borderHalo 2s linear infinite; }
@@ -48,22 +55,24 @@
         .matrix-rain { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #0f0; font-family: monospace; font-size: 8px; display: none; pointer-events: none; z-index: 10; padding: 5px; border: 1px solid #0ff; }
         .logo-container:hover .matrix-rain { display: block; }
 
-        .microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; border-radius: 15px; }
-        .thinking-text { font-family: 'Courier New', monospace; font-size: 9px; color: #0f0; animation: scrollText 10s linear infinite; }
+        /* MICROONDAS CYBERPUNK */
+        .microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; border-radius: 20px; }
+        .thinking-text { font-family: 'Courier New', monospace; font-size: 9px; color: #0f0; text-shadow: 0 0 5px #0f0; animation: scrollText 10s linear infinite; }
         @keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
-        
         .timer-knob { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #334155; position: relative; background: conic-gradient(var(--primary) var(--progress), transparent 0deg); }
         .timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0b0f1a; border-radius: 50%; }
 
-        .vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; margin-bottom: 10px; }
+        /* DIAGRAMAS CHAT VICO */
+        .vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; margin: 10px 0; }
         .diagram-btn-float { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; z-index: 20; }
 
         @media print {
             body * { visibility: hidden; }
             #ai-results, #ai-results * { visibility: visible; }
-            #ai-results { position: absolute; left: 0; top: 0; width: 100%; }
-            .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; }
-            canvas { max-width: 100% !important; height: auto !important; }
+            #ai-results { position: absolute; left: 0; top: 0; width: 100%; height: auto; }
+            .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; box-shadow: none !important; }
+            canvas { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
+            button, .nav-bar, .task-bar { display: none !important; }
         }
     </style>
 </head>
@@ -75,6 +84,7 @@
             <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter">Focusing</span>
         </div>
     </div>
+
     <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
         <section id="view-dashboard" class="p-5 space-y-6 fade-in">
             <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent text-center">
@@ -86,27 +96,14 @@
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-                <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30 transition-all active:scale-95">
-                    <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Nota Rápida</span>
-                </div>
-                <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all">
-                    <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Links Pocket</span>
-                </div>
-                <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all">
-                    <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold">Agenda</span>
-                </div>
-                <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all">
-                    <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Focus</span>
-                </div>
-                <div onclick="toggleThemeMode()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all">
-                    <i data-lucide="sun-moon" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Modo Día</span>
-                </div>
-                <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all">
-                    <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Análisis ROI</span>
-                </div>
+                <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30 active:scale-95 transition-all"><i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Nota Rápida</span></div>
+                <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all"><i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Links Pocket</span></div>
+                <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all"><i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold">Agenda</span></div>
+                <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all"><i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Focus</span></div>
+                <div onclick="toggleThemeMode()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all"><i data-lucide="sun-moon" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Modo Día</span></div>
+                <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 active:scale-95 transition-all"><i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Análisis ROI</span></div>
             </div>
 
-            <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
             <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5 shadow-inner">
                 <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Notas</div></div>
                 <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest">Links</div></div>
@@ -121,27 +118,13 @@
                     <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="plus"></i></button>
                 </div>
             </div>
-            <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
+            <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 mb-6 border-b border-white/5"></div>
             <div id="notes-grid" class="space-y-4"></div>
         </section>
 
         <section id="view-links" class="hidden p-5 fade-in">
             <h2 class="text-xl font-bold orbitron mb-6">Links Pocket</h2>
-            <div id="links-list" class="space-y-3"></div>
-        </section>
-
-        <section id="view-calendar" class="hidden p-5 fade-in">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold orbitron text-yellow-500">Agenda</h2>
-                <button onclick="openEventModal()" class="bg-yellow-600 p-2.5 rounded-xl"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="events-list" class="space-y-3"></div>
-        </section>
-
-        <section id="view-discovery" class="hidden p-5 fade-in">
-            <h2 class="text-xl font-bold orbitron mb-4">Discovery Elite</h2>
-            <div id="discovery-chips" class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-2"></div>
-            <div id="news-list" class="space-y-6"></div>
+            <div id="links-list" class="space-y-3 pb-20"></div>
         </section>
 
         <section id="view-analysis" class="hidden p-5 fade-in pb-20">
@@ -171,7 +154,7 @@
             <div id="ai-results" class="hidden space-y-6">
                 <div class="flex gap-2 justify-end mb-4">
                     <button onclick="window.print()" class="bg-slate-800 p-2.5 rounded-xl border border-white/10 text-white flex items-center gap-2 text-[10px] font-bold"><i data-lucide="printer" size="14"></i> IMPRIMIR</button>
-                    <button onclick="shareAsPDF()" class="bg-blue-600 p-2.5 rounded-xl text-white flex items-center gap-2 text-[10px] font-bold shadow-lg"><i data-lucide="share-2" size="14"></i> COMPARTIR PDF</button>
+                    <button onclick="shareAsPDF()" class="bg-blue-600 p-2.5 rounded-xl text-white flex items-center gap-2 text-[10px] font-bold shadow-lg"><i data-lucide="share-2" size="14"></i> COMPARTIR</button>
                 </div>
                 <div class="glass-panel p-6 rounded-[32px] border-l-4 border-blue-500 bg-black/40 text-[12px] font-mono whitespace-pre-wrap" id="ai-report"></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -185,26 +168,49 @@
             </div>
         </section>
 
-       <section id="view-profile" class="hidden p-5 fade-in pb-20">
+        <section id="view-discovery" class="hidden p-5 fade-in">
+            <h2 class="text-xl font-bold orbitron mb-4">Discovery Elite</h2>
+            <div id="discovery-chips" class="flex gap-2 overflow-x-auto no-scrollbar pb-4"></div>
+            <div id="news-list" class="space-y-6 pb-20"></div>
+        </section>
+
+        <section id="view-calendar" class="hidden p-5 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold orbitron text-yellow-500">Agenda</h2>
+                <button onclick="openEventModal()" class="bg-yellow-600 p-2.5 rounded-xl text-white"><i data-lucide="plus"></i></button>
+            </div>
+            <div id="events-list" class="space-y-3 pb-20"></div>
+        </section>
+
+        <section id="view-profile" class="hidden p-5 fade-in pb-24">
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             <div class="space-y-6">
-                <div class="glass-panel p-5 rounded-3xl border-orange-500/30 space-y-4">
-                    <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Data Vault & Sync</h3>
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Motor Neural</h3>
+                    <div class="flex gap-2">
+                        <input type="password" id="api-key-input" placeholder="API Key..." class="flex-1 text-xs">
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs text-white">SAVE</button>
+                    </div>
+                </div>
+                <div class="glass-panel p-5 rounded-3xl space-y-4">
+                    <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Ajustes de Sistema</h3>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option></select></div>
+                </div>
+                <div class="glass-panel p-5 rounded-3xl border-blue-500/30 space-y-4">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Sincronización & Sync</h3>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportOSData()" class="bg-green-600/20 border border-green-500/50 py-2 rounded-xl text-[9px] font-bold text-green-400 uppercase flex items-center justify-center gap-1"><i data-lucide="download" size="12"></i> Exportar</button>
-                        <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase flex items-center justify-center gap-1"><i data-lucide="upload" size="12"></i> Importar</button>
+                        <button onclick="exportOSData()" class="bg-green-600/20 border border-green-500/50 py-2 rounded-xl text-[9px] font-bold text-green-400 uppercase">Exportar JSON</button>
+                        <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase">Importar JSON</button>
                         <input type="file" id="import-file" class="hidden" onchange="importOSData(this)">
                     </div>
-                    <div class="flex justify-between items-center border-t border-white/5 pt-3">
-                        <span class="text-[10px] text-slate-400 uppercase font-bold">Notificaciones Android</span>
-                        <input type="checkbox" id="sys-notify" onchange="updateSystem('notifications', this.checked)" class="w-5 h-5 accent-green-600">
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos de Interfaz</span>
-                        <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
-                    </div>
-                    <div class="mt-4"><h4 class="text-[9px] font-bold text-blue-400 uppercase mb-2">Alertas RSS</h4><div id="rss-notify-controls" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></div></div>
-                    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase">Limpiar Caché Nucleo</button>
+                    <div class="flex justify-between items-center border-t border-white/5 pt-3"><span class="text-[10px] text-slate-400 uppercase font-bold">Notificaciones Android</span><input type="checkbox" id="sys-notify" onchange="updateSystem('notifications', this.checked)" class="w-5 h-5 accent-green-600"></div>
+                    <div class="flex justify-between items-center"><span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos UI</span><input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600"></div>
+                    <div class="mt-4"><h4 class="text-[9px] font-bold text-blue-400 uppercase mb-2">Alertas RSS Individuales</h4><div id="rss-notify-controls" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></div></div>
+                </div>
+                <div class="glass-panel p-5 rounded-3xl text-center">
+                    <a href="https://www.paypal.com/paypalme/proyectosduvi" target="_blank" class="inline-flex items-center gap-2 bg-[#0070ba] px-6 py-2 rounded-full font-bold text-[10px] text-white shadow-lg"><i data-lucide="coffee" size="14"></i> PayPal Support</a>
+                    <p class="text-[8px] text-slate-600 mt-4 leading-relaxed">VICO POCKET OS - Handcrafted by Jaime Andrés Dueñas Vicuña. Local-First Nucleus Protected.</p>
                 </div>
             </div>
         </section>
@@ -220,27 +226,37 @@
         <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="user"></i><span>CORE</span></div>
     </nav>
 
+    <div id="modal-note" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-blue-500/30">
+            <h3 class="font-bold orbitron text-blue-400 text-sm">Registro Neural</h3>
+            <input type="hidden" id="nt-id"><input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
+            <div class="flex gap-2"><select id="nt-folder-modal" class="flex-1 text-[10px] font-bold text-blue-400"></select><input type="color" id="nt-color" value="#3b82f6" class="w-10 h-10 border-none bg-transparent"></div>
+            <textarea id="nt-text" placeholder="Contenido..." class="w-full h-40 text-xs resize-none"></textarea>
+            <div class="flex gap-2 pt-2"><button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-white shadow-lg">SAVE</button><button onclick="closeModal('modal-note')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CLOSE</button></div>
+        </div>
+    </div>
+
+    <div id="modal-event" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-yellow-500/30 shadow-2xl">
+            <h3 class="font-bold orbitron text-yellow-400 text-sm uppercase">Agendar Cita</h3>
+            <input type="text" id="ev-title" placeholder="Descripción de la cita..." class="w-full text-sm">
+            <input type="datetime-local" id="ev-date" class="w-full text-sm">
+            <button onclick="saveEvent()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-white shadow-lg uppercase text-xs">Confirmar</button>
+            <button onclick="closeModal('modal-event')" class="w-full text-[10px] text-slate-500 uppercase">CANCELAR</button>
+        </div>
+    </div>
+
     <div id="modal-pomo" class="fixed inset-0 z-[600] bg-black/98 backdrop-blur flex items-center justify-center hidden">
         <div class="text-center space-y-8"><div id="pomo-clock" class="text-8xl orbitron font-bold text-white">25:00</div>
         <div class="flex justify-center gap-6"><button onclick="toggleFocus()" id="pomo-ctrl" class="bg-blue-600 p-8 rounded-full shadow-2xl active:scale-90"><i data-lucide="play" fill="white"></i></button><button onclick="resetFocus()" class="glass-panel p-8 rounded-full active:scale-90"><i data-lucide="rotate-ccw"></i></button></div>
-        <button onclick="closeModal('modal-pomo')" class="text-slate-500 uppercase text-[10px] underline tracking-[0.2em]">MINIMIZAR</button></div>
-    </div>
-
-    <div id="modal-note" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
-        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-blue-500/30">
-            <h3 class="font-bold orbitron text-blue-400 text-sm">Registro</h3>
-            <input type="hidden" id="nt-id"><input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
-            <div class="flex gap-2"><select id="nt-folder-modal" class="flex-1 text-[10px] font-bold text-blue-400"></select><input type="color" id="nt-color" value="#3b82f6" class="w-10 h-10 border-none bg-transparent"></div>
-            <textarea id="nt-text" placeholder="Contenido neural..." class="w-full h-40 text-xs"></textarea>
-            <div class="flex gap-2"><button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-white">SAVE</button><button onclick="closeModal('modal-note')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CLOSE</button></div>
-        </div>
+        <button onclick="minimizePomo()" class="text-slate-500 uppercase text-[10px] underline tracking-[0.2em]">MINIMIZAR</button></div>
     </div>
 
     <div id="vico-chat" class="fixed bottom-24 right-4 z-[150]">
         <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl transition-all border border-white/10 hover:scale-110 active:scale-90"><i data-lucide="bot" class="text-white"></i></button>
         <div id="chat-win" class="glass-panel fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden overflow-hidden shadow-2xl border-blue-500/20">
             <div class="bg-blue-600 p-4 text-white text-[10px] font-bold uppercase text-center">VICO AI ASSISTANT</div>
-            <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px]"></div>
+            <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed"></div>
             <div class="p-3 border-t border-white/5 flex gap-1">
                 <input type="text" id="chat-in" placeholder="..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()">
                 <button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button>
@@ -249,14 +265,16 @@
     </div>
 
     <script>
-        // --- PROTECCIÓN PACK DUVI ---
-        setInterval(() => { const start = Date.now(); debugger; if (Date.now() - start > 100) { document.body.innerHTML = "<h1 style='color:red; text-align:center; padding-top:20%; font-family:Orbitron;'>ERROR: VIOLACIÓN DE NÚCLEO</h1>"; } }, 1000);
+        // --- PROTECCIÓN NÚCLEO PACK DUVI ---
+        setInterval(() => { const start = Date.now(); debugger; if (Date.now() - start > 100) { document.body.innerHTML = "<h1 class='orbitron' style='color:red; text-align:center; padding-top:20%'>ERROR: VIOLACIÓN DE NÚCLEO DETECTADA</h1>"; } }, 1000);
+        if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") { document.body.innerHTML = "<h1>ACCESO DENEGADO</h1>"; }
 
         // --- MOTOR DE DATOS ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
             links: JSON.parse(localStorage.getItem('vp_links')) || [],
+            favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
             rss: JSON.parse(localStorage.getItem('vp_rss')) || [
                 {name:'The Verge', url:'https://www.theverge.com/rss/index.xml', notify: true},
                 {name:'MIT News', url:'https://news.mit.edu/rss/feed', notify: true},
@@ -293,7 +311,25 @@
             const snd = document.getElementById('sys-ui-sounds'), ntf = document.getElementById('sys-notify');
             if(snd) { snd.checked = cfg.uiSounds; snd.parentElement.style.background = cfg.uiSounds ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)"; }
             if(ntf) { ntf.checked = cfg.notifications; ntf.parentElement.style.background = cfg.notifications ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)"; }
+            if(cfg.notifications && Notification.permission !== "granted") Notification.requestPermission();
             renderRssNotifyControls();
+        }
+
+        async function vicoNeuralLink(promptText) {
+            const key = app.config.key.trim();
+            if (!key) throw new Error("API Key faltante");
+            let url, body, headers = { "Content-Type": "application/json" };
+            if (key.startsWith('gsk_')) {
+                url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
+                headers["Authorization"] = `Bearer ${key}`;
+                body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: promptText}] };
+            } else {
+                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+                body = { contents: [{ parts: [{ text: promptText }] }] };
+            }
+            const r = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+            const d = await r.json();
+            return key.startsWith('gsk_') ? d.choices[0].message.content : d.candidates[0].content.parts[0].text;
         }
 
         async function runROIAnalysis() {
@@ -301,26 +337,26 @@
             if(!q) return alert("Define el objetivo.");
             const btn = document.getElementById('btn-ai'), micro = document.getElementById('vico-microwave'), microTxt = document.getElementById('microwave-content');
             btn.disabled = true; micro.classList.remove('hidden');
-            
             let progress = 0;
+            const thoughts = ["Analizando pautas bursátiles...", "Extrayendo autores 2026...", "Calculando volatilidad...", "Modelando diagramas Élite...", "Finalizando reporte ejecutivo..."];
             const interval = setInterval(() => {
                 progress += 1;
                 document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
                 document.getElementById('micro-percent').innerText = progress + '%';
+                if(progress % 20 === 0) microTxt.innerHTML = thoughts[progress/20 - 1] + "<br>" + microTxt.innerHTML;
                 if(progress >= 100) clearInterval(interval);
             }, 60);
 
             try {
-                const megaPrompt = `Análisis Bursátil Senior: ${q}. Sin Markdown. Incluye autores 2026. Al final añade: VALORES_VICO[85, 40, 90, 30, 70]`;
+                const megaPrompt = `Análisis Bursátil Profesional de: ${q}. INCLUYE: Comparativa autores 2026 y fechas. IMPORTANTE: Al final añade: DATA_BLOCK[85, 40, 90, 30, 70] con datos reales. Responde sin Markdown.`;
                 const aiRes = await vicoNeuralLink(megaPrompt);
-                const dataMatch = aiRes.match(/VALORES_VICO\[(.*?)\]/);
-                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [70, 50, 90, 40, 80];
-                
-                playSound('1500');
+                const dataMatch = aiRes.match(/DATA_BLOCK\[(.*?)\]/);
+                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [60, 50, 80, 40, 70];
+                playSound('1500'); // DING!
                 document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = aiRes.replace(/VALORES_VICO\[.*?\]/, "");
+                document.getElementById('ai-report').innerText = aiRes.replace(/DATA_BLOCK\[.*?\]/, "");
                 renderAllChartsPro(chartData);
-            } catch(e) { alert("Error neural."); }
+            } catch(e) { alert("Error Neural."); }
             finally { btn.disabled = false; micro.classList.add('hidden'); }
         }
 
@@ -332,30 +368,72 @@
                     const existing = Chart.getChart(id); if (existing) existing.destroy();
                     new Chart(ctx, {
                         type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
-                        data: { labels: ['A','B','C','D','E'], datasets: [{ data: dataArray.map(v => v + index), borderColor: '#00fff7', backgroundColor: 'rgba(0, 255, 247, 0.1)', fill: true }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                        data: { labels: ['VAL','ROI','VAR','GROW','RISK'], datasets: [{ data: dataArray.map(v => v + index), borderColor: '#00fff7', backgroundColor: 'rgba(0, 255, 247, 0.1)', fill: true, tension: 0.4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: id.includes('Radar') || id.includes('Pie') ? {} : { y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' } } } }
                     });
                 });
-            }, 150);
+            }, 200);
         }
 
-        function toggleThemeMode() { app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark'; save(); applySystemConfig(); playSound('800'); }
-        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
+        async function sendChat() {
+            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+            if(!inp.value) return;
+            const ut = inp.value; msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`; inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
+            try {
+                const res = await vicoNeuralLink(`Actúa como VICO. Responde a: ${ut}. REGLA: Si crees que un diagrama ayudaría añade al final: [SUGESTION_VISUAL]. Sin Markdown.`);
+                if (res.includes("[SUGESTION_VISUAL]")) {
+                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${res.replace("[SUGESTION_VISUAL]", "")}</div>`;
+                    msgs.innerHTML += `<div class="glass-panel p-3 border-blue-500/50 my-2 rounded-xl"><p class="text-[10px] text-blue-300 font-bold">¿Quieres un diagrama?</p><button onclick="renderChatDiagram()" class="bg-blue-600 text-[9px] px-3 py-1 rounded-full mt-2">GENERAR</button></div>`;
+                } else { msgs.innerHTML += `<div class="chat-bubble chat-bot">${res}</div>`; }
+            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error Neural.</div>`; }
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function renderChatDiagram() {
+            const msgs = document.getElementById('chat-msgs'), id = "diag-" + Date.now();
+            msgs.innerHTML += `<div class="vico-diagram-container" id="${id}"><div class="diagram-btn-float"><button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded text-white text-[8px]">PNG</button></div><canvas id="canvas-${id}" height="180"></canvas></div>`;
+            const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
+            new Chart(ctx, { type: 'radar', data: { labels: ['A','B','C','D','E'], datasets: [{ data: [80, 20, 90, 60, 95], borderColor: '#00fff7' }] } });
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function downloadPng(id) { const link = document.createElement('a'); link.download = 'VICO_DIAG.png'; link.href = document.querySelector(`#${id} canvas`).toDataURL(); link.click(); }
         function openNoteModal(id=null) {
             const folderSelect = document.getElementById('nt-folder-modal');
             folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
             document.getElementById('modal-note').classList.remove('hidden');
-            if(id) {
-                const n = app.notes.find(x=>x.id===id);
-                document.getElementById('nt-id').value=n.id; document.getElementById('nt-title').value=n.title; document.getElementById('nt-text').value=n.content; document.getElementById('nt-folder-modal').value=n.folder;
-            } else { document.getElementById('nt-id').value=''; document.getElementById('nt-title').value=''; document.getElementById('nt-text').value=''; }
+            if(id) { const n = app.notes.find(x=>x.id===id); document.getElementById('nt-id').value=n.id; document.getElementById('nt-title').value=n.title; document.getElementById('nt-text').value=n.content; document.getElementById('nt-folder-modal').value=n.folder; }
+            else { document.getElementById('nt-id').value=''; document.getElementById('nt-title').value=''; document.getElementById('nt-text').value=''; }
             playSound('800');
         }
 
+        function checkAgenda() {
+            const now = new Date();
+            app.events.forEach(e => {
+                const evDate = new Date(e.date);
+                if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
+                    if (app.config.notifications && 'serviceWorker' in navigator) {
+                        navigator.serviceWorker.ready.then(reg => reg.showNotification("VICO OS", { body: e.title, requireInteraction: true }));
+                    }
+                    playSound('siren'); app.notified.push(e.id);
+                }
+            });
+        }
+
+        function switchTab(id, el) { 
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); 
+            document.getElementById(id).classList.remove('hidden'); 
+            if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } 
+            playSound('800'); 
+        }
+
         function save() { localStorage.setItem('vp_notes', JSON.stringify(app.notes)); localStorage.setItem('vp_events', JSON.stringify(app.events)); localStorage.setItem('vp_links', JSON.stringify(app.links)); localStorage.setItem('vp_config', JSON.stringify(app.config)); localStorage.setItem('vp_rss', JSON.stringify(app.rss)); localStorage.setItem('vp_folders', JSON.stringify(app.folders)); }
-        function switchTab(id, el) { document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } playSound('800'); }
-        function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); applySystemConfig(); }
-        window.onload = () => { lucide.createIcons(); renderAll(); };
+        function toggleThemeMode() { app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark'; save(); applySystemConfig(); playSound('800'); }
+        function saveApi() { app.config.key = document.getElementById('api-key-input').value; save(); alert("Sync OK"); }
+        function renderRssNotifyControls() { const container = document.getElementById('rss-notify-controls'); if (container) container.innerHTML = app.rss.map((r, i) => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl mb-2"><span>${r.name}</span><button onclick="toggleRssNotify(${i})" class="px-3 py-1 rounded-lg text-[8px] ${r.notify ? 'bg-green-600' : 'bg-slate-700'}">${r.notify ? 'ON' : 'OFF'}</button></div>`).join(''); }
+        function toggleRssNotify(i) { app.rss[i].notify = !app.rss[i].notify; save(); renderRssNotifyControls(); }
+
+        window.onload = () => { lucide.createIcons(); applySystemConfig(); renderDashboard(); setInterval(checkAgenda, 20000); };
     </script>
 </body>
 </html>
