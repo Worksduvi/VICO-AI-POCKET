@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>VICO POCKET OS - ELITE Final 11.5</title>
+    <title>VICO POCKET OS - ELITE Final 11.6</title>
     <meta name="theme-color" content="#0b0f1a">
     <link rel="manifest" href="./manifest.json">
     <link rel="icon" type="image/png" href="./icon.png">
@@ -193,788 +193,120 @@
         </section>
     </main>
     <script>
-  // --- PROTECCIÓN NÚCLEO PACK DUVI ---
-setInterval(() => {
-    const start = Date.now();
-    debugger; // Ralentiza cualquier intento de inspección
-    if (Date.now() - start > 100) {
-        document.body.innerHTML = "<h1 style='color:red; text-align:center; padding-top:20%; font-family:Orbitron;'>ERROR CRÍTICO: VIOLACIÓN DE NÚCLEO DETECTADA</h1>";
-    }
-}, 1000);
+  // --- MOTOR DE SEGURIDAD PACK DUVI ---
+        setInterval(() => { const start = Date.now(); debugger; if (Date.now() - start > 100) { document.body.innerHTML = "<h1 class='orbitron' style='color:red; text-align:center; padding-top:20%'>ERROR: VIOLACIÓN DE NÚCLEO</h1>"; } }, 1000);
+        if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") { document.body.innerHTML = "<h1>ACCESO DENEGADO</h1>"; }
 
-    function openNoteModal(id = null) {
-    // FIX CARPETAS: Inyectar las carpetas actuales en el selector antes de mostrar
-    const folderSelect = document.getElementById('nt-folder-modal');
-    if (folderSelect) {
-        folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
-    }
-    
-    document.getElementById('modal-note').classList.remove('hidden');
-    if (id) {
-        const n = app.notes.find(x => x.id === id);
-        document.getElementById('nt-id').value = n.id;
-        document.getElementById('nt-title').value = n.title;
-        document.getElementById('nt-text').value = n.content;
-        document.getElementById('nt-folder-modal').value = n.folder;
-    } else {
-        document.getElementById('nt-id').value = '';
-        document.getElementById('nt-title').value = '';
-        document.getElementById('nt-text').value = '';
-    }
-    playSound('800');
-}
-        
-if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") {
-    document.body.innerHTML = "<div style='background:#000;color:#0ff;height:100vh;display:flex;align-items:center;justify-content:center;font-family:Orbitron;text-align:center;'><h1>ACCESO DENEGADO<br>VICO POCKET NUCLEUS PROTECTED</h1></div>";
-}
-
-// --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
-let app = {
-    notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
-    events: JSON.parse(localStorage.getItem('vp_events')) || [],
-    links: JSON.parse(localStorage.getItem('vp_links')) || [],
-    btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
-    favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
-    // TUS 11 FEEDS PREDETERMINADOS (RESTAURADOS)
-    rss: JSON.parse(localStorage.getItem('vp_rss')) || [
-        {name:'The Verge', url:'https://www.theverge.com/rss/index.xml'},
-        {name:'MIT News', url:'https://news.mit.edu/rss/feed'},
-        {name:'TechCrunch', url:'https://techcrunch.com/feed/'},
-        {name:'Nature', url:'https://www.nature.com/nature/articles?type=rss'},
-        {name:'El Mundo', url:'https://e00-elmundo.uecdn.es/rss/portada.xml'},
-        {name:'CNN', url:'http://rss.cnn.com/rss/cnn_topstories.rss'},
-        {name:'Infobae', url:'https://www.infobae.com/feeds/rss/'},
-        {name:'Ecoinventos', url:'https://ecoinventos.com/feed/'},
-        {name:'Computer Hoy', url:'https://computerhoy.com/rss.xml'},
-        {name:'WIRED', url:'https://www.wired.com/feed/rss'},
-        {name:'MIT Tech Review', url:'https://www.technologyreview.com/feed/'}
-    ],
-    // CONFIGURACIÓN UNIFICADA (FIX BORRADO API)
-    config: JSON.parse(localStorage.getItem('vp_config')) || { 
-        key: '', theme: 'Cyber', font: 'font-normal', 
-        sound: true, uiSounds: true, lang: 'es', 
-        alarmSound: '800', showPopup: true, mode: 'dark',
-        notifications: true, adScript: '', adPos: 'footer'
-    },
-    pomo: { time: 1500, active: false, timer: null },
-    folders: JSON.parse(localStorage.getItem('vp_folders')) || ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Varios"],
-    activeFolder: 'Fijadas',
-    activeRss: 0,
-    notified: [],
-    alarmInterval: null
-};
-
-// PAQUETE DE IDIOMAS TOTAL
-const DICT = {
-    es: { 
-        quickNote: "Nota Rápida", links: "Links Pocket", focus: "Enfoque", roi: "IA ROI", discovery: "Feeds", 
-        notes: "Notas", resources: "Links", system: "Sistema", ui_sounds: "Sonidos UI", run_analysis: "Análisis Bursátil",
-        home: "INICIO", data: "DATOS", agenda: "AGENDA", core: "NÚCLEO", notify: "Notificaciones", 
-        export: "Exportar JSON", import: "Importar JSON", theme_toggle: "Modo Día", ad_manager: "Gestor Ads"
-    },
-    en: { 
-        quickNote: "Quick Note", links: "Links Pocket", focus: "Focus", roi: "AI ROI", discovery: "Feeds", 
-        notes: "Notes", resources: "Links", system: "System", ui_sounds: "UI Sounds", run_analysis: "Stock Analysis",
-        home: "HOME", data: "DATA", agenda: "SCHEDULE", core: "CORE", notify: "Notifications",
-        export: "Export JSON", import: "Import JSON", theme_toggle: "Light Mode", ad_manager: "Ad Manager"
-    }
-};
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playSound(type) {
-            if(!app.config.sound) return;
-            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
-            o.connect(g); g.connect(audioCtx.destination);
-            if(type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); }
-            else if (type === 'siren') { o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(1400, audioCtx.currentTime + 0.4); }
-            else if (type === 'zen') { o.frequency.setValueAtTime(500, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 1); }
-            else { o.frequency.value = parseInt(type) || 800; }
-            g.gain.value = 0.05; o.start(); o.stop(audioCtx.currentTime + 0.5);
-        }
-
-        function triggerAlarm(title) {
-            document.getElementById('alarm-title').innerText = title;
-            document.getElementById('modal-alarm').classList.remove('hidden');
-            if(app.alarmInterval) clearInterval(app.alarmInterval);
-            app.alarmInterval = setInterval(() => playSound(app.config.alarmSound), 800);
-        }
-        function stopAlarm() { clearInterval(app.alarmInterval); document.getElementById('modal-alarm').classList.add('hidden'); }
-
-        window.addEventListener('load', () => {
-            lucide.createIcons();
-            applySystemConfig();
-            renderAll();
-            setInterval(checkAgenda, 20000);
-            checkShareTarget();
-        });
-        // Detectar si venimos de "Compartir"
-const params = new URLSearchParams(window.location.search);
-const sharedUrl = params.get('url') || params.get('text');
-const sharedTitle = params.get('title');
-
-if (sharedUrl) {
-    // Limpiar el texto si viene mezclado título y url
-    const cleanUrl = sharedUrl.match(/https?:\/\/[^\s]+/)?.[0] || sharedUrl;
-    app.links.unshift({
-        id: Date.now().toString(),
-        url: cleanUrl,
-        title: sharedTitle || "Link Externo",
-        tags: ["Externo"]
-    });
-    save();
-    renderLinks();
-    renderDashboard();
-    switchTab('view-links');
-    alert("VICO POCKET: Link guardado en la Memory Card.");
-    // Limpiar URL para no repetir al recargar
-    window.history.replaceState({}, '', window.location.pathname);
-}
-
-        // BUSCA applySystemConfig y REEMPLAZA:
-// --- PROTECCIÓN NÚCLEO PACK DUVI ---
-        setInterval(() => { debugger; }, 5000); // Anti-Debugging activo
+        // --- NÚCLEO DE DATOS VICO ---
+        let app = {
+            notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
+            events: JSON.parse(localStorage.getItem('vp_events')) || [],
+            links: JSON.parse(localStorage.getItem('vp_links')) || [],
+            rss: JSON.parse(localStorage.getItem('vp_rss')) || [
+                {name:'The Verge', url:'https://www.theverge.com/rss/index.xml', notify: true},
+                {name:'MIT News', url:'https://news.mit.edu/rss/feed', notify: true},
+                {name:'TechCrunch', url:'https://techcrunch.com/feed/', notify: true}
+            ],
+            config: JSON.parse(localStorage.getItem('vp_config')) || { key: '', theme: 'Cyber', uiSounds: true, notifications: true, lang: 'es', mode: 'dark' },
+            pomo: { time: 1500, active: false, timer: null },
+            folders: JSON.parse(localStorage.getItem('vp_folders')) || ["Proyectos", "Código", "Links", "Varios"],
+            activeFolder: 'Proyectos', activeRss: 0, notified: []
+        };
 
         function applySystemConfig() {
             const cfg = app.config;
-            document.body.className = `theme-${cfg.theme} ${cfg.font}`;
-            document.body.classList.toggle('mode-light', cfg.mode === 'light');
-
-            // Colores Dinámicos Toggles
-            const snd = document.getElementById('sys-ui-sounds');
-            const ntf = document.getElementById('sys-notify');
-            if(snd) { 
-                snd.parentElement.style.background = cfg.uiSounds ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)";
-                snd.parentElement.style.borderColor = cfg.uiSounds ? "#10b981" : "#ef4444";
-            }
-            if(ntf) {
-                ntf.parentElement.style.background = cfg.notifications ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)";
-                ntf.parentElement.style.borderColor = cfg.notifications ? "#10b981" : "#ef4444";
-            }
-            
-            if (cfg.notifications && Notification.permission !== "granted") Notification.requestPermission();
-            
-            translateUI();
+            document.body.className = `theme-${cfg.theme} ${cfg.mode === 'light' ? 'mode-light' : ''}`;
+            const snd = document.getElementById('sys-ui-sounds'), ntf = document.getElementById('sys-notify');
+            if(snd) { snd.checked = cfg.uiSounds; snd.parentElement.style.background = cfg.uiSounds ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)"; }
+            if(ntf) { ntf.checked = cfg.notifications; ntf.parentElement.style.background = cfg.notifications ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)"; }
+            if(cfg.notifications && Notification.permission !== "granted") Notification.requestPermission();
+            renderRssNotifyControls();
         }
 
-        function save() {
-            localStorage.setItem('vp_notes', JSON.stringify(app.notes));
-            localStorage.setItem('vp_events', JSON.stringify(app.events));
-            localStorage.setItem('vp_links', JSON.stringify(app.links));
-            localStorage.setItem('vp_config', JSON.stringify(app.config)); // Persistencia Unificada
-            localStorage.setItem('vp_btns', JSON.stringify(app.btns));
-            localStorage.setItem('vp_rss', JSON.stringify(app.rss));
-            localStorage.setItem('vp_folders', JSON.stringify(app.folders));
-        }
-
-        // Fix Diagramas del Chat con Botones de Descarga
-        function renderChatDiagram() {
-            const msgs = document.getElementById('chat-msgs');
-            const id = "diag-" + Date.now();
-            msgs.innerHTML += `
-                <div class="vico-diagram-container my-3" id="${id}">
-                    <div class="diagram-btn-float">
-                        <button onclick="window.print()" class="p-1 bg-white/10 rounded"><i data-lucide="printer" size="10"></i></button>
-                        <button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded"><i data-lucide="download" size="10"></i></button>
-                    </div>
-                    <h5 class="text-[9px] orbitron text-blue-400 mb-2">Estructura Neural Dinámica</h5>
-                    <canvas id="canvas-${id}" height="150"></canvas>
-                </div>`;
-            lucide.createIcons();
-            const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
-            new Chart(ctx, {
-                type: 'radar',
-                data: { labels: ['A','B','C','D','E'], datasets: [{ data: [80, 90, 70, 60, 85], borderColor: '#00fff7', backgroundColor: 'rgba(0,255,247,0.1)' }] },
-                options: { plugins: { legend: { display: false } }, maintainAspectRatio: false }
-            });
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-
-        function downloadPng(elementId) {
-            const canvas = document.querySelector(`#${elementId} canvas`);
-            const link = document.createElement('a');
-            link.download = 'VICO_DIAGRAM.png';
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-        }
-
-       function saveAdSettings() {
-    app.config.adScript = document.getElementById('ad-script-input').value;
-    app.config.adPos = document.getElementById('ad-position').value;
-    save();
-    location.reload(); // Recarga para inyectar el script
-}
-
-function injectAds() {
-    const zoneId = `ad-${app.config.adPos}-zone`;
-    let zone = document.getElementById(zoneId);
-    if (!zone) {
-        zone = document.createElement('div');
-        zone.id = zoneId;
-        zone.className = "p-2 text-center";
-        if (app.config.adPos === 'top') document.body.prepend(zone);
-        else document.querySelector('main').append(zone);
-    }
-    zone.innerHTML = app.config.adScript;
-}
-
-        function toggleThemeMode() {
-            app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark';
-            save();
-            applySystemConfig();
-            playSound('800');
-        }function translateUI() {
-    const lang = app.config.lang;
-    document.querySelectorAll('[data-translate]').forEach(el => {
-        const key = el.dataset.translate;
-        if (DICT[lang][key]) el.innerText = DICT[lang][key];
-    });
-    
-    // Traducir Nav-Bar Inferior
-    const navItems = document.querySelectorAll('.nav-item span');
-    const labels = lang === 'es' ? ["HOME", "DATA", "LINKS", "ROI", "FEEDS", "AGENDA", "CORE"] : ["HOME", "DATA", "LINKS", "ROI", "FEEDS", "SCHED", "CORE"];
-    navItems.forEach((span, i) => { if(labels[i]) span.innerText = labels[i]; });
-}
-        function updateSystem(k, v) { app.config[k]=v; save(); applySystemConfig(); playSound(800); }
-        function saveApi() { app.config.key = document.getElementById('api-key-input').value.trim(); save(); alert('API Sync OK'); playSound(1000); }
-
-        function renderNotes() {
-            const bar = document.getElementById('folder-bar');
-            bar.innerHTML = app.folders.map(f => `<button onclick="setFolder('${f}')" class="px-5 py-2 rounded-full text-[10px] font-bold whitespace-nowrap transition-all ${app.activeFolder === f ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${f}</button>`).join('');
-            const grid = document.getElementById('notes-grid');
-            grid.innerHTML = app.notes.filter(n => n.folder === app.activeFolder).map(n => `
-                <div class="glass-panel p-5 rounded-3xl border-l-8 shadow-xl animate-in fade-in" style="border-left-color: ${n.color || 'var(--primary)'}">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex-1" onclick="openNoteModal('${n.id}')"><h4 class="font-bold text-sm text-white">${n.title}</h4><p class="text-[10px] text-slate-400 mt-2 line-clamp-3 leading-relaxed">${n.content}</p></div>
-                        <button onclick="delNote('${n.id}')" class="text-slate-600 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
-                    </div>
-                    <div class="flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5">
-                        <select onchange="moveNote('${n.id}', this.value)" class="text-[8px] bg-transparent border-none p-0 outline-none text-blue-400 font-bold appearance-none">
-                            ${app.folders.map(f=>`<option value="${f}" ${n.folder===f?'selected':''}>${f}</option>`).join('')}
-                        </select>
-                        <span class="text-[8px] text-slate-600 font-mono">${n.date}</span>
-                    </div>
-                </div>`).join('') || '<p class="text-center py-20 text-slate-800 text-xs">Vacio</p>';
-            lucide.createIcons();
-        }
-
-        function setFolder(f) { app.activeFolder = f; renderNotes(); playSound(600); }
-        function moveNote(id, f) { const idx=app.notes.findIndex(n=>n.id===id); app.notes[idx].folder=f; save(); renderNotes(); renderDashboard(); playSound(1000); }
-
-        async function fetchNews(idx=0) {
-            app.activeRss = idx; renderChips();
-            const list = document.getElementById('news-list');
-            list.innerHTML = '<div class="py-20 text-center animate-pulse"><i data-lucide="loader" class="mx-auto text-blue-400"></i></div>';
-            lucide.createIcons();
-            try {
-                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(app.rss[idx].url)}`);
-                const data = await res.json();
-                list.innerHTML = data.items.map((item, ix) => {
-                    const img = item.thumbnail || (item.enclosure && item.enclosure.link) || (item.content.match(/src="([^"]+)"/) || [])[1];
-                    return `
-                    <div class="news-card glass-panel overflow-hidden rounded-3xl mb-4 border-white/5">
-                        ${img ? `<img src="${img}" class="h-48 w-full object-cover opacity-80" onerror="this.style.display='none'">` : ''}
-                        <div class="p-6">
-                            <h4 class="text-sm font-bold text-white mb-4 line-clamp-2 leading-tight">${item.title}</h4>
-                            <div class="flex justify-between items-center">
-                                <div class="flex gap-2">
-                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')"><i data-lucide="bookmark" size="18"></i></button>
-                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="shareLink('${item.link}')"><i data-lucide="share-2" size="18"></i></button>
-                                </div>
-                                <button onclick="sendToROI('${item.title.replace(/'/g,"")}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[9px] font-bold orbitron uppercase active:scale-95 transition-all">Analyze</button>
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-                lucide.createIcons();
-            } catch(e) { list.innerHTML = '<p class="text-center py-20 text-red-500">Error de red.</p>'; }
-        }
-        function renderChips() { document.getElementById('discovery-chips').innerHTML = app.rss.map((r,i) => `<button onclick="fetchNews(${i})" class="px-5 py-2 rounded-full text-[10px] whitespace-nowrap transition-all ${app.activeRss === i ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${r.name}</button>`).join(''); }
-
-       function checkAgenda() {
-    const now = new Date();
-    app.events.forEach(e => {
-        const evDate = new Date(e.date);
-        if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
-            if (app.config.notifications) {
-                // NOTIFICACIÓN PERSISTENTE ANDROID
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.ready.then(reg => {
-                        reg.showNotification("VICO OS: AGENDA", {
-                            body: "Evento: " + e.title,
-                            icon: "icon.png",
-                            vibrate: [200, 100, 200, 100, 400],
-                            requireInteraction: true, // Se queda hasta que la toques
-                            tag: e.id
-                        });
-                    });
-                }
-            }
-            triggerAlarm(e.title);
-            app.notified.push(e.id);
-        }
-    });
-}
-            }
-            triggerAlarm(e.title);
-            app.notified.push(e.id);
-        }
-    });
-}
-        function renderEvents() {
-            document.getElementById('events-list').innerHTML = app.events.sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime()).map(e => `
-                <div class="glass-panel p-4 rounded-xl border-l-4 border-yellow-500 flex justify-between items-center">
-                    <div><div class="text-xs font-bold text-white">${e.title}</div><div class="text-[9px] text-slate-500">${new Date(e.date).toLocaleString()}</div></div>
-                    <button onclick="delEvent('${e.id}')" class="text-slate-700 hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" size="16"></i></button>
-                </div>`).join('') || '<p class="text-center text-xs text-slate-600 py-10">Agenda Vacía</p>';
-            lucide.createIcons();
-        }
-        function delEvent(id) { app.events = app.events.filter(e=>e.id!==id); save(); renderEvents(); renderDashboard(); }
-
-        function saveEvent() {
-            const t = document.getElementById('ev-title').value, d = document.getElementById('ev-date').value;
-            if(!t || !d) return;
-            app.events.push({ id: Date.now().toString(), title: t, date: d });
-            save(); renderEvents(); renderDashboard(); closeModal('modal-event'); playSound(800);
-        }
-
-        function saveLink() {
-            const u = document.getElementById('lk-url').value, t = document.getElementById('lk-title').value, tags = document.getElementById('lk-tags').value;
-            if(!u) return;
-            app.links.unshift({ id: Date.now().toString(), url: u.startsWith('http') ? u : 'https://'+u, title: t || u, tags: tags.split(',').map(s=>s.trim()).filter(s=>s) });
-            save(); renderLinks(); renderDashboard(); closeModal('modal-link');
-            document.getElementById('lk-url').value=''; document.getElementById('lk-title').value=''; document.getElementById('lk-tags').value='';
-        }
-        function renderLinks() {
-            const q = document.getElementById('link-search').value.toLowerCase();
-            const list = document.getElementById('links-list');
-            list.innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q)).map(l => {
-                const domain = new URL(l.url).hostname;
-                const thumb = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
-                return `
-                <div class="glass-panel p-4 rounded-[28px] flex gap-4 items-center border-l-2 border-green-500/30 animate-in fade-in">
-                    <div class="w-14 h-14 rounded-2xl bg-black/40 p-2 flex items-center justify-center shadow-inner border border-white/5">
-                        <img src="${thumb}" class="w-full h-full object-contain rounded-lg" onerror="this.src='https://lucide.dev/api/icons/link-2'">
-                    </div>
-                    <div class="flex-1 truncate">
-                        <a href="${l.url}" target="_blank" class="text-sm font-bold text-blue-400 block truncate hover:underline">${l.title}</a>
-                        <p class="text-[9px] text-slate-500 font-mono truncate mt-1 italic opacity-80">${l.url}</p>
-                    </div>
-                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" size="14"></i></button>
-                </div>`;
-            }).join('') || '<p class="text-center py-20 text-slate-700 text-xs">Memory Card Vacía.</p>';
-            lucide.createIcons();
-        }
-        function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
-
-        // --- CHAT MULTI-API (FIX API KEY) ---
-        // --- FUNCIÓN MAESTRA MULTI-API (CHAT Y ROI) ---
-// --- MOTOR NEURAL MULTI-API ---
-async function vicoNeuralLink(promptText) {
-            const key = app.config.key.trim();
-            if (!key) throw new Error("API Key faltante");
-            let url, body, headers = { "Content-Type": "application/json" };
-            if (key.startsWith('gsk_')) {
-                url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
-                headers["Authorization"] = `Bearer ${key}`;
-                body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: promptText}] };
+        // --- FIX CARPETAS DATA ---
+        function openNoteModal(id = null) {
+            const folderSelect = document.getElementById('nt-folder-modal');
+            folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
+            document.getElementById('modal-note').classList.remove('hidden');
+            if (id) {
+                const n = app.notes.find(x => x.id === id);
+                document.getElementById('nt-id').value = n.id;
+                document.getElementById('nt-title').value = n.title;
+                document.getElementById('nt-text').value = n.content;
+                document.getElementById('nt-folder-modal').value = n.folder;
             } else {
-                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-                body = { contents: [{ parts: [{ text: promptText }] }] };
+                document.getElementById('nt-id').value = ''; document.getElementById('nt-title').value = ''; document.getElementById('nt-text').value = '';
             }
-            const r = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
-            const d = await r.json();
-            const res = key.startsWith('gsk_') ? d.choices[0].message.content : d.candidates[0].content.parts[0].text;
-            return res.replace(/[*#"`]/g, ""); // Limpieza total de símbolos
+            playSound('800');
         }
 
-        async function sendChat() {
-            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-            if(!inp.value) return;
-            const ut = inp.value; 
-            msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
-            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
+        // --- MOTOR ROI PRO CON DATOS REALES ---
+        async function runROIAnalysis() {
+            const q = document.getElementById('ai-query').value;
+            if(!q) return alert("Define el objetivo.");
+            const btn = document.getElementById('btn-ai'), micro = document.getElementById('vico-microwave');
+            btn.disabled = true; micro.classList.remove('hidden');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 1;
+                document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
+                document.getElementById('micro-percent').innerText = progress + '%';
+                if(progress >= 100) clearInterval(interval);
+            }, 50);
 
             try {
-                const promptFinal = `Responde de forma profesional a: "${ut}". 
-                NORMAS: 1. Sin asteriscos ni almohadillas. 2. Si crees que un diagrama visual explicaría mejor la respuesta, añade al final: [SUGESTION_VISUAL]`;
-                const aiResponse = await vicoNeuralLink(promptFinal);
+                const megaPrompt = `Análisis Bursátil Senior: ${q}. Sin Markdown. Incluye autores 2026. Al final añade: DATA_BLOCK[85, 40, 90, 30, 70] con valores reales.`;
+                const aiRes = await vicoNeuralLink(megaPrompt);
+                const dataMatch = aiRes.match(/DATA_BLOCK\[(.*?)\]/);
+                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [60, 50, 80, 40, 70];
                 
-                if (aiResponse.includes("[SUGESTION_VISUAL]")) {
-                    const text = aiResponse.replace("[SUGESTION_VISUAL]", "");
-                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${text}</div>`;
-                    msgs.innerHTML += `
-                        <div class="glass-panel p-3 border-blue-500/50 my-2 rounded-xl animate-pulse">
-                            <p class="text-[10px] text-blue-300 font-bold mb-2">VICO: ¿Deseas que genere un diagrama dinámico de este proceso?</p>
-                            <div class="flex gap-2">
-                                <button onclick="renderChatDiagram()" class="bg-blue-600 text-[9px] px-3 py-1 rounded-full font-bold">GENERAR DIAGRAMA</button>
-                                <button onclick="this.parentElement.parentElement.remove()" class="text-[9px] text-slate-500 px-3 py-1 font-bold">DESCARTAR</button>
-                            </div>
-                        </div>`;
-                } else {
-                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
-                }
-            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error de enlace neural.</div>`; }
-            msgs.scrollTop = msgs.scrollHeight;
+                playSound('1500'); // DING!
+                document.getElementById('ai-results').classList.remove('hidden');
+                document.getElementById('ai-report').innerText = aiRes.replace(/DATA_BLOCK\[.*?\]/, "");
+                renderAllChartsPro(chartData);
+            } catch(e) { alert("Error Neural."); }
+            finally { btn.disabled = false; micro.classList.add('hidden'); }
         }
-  
-// --- ACTUALIZACIÓN DEL ROI ENGINE ---
-function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
 
-        function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
-
-      async function runROIAnalysis() {
-    const q = document.getElementById('ai-query').value;
-    if(!q) return alert("Ingrese un prompt o suba un archivo.");
-    const btn = document.getElementById('btn-ai');
-    const micro = document.getElementById('vico-microwave');
-    const microContent = document.getElementById('microwave-content');
-    
-    btn.disabled = true;
-    micro.classList.remove('hidden');
-    
-    // Iniciar Animación Microondas Cyberpunk
-    let progress = 0;
-    const thoughts = ["Analizando metadatos financieros...", "Extrayendo proyecciones 2026...", "Calculando volatilidad bursátil...", "Buscando autores en TechCrunch...", "Sincronizando diagramas Excel..."];
-    const interval = setInterval(() => {
-        progress += 1;
-        document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
-        document.getElementById('micro-percent').innerText = progress + '%';
-        if(progress % 20 === 0) microContent.innerHTML = thoughts[progress/20 - 1] + "<br>" + microContent.innerHTML;
-        if(progress >= 100) clearInterval(interval);
-    }, 60);
-
-    try {
-        const megaPrompt = `Análisis Bursátil Senior de: ${q}. 
-        REQUISITOS: 1. Sin Markdown. 2. Cita autores y fechas 2026. 
-        3. Al final añade: DATA_BLOCK[val1, val2, val3, val4, val5] con datos reales del análisis.`;
-        
-        const aiResponse = await vicoNeuralLink(megaPrompt);
-        
-        // DING! Sonido microondas
-        playSound('1500'); 
-
-        // Extraer datos para los 6 diagramas
-        const dataMatch = aiResponse.match(/DATA_BLOCK\[(.*?)\]/);
-        const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [70, 50, 90, 40, 80];
-        const cleanText = aiResponse.replace(/DATA_BLOCK\[.*?\]/, "");
-
-        document.getElementById('ai-results').classList.remove('hidden');
-        document.getElementById('ai-report').innerText = cleanText;
-        document.getElementById('report-date').innerText = new Date().toLocaleString();
-        
-        renderAllChartsPro(chartData); // Renderiza los 6 diagramas con lógica real
-        document.getElementById('ai-results').scrollIntoView({ behavior: 'smooth' });
-    } catch(e) { alert("Error en el puente neural."); }
-    finally { btn.disabled = false; micro.classList.add('hidden'); }
-}
-
-   function renderAllChartsPro(dataArray) {
-            const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
-            const labels = ['VALOR', 'RIESGO', 'VOLUMEN', 'ROI', 'MERCADO'];
-            
-            // Pausa técnica para asegurar carga de DOM
+        function renderAllChartsPro(data) {
+            const ids = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
             setTimeout(() => {
-                chartIds.forEach((id, index) => {
+                ids.forEach((id, i) => {
                     const ctx = document.getElementById(id).getContext('2d');
-                    const existing = Chart.getChart(id);
-                    if (existing) existing.destroy();
-
-                    // Varianza basada en datos reales de la IA
-                    const adjustedData = dataArray.map(v => Math.abs(v + (index * 2) - 5));
-
+                    const existing = Chart.getChart(id); if (existing) existing.destroy();
                     new Chart(ctx, {
-                        type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                data: adjustedData,
-                                borderColor: '#00fff7',
-                                backgroundColor: id.includes('Pie') ? ['#3b82f6','#00fff7','#1e293b','#334155','#475569'] : 'rgba(0, 255, 247, 0.1)',
-                                fill: true, tension: 0.4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: (id.includes('Radar') || id.includes('Pie')) ? {} : {
-                                y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#475569', font: { size: 7 } } },
-                                x: { display: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 7 } } }
-                            }
-                        }
+                        type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : 'bar'),
+                        data: { labels: ['A','B','C','D','E'], datasets: [{ data: data.map(v => v + i), borderColor: '#00fff7', backgroundColor: 'rgba(0,255,247,0.1)', fill: true }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                     });
                 });
-            }, 150);
-        }
-function printElement(elementId) {
-    const content = document.getElementById(elementId).innerHTML;
-    const win = window.open('', '', 'height=700,width=900');
-    win.document.write('<html><head><title>Print VICO</title></head><body>');
-    win.document.write(content);
-    win.document.write('</body></html>');
-    win.document.close();
-    win.print();
-}
-
-       // Función para compartir nativamente
-function shareAsPDF() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'VICO ROI REPORT',
-            text: document.getElementById('ai-report').innerText,
-            url: window.location.href
-        }).catch(() => window.print());
-    } else {
-        window.print();
-    }
-}
-
-        // --- AUXILIARES GLOBALES ---
-        function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-function playSound(type) {
-    // FIX: Ahora obedece estrictamente al botón de Ajustes
-    if (!app.config.uiSounds) return; 
-    
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const o = audioCtx.createOscillator(); 
-    const g = audioCtx.createGain();
-    o.connect(g); g.connect(audioCtx.destination);
-    
-    if (type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); }
-    else if (type === 'siren') { o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(1400, audioCtx.currentTime + 0.4); }
-    else if (type === '1500') { o.frequency.value = 1500; } // DING Microondas
-    else { o.frequency.value = parseInt(type) || 800; }
-    
-    g.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-    o.start(); o.stop(audioCtx.currentTime + 0.3);
-}
-
-      function renderRssNotifyControls() {
-            const container = document.getElementById('rss-notify-controls');
-            if (!container) return;
-            container.innerHTML = app.rss.map((r, i) => `
-                <div class="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5 mb-2">
-                    <span class="text-[9px] text-slate-300 truncate mr-2">${r.name}</span>
-                    <button onclick="toggleRssNotify(${i})" class="px-3 py-1 rounded-lg text-[8px] font-bold ${r.notify ? 'bg-green-600' : 'bg-slate-700'}">
-                        ${r.notify ? 'NOTIFY ON' : 'NOTIFY OFF'}
-                    </button>
-                </div>
-            `).join('');
+            }, 100);
         }
 
-        function toggleRssNotify(index) {
-            app.rss[index].notify = !app.rss[index].notify;
-            save();
-            renderRssNotifyControls();
-            playSound('800');
+        // --- DIAGRAMAS CHAT VICO ---
+        function renderChatDiagram() {
+            const msgs = document.getElementById('chat-msgs'), id = "diag-" + Date.now();
+            msgs.innerHTML += `
+                <div class="vico-diagram-container" id="${id}">
+                    <div class="diagram-btn-float">
+                        <button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded text-white text-[8px]">PNG</button>
+                    </div>
+                    <canvas id="canvas-${id}" height="180"></canvas>
+                </div>`;
+            const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
+            new Chart(ctx, { type: 'radar', data: { labels: ['ROI', 'Riesgo', 'Escala', 'MKT', 'IA'], datasets: [{ data: [80, 20, 90, 60, 95], borderColor: '#00fff7' }] } });
+            msgs.scrollTop = msgs.scrollHeight;
         }
 
-function toggleRssNotify(index) {
-    app.rss[index].notify = !app.rss[index].notify;
-    save();
-    renderRssNotifyControls();
-    playSound('800');
-}
-        function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); renderCustomBtns(); renderLinks(); renderEvents(); renderRssList(); }
-        function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; document.getElementById('dash-events-label').innerText = `${DICT[app.config.lang].agenda} (${app.events.length})`; }
-        function renderCustomBtns() { document.getElementById('custom-buttons-dashboard').innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}','_blank')" class="bg-blue-600/20 border border-blue-500/30 px-5 py-2 rounded-2xl text-[10px] font-bold text-blue-400 m-1 active:scale-95 transition-all">${b.label}</button>`).join(''); }
-        function createCustomBtn() { const l=document.getElementById('btn-name').value, u=document.getElementById('btn-url').value; if(!l||!u) return; app.btns.push({id:Date.now().toString(),label:l,url:u}); save(); renderCustomBtns(); }
-        function renderRssList() { document.getElementById('rss-list-container').innerHTML = app.rss.map((r,i)=>`<div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded"><span>${r.name}</span><button onclick="delRss(${i})" class="text-red-500">×</button></div>`).join(''); }
-        function addRssSource() { const n=document.getElementById('rss-name').value, u=document.getElementById('rss-url').value; if(!n||!u) return; app.rss.push({name:n, url:u}); save(); renderRssList(); }
-        function delRss(i) { app.rss.splice(i,1); save(); renderRssList(); }
-        function exportData() { const b=new Blob([JSON.stringify(app)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='vico_backup.json'; a.click(); }
-        function importData(i) { const r = new FileReader(); r.onload = e => { app = JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(i.files[0]); }
-        function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); playSound(500); }
-        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
-        function openEventModal() { document.getElementById('modal-event').classList.remove('hidden'); }
-        function openLinkModal() { document.getElementById('modal-link').classList.remove('hidden'); }
-        function openRssModal() { document.getElementById('modal-rss').classList.remove('hidden'); }
-        function addNewRss() { const n=document.getElementById('new-rss-name').value, u=document.getElementById('new-rss-url').value; if(!n||!u) return; app.rss.push({name:n, url:u}); save(); fetchNews(app.rss.length-1); closeModal('modal-rss'); }
-        function saveLinkToPocket(u, t) { app.links.unshift({ id: Date.now().toString(), url: u, title: t, tags: ['Discovery'] }); save(); renderLinks(); renderDashboard(); playSound(1000); alert("Link Guardado."); }
-        function shareLink(u) { if(navigator.share) navigator.share({url:u}); else prompt("Link:", u); }
-        function sendToROI(t) { document.getElementById('ai-query').value = `ROI: ${t}`; switchTab('view-analysis'); }
-        function toggleFav(u) { if(app.favs.includes(u)) app.favs=app.favs.filter(x=>x!==u); else app.favs.push(u); save(); fetchNews(app.activeRss); }
-        function delNote(id) { app.notes = app.notes.filter(n => n.id !== id); save(); renderNotes(); renderDashboard(); }
-        function checkShareTarget() {
-    const params = new URLSearchParams(window.location.search);
-    const sharedTitle = params.get('title');
-    const sharedText = params.get('text');
-    const sharedUrl = params.get('url');
-
-    if (sharedTitle || sharedText || sharedUrl) {
-        // Extraer la URL del texto si viene mezclada
-        const finalUrl = sharedUrl || (sharedText && sharedText.match(/https?:\/\/[^\s]+/)?.[0]) || sharedText;
-        
-        if (finalUrl) {
-            app.links.unshift({
-                id: Date.now().toString(),
-                url: finalUrl,
-                title: sharedTitle || "Link Compartido Externo",
-                tags: ["Externo"]
-            });
-            save();
-            renderLinks();
-            renderDashboard();
-            switchTab('view-links');
-            alert("VICO POCKET: Link guardado en la Memory Card.");
-            // Limpiar la URL para evitar que se guarde de nuevo al recargar
-            window.history.replaceState({}, '', window.location.pathname);
-        }
-    }
-}
-        function toggleFocus() {
-            const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
-            if(app.pomo.active) { clearInterval(app.pomo.timer); app.pomo.active = false; tb.classList.add('hidden'); ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>'; }
-            else { app.pomo.active = true; tb.classList.remove('hidden'); ctrl.innerHTML = '<i data-lucide="pause" fill="white"></i>';
-                app.pomo.timer = setInterval(() => { app.pomo.time--; updatePomoUI(); if(app.pomo.time <= 0) { resetFocus(); alert("Focus terminado."); } }, 1000);
-            }
-            lucide.createIcons();
-        }
-        function resetFocus() { clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false; document.getElementById('top-taskbar').classList.add('hidden'); updatePomoUI(); document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>'; lucide.createIcons(); }
-        function updatePomoUI() { const m = Math.floor(app.pomo.time/60), s = app.pomo.time%60; const str = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; document.getElementById('pomo-clock').innerText = str; document.getElementById('mini-timer').innerText = str; }
-        function minimizePomo() { document.getElementById('modal-pomo').classList.add('hidden'); if(app.pomo.active) document.getElementById('top-taskbar').classList.remove('hidden'); }
-        let deferredPrompt; window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('install-banner').classList.remove('hidden'); });
-        async function triggerPwaInstall(){ if(!deferredPrompt)return; deferredPrompt.prompt(); const {outcome}=await deferredPrompt.userChoice; if(outcome==='accepted')document.getElementById('install-banner').classList.add('hidden'); deferredPrompt=null; }
-    function forceSystemUpdate() {
-    playSound('siren');
-    if ('serviceWorker' in navigator) {
-        caches.keys().then(function(names) {
-            for (let name of names) caches.delete(name);
-        });
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-                registration.unregister();
-            }
-        });
-    }
-    // Forzar recarga completa desde el servidor ignorando caché
-    setTimeout(() => {
-        location.reload(true);
-    }, 500);
-    }
-        function createNewFolder() {
-    const name = prompt("Nombre de la nueva categoría:");
-    if (name && !app.folders.includes(name)) {
-        app.folders.push(name);
-        save();
-        renderNotes(); // Actualiza la barra superior
-        applySystemConfig(); // Actualiza el selector dentro del modal de notas
-        alert("Categoría '" + name + "' creada.");
-    }
-        }
-        function minimizePomo() {
-    document.getElementById('modal-pomo').classList.add('hidden');
-    if(app.pomo.active) {
-        document.getElementById('top-taskbar').classList.remove('hidden');
-    }
-        }
-        function saveNote() {
-    const id = document.getElementById('nt-id').value;
-    const title = document.getElementById('nt-title').value;
-    const content = document.getElementById('nt-text').value;
-    const folder = document.getElementById('nt-folder-modal').value;
-    const color = document.getElementById('nt-color').value;
-
-    if (!title || !content) return alert("Completa los campos.");
-
-    if (id) {
-        // Editar existente
-        const idx = app.notes.findIndex(n => n.id === id);
-        app.notes[idx] = { ...app.notes[idx], title, content, folder, color };
-    } else {
-        // Nueva nota
-        app.notes.unshift({
-            id: Date.now().toString(),
-            title, content, folder, color,
-            date: new Date().toLocaleDateString()
-        });
-    }
-
-    save();
-    renderNotes();
-    renderDashboard();
-    closeModal('modal-note');
-    playSound(800);
-        }
-   function save() {
-    localStorage.setItem('vp_notes', JSON.stringify(app.notes));
-    localStorage.setItem('vp_events', JSON.stringify(app.events));
-    localStorage.setItem('vp_links', JSON.stringify(app.links));
-    localStorage.setItem('vp_config', JSON.stringify(app.config)); // CLAVE UNIFICADA
-    localStorage.setItem('vp_btns', JSON.stringify(app.btns));
-    localStorage.setItem('vp_rss', JSON.stringify(app.rss));
-    localStorage.setItem('vp_folders', JSON.stringify(app.folders));
-}
-
-        function exportOSData() {
-            const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `vico_pocket_backup_${Date.now()}.json`; a.click();
+        function downloadPng(id) {
+            const link = document.createElement('a'); link.download = 'VICO_DIAG.png';
+            link.href = document.querySelector(`#${id} canvas`).toDataURL(); link.click();
         }
 
-        function importOSData(input) {
-            const reader = new FileReader();
-            reader.onload = e => { 
-                try { app = JSON.parse(e.target.result); save(); location.reload(); } catch(err) { alert("Error en JSON"); }
-            };
-            reader.readAsText(input.files[0]);
-    }
-    function renderVicoDiagram(data) {
-    const msgs = document.getElementById('chat-msgs');
-    const id = "diag-" + Date.now();
-    msgs.innerHTML += `
-        <div class="vico-diagram-container my-3" id="${id}">
-            <div class="diagram-btn-float">
-                <button onclick="printElement('${id}')" class="p-1 bg-white/10 rounded"><i data-lucide="printer" size="10"></i></button>
-                <button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded"><i data-lucide="download" size="10"></i></button>
-            </div>
-            <h5 class="text-[9px] orbitron text-blue-400 mb-2">Análisis Visual VICO</h5>
-            <canvas id="canvas-${id}"></canvas>
-        </div>`;
-    
-    lucide.createIcons();
-    const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
-    new Chart(ctx, {
-        type: 'radar',
-        data: { labels: ['A','B','C','D','E'], datasets: [{ data: [80, 90, 70, 60, 85], borderColor: '#00fff7' }] },
-        options: { plugins: { legend: { display: false } } }
-    });
-}
-
-function shareAsPDF() {
-    if (navigator.share) {
-        navigator.share({
-            title: 'VICO ROI REPORT',
-            text: document.getElementById('ai-report').innerText,
-            url: window.location.href
-        }).catch(() => window.print());
-    } else {
-        window.print();
-    }
-                         }
-    /* --- ESTILOS DE IMPRESIÓN PRO --- */
-@media print {
-    body * { visibility: hidden; }
-    #ai-results, #ai-results * { visibility: visible; }
-    #ai-results { position: absolute; left: 0; top: 0; width: 100%; }
-    .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; }
-    canvas { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
-}
-
-/* Diagramas Complejos Chat */
-.vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; }
-.diagram-btn-float { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; }
-    function downloadPng(elementId) {
-    const canvas = document.querySelector(`#${elementId} canvas`);
-    if (!canvas) return alert("Diagrama no encontrado.");
-    const link = document.createElement('a');
-    link.download = 'VICO_ANALYSIS_' + Date.now() + '.png';
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-    playSound('800');
-}
+        function shareAsPDF() { window.print(); }
+        function save() { localStorage.setItem('vp_notes', JSON.stringify(app.notes)); localStorage.setItem('vp_config', JSON.stringify(app.config)); localStorage.setItem('vp_folders', JSON.stringify(app.folders)); localStorage.setItem('vp_rss', JSON.stringify(app.rss)); }
+        window.onload = () => { lucide.createIcons(); applySystemConfig(); renderAll(); };
     </script>
 </body>
 </html>
