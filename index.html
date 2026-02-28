@@ -16,32 +16,25 @@
   <style>
       :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
         
-        /* TEMAS DINAMICOS */
+        /* TEMAS */
         body.theme-Cyber { --bg: #0b0f1a; --primary: #00fff7; }
         body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
         body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
         body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
         body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
 
-        /* MODO CLARO (Pack Duvi Normal Mode) */
+        /* MODO CLARO */
         body.mode-light { --bg: #f8fafc; --glass: rgba(0,0,0,0.03); --border: rgba(0,0,0,0.1); color: #1e293b; }
         body.mode-light .glass-panel { background: rgba(255,255,255,0.85) !important; border: 1px solid rgba(0,0,0,0.1); color: #1e293b; }
         body.mode-light input, body.mode-light textarea, body.mode-light select { background: #fff !important; color: #000 !important; border: 1px solid #cbd5e1 !important; }
         body.mode-light .nav-bar { background: #ffffff; border-top: 1px solid #e2e8f0; }
-        body.mode-light .nav-item { color: #64748b; }
-        body.mode-light .orbitron { color: #0f172a; }
-
-        /* ESCALADO FUENTES */
-        body.font-sm { font-size: 11px; }
-        body.font-normal { font-size: 14px; }
-        body.font-lg { font-size: 18px; }
 
         body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
         .orbitron { font-family: 'Orbitron', sans-serif; }
         .glass-panel { background: rgba(11, 15, 26, 0.92); backdrop-filter: blur(25px); border: 1px solid var(--border); }
         .hidden { display: none !important; }
         
-        /* BARRAS Y NAVEGACIÓN */
+        /* BARRAS */
         .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.92); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
@@ -49,16 +42,9 @@
         .nav-item.active i { transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary)); }
 
         input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 12px; appearance: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
         .chip-active { background: var(--primary); color: black; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
         
-        /* ANIMACIONES */
-        @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.03); border-color: red; } 100% { transform: scale(1); } }
-        .alarm-active { animation: ring 0.5s infinite; border: 2px solid red !important; }
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* LOGO MATRIX HALO */
+        /* LOGO Y MATRIX */
         .logo-container { position: relative; padding: 10px; border-radius: 20px; transition: 0.5s; overflow: hidden; }
         .logo-container::before { content: ''; position: absolute; inset: 0; border: 2px solid transparent; border-radius: 20px; transition: 0.5s; }
         .logo-container:hover::before { border-color: #fff; box-shadow: 0 0 20px #fff, inset 0 0 10px #fff; animation: borderHalo 2s linear infinite; }
@@ -66,33 +52,18 @@
         .matrix-rain { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); color: #0f0; font-family: monospace; font-size: 8px; display: none; pointer-events: none; z-index: 10; padding: 5px; border: 1px solid #0ff; }
         .logo-container:hover .matrix-rain { display: block; }
 
-        /* MICROONDAS CYBERPUNK ROI */
-        .microwave-chassis { border: 3px solid #3b82f6; box-shadow: 0 0 20px #00fff7, inset 0 0 10px #3b82f6; position: relative; background: #0b0f1a; border-radius: 32px; }
-        .microwave-window { background: rgba(0, 255, 247, 0.05); border: 2px solid #1e293b; height: 120px; overflow: hidden; position: relative; border-radius: 15px; }
-        .ai-brain-scroll { position: absolute; width: 100%; color: #0f0; font-family: monospace; font-size: 8px; line-height: 1.2; text-shadow: 0 0 5px #0f0; animation: brainScroll 15s linear infinite; }
-        @keyframes brainScroll { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
-        .dial-container { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #1e293b; position: relative; background: conic-gradient(#3b82f6 var(--p), #0f172a 0deg); }
-        .dial-container::after { content: ''; position: absolute; inset: 5px; background: #0b0f1a; border-radius: 50%; border: 1px solid #1e293b; }
+        /* MICROONDAS */
+        .microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; }
+        .thinking-text { font-family: 'Courier New', monospace; font-size: 9px; color: #0f0; text-shadow: 0 0 5px #0f0; animation: scrollText 10s linear infinite; }
+        @keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+        .timer-knob { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #334155; position: relative; background: conic-gradient(var(--primary) var(--progress), transparent 0deg); }
+        .timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0f172a; border-radius: 50%; }
 
-        /* CHAT Y DIAGRAMAS */
-        .chat-bubble { max-width: 85%; padding: 12px; border-radius: 18px; margin-bottom: 8px; font-size: 11px; line-height: 1.4; }
-        .chat-user { background: var(--primary); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
-        .chat-bot { background: rgba(255,255,255,0.05); color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
-        .vico-diagram-container { background: #000; border: 1px solid var(--primary); padding: 15px; border-radius: 15px; position: relative; }
-        .diagram-btn-float { position: absolute; top: 5px; right: 5px; display: flex; gap: 5px; }
-
-        /* ADS Y NOTIFICACIONES */
-        #ad-top-zone, #ad-footer-zone { width: 100%; text-align: center; overflow: hidden; }
-        .notification-active { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
-
-        /* IMPRESIÓN PROFESIONAL */
         @media print {
             body * { visibility: hidden; }
             #ai-results, #ai-results * { visibility: visible; }
-            #ai-results { position: absolute; left: 0; top: 0; width: 100%; height: auto; }
-            .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; box-shadow: none !important; }
-            canvas { max-width: 100% !important; height: auto !important; page-break-inside: avoid; }
-            .nav-bar, .task-bar, button { display: none !important; }
+            #ai-results { position: absolute; left: 0; top: 0; width: 100%; }
+            .glass-panel { border: 1px solid #000 !important; background: white !important; color: black !important; }
         }
     </style>
 </head>
