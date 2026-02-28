@@ -142,7 +142,7 @@
     </div>
     </section>
 
-          <section id="view-dashboard" class="p-5 space-y-6 fade-in">
+   <section id="view-dashboard" class="p-5 space-y-6 fade-in">
             <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent text-center">
                 <div class="logo-container" onmouseover="playSound('pulsar')">
                     <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
@@ -178,6 +178,7 @@
                 <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">Notas</div></div>
                 <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">Links</div></div>
             </div>
+        </section>
 
             <div id="install-banner" class="hidden p-4 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between animate-bounce">
                 <div class="flex items-center gap-3">
@@ -361,10 +362,12 @@
         <span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos de Interfaz</span>
         <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
     </div>
-    <div class="glass-panel p-5 rounded-3xl border-blue-500/20 space-y-4 mt-4">
-    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Alertas Discovery (RSS)</h3>
-    <div id="rss-notify-controls" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar">
+   <div class="glass-panel p-5 rounded-3xl border-blue-500/20 space-y-4 mt-4">
+    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Sincronización de Alertas RSS</h3>
+    <p class="text-[8px] text-slate-500">Activa notificaciones individuales por cada fuente global.</p>
+    <div id="rss-notify-controls" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar">
         </div>
+</div>
     </div>
     <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase shadow-lg active:scale-95 transition-all">Limpiar Caché Nucleo</button>
 </div>
@@ -457,11 +460,13 @@
 
     <script>
   // --- PROTOCOLO DE PROTECCIÓN NÚCLEO VICO ---
-setInterval(() => { 
-    const devtools = /./;
-    devtools.toString = function() { this.opened = true; };
-    console.log(devtools);
-    if (devtools.opened) { debugger; } // Lógica Anti-Debugging Pack Duvi
+// --- PROTECCIÓN NÚCLEO PACK DUVI ---
+setInterval(() => {
+    const start = Date.now();
+    debugger; // Anti-Debugging: Ralentiza al intruso
+    if (Date.now() - start > 100) {
+        document.body.innerHTML = "<h1>SISTEMA BLOQUEADO: INTENTO DE DEBUG DETECTADO</h1>";
+    }
 }, 1000);
 
 if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") {
@@ -861,57 +866,51 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
 
         function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
 
-        async function runROIAnalysis() {
-            const q = document.getElementById('ai-query').value;
-            if(!q) return alert("Define el objetivo.");
-            const btn = document.getElementById('btn-ai');
-            const micro = document.getElementById('vico-microwave');
-            const microContent = document.getElementById('microwave-content');
-            
-            btn.disabled = true;
-            micro.classList.remove('hidden');
-            
-            // Animación Microondas
-            let progress = 0;
-            const thoughts = ["Accediendo a base de datos 2026...", "Calculando proyecciones bursátiles...", "Analizando competencia internacional...", "Estructurando informe ejecutivo...", "Sincronizando diagramas dinámicos..."];
-            const interval = setInterval(() => {
-                progress += 1;
-                document.getElementById('pomo-knob').style.setProperty('--p', (progress * 3.6) + 'deg');
-                document.getElementById('micro-percent').innerText = progress + '%';
-                if(progress % 15 === 0) microContent.innerHTML = thoughts[Math.floor(progress/20)] + "<br>" + microContent.innerHTML;
-                if(progress >= 100) clearInterval(interval);
-            }, 60);
+      async function runROIAnalysis() {
+    const q = document.getElementById('ai-query').value;
+    if(!q) return alert("Ingrese un prompt o suba un archivo.");
+    const btn = document.getElementById('btn-ai');
+    const micro = document.getElementById('vico-microwave');
+    const microContent = document.getElementById('microwave-content');
+    
+    btn.disabled = true;
+    micro.classList.remove('hidden');
+    
+    // Iniciar Animación Microondas Cyberpunk
+    let progress = 0;
+    const thoughts = ["Analizando metadatos financieros...", "Extrayendo proyecciones 2026...", "Calculando volatilidad bursátil...", "Buscando autores en TechCrunch...", "Sincronizando diagramas Excel..."];
+    const interval = setInterval(() => {
+        progress += 1;
+        document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
+        document.getElementById('micro-percent').innerText = progress + '%';
+        if(progress % 20 === 0) microContent.innerHTML = thoughts[progress/20 - 1] + "<br>" + microContent.innerHTML;
+        if(progress >= 100) clearInterval(interval);
+    }, 60);
 
-            try {
-                // Prompt optimizado para obtener DATOS numéricos
-                const megaPrompt = `Realiza un análisis estratégico y bursátil profesional de: ${q}. 
-                INCLUYE: Comparativa autores 2026 y fuentes fiables.
-                IMPORTANTE: Al final del texto, añade una línea con este formato exacto para los gráficos:
-                DATA_BLOCK[80, 60, 45, 90, 70] 
-                Responde sin símbolos Markdown (* o #).`;
+    try {
+        const megaPrompt = `Análisis Bursátil Senior de: ${q}. 
+        REQUISITOS: 1. Sin Markdown. 2. Cita autores y fechas 2026. 
+        3. Al final añade: DATA_BLOCK[val1, val2, val3, val4, val5] con datos reales del análisis.`;
+        
+        const aiResponse = await vicoNeuralLink(megaPrompt);
+        
+        // DING! Sonido microondas
+        playSound('1500'); 
 
-                const aiResponse = await vicoNeuralLink(megaPrompt);
-                
-                // Extraer datos del bloque de la IA
-                const dataMatch = aiResponse.match(/DATA_BLOCK\[(.*?)\]/);
-                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [50, 40, 60, 70, 50];
-                const cleanText = aiResponse.replace(/DATA_BLOCK\[.*?\]/, "");
+        // Extraer datos para los 6 diagramas
+        const dataMatch = aiResponse.match(/DATA_BLOCK\[(.*?)\]/);
+        const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [70, 50, 90, 40, 80];
+        const cleanText = aiResponse.replace(/DATA_BLOCK\[.*?\]/, "");
 
-                // Sonido Ding
-                playSound('800'); setTimeout(() => playSound('1500'), 150);
-
-                document.getElementById('report-date').innerText = new Date().toLocaleDateString();
-                document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = cleanText;
-                
-                // Pasar datos reales a los gráficos
-                renderAllChartsPro(chartData);
-                
-                // Scroll automático al informe
-                document.getElementById('ai-results').scrollIntoView({ behavior: 'smooth' });
-            } catch(e) { alert("VICO: Fallo en el enlace neural."); }
-            finally { btn.disabled = false; micro.classList.add('hidden'); }
-        }
+        document.getElementById('ai-results').classList.remove('hidden');
+        document.getElementById('ai-report').innerText = cleanText;
+        document.getElementById('report-date').innerText = new Date().toLocaleString();
+        
+        renderAllChartsPro(chartData); // Renderiza los 6 diagramas con lógica real
+        document.getElementById('ai-results').scrollIntoView({ behavior: 'smooth' });
+    } catch(e) { alert("Error en el puente neural."); }
+    finally { btn.disabled = false; micro.classList.add('hidden'); }
+}
 
    function renderAllChartsPro(dataArray) {
     const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
@@ -965,19 +964,25 @@ function printElement(elementId) {
     win.print();
 }
 
-        function shareAsPDF() {
-            if (navigator.share) {
-                alert("VICO: Preparando captura del informe ejecutivo para compartir...");
-                window.print(); // En móviles esto abre el diálogo de Guardar como PDF
-            }
-        }
+       // Función para compartir nativamente
+function shareAsPDF() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'VICO ROI REPORT',
+            text: document.getElementById('ai-report').innerText,
+            url: window.location.href
+        }).catch(() => window.print());
+    } else {
+        window.print();
+    }
+}
 
         // --- AUXILIARES GLOBALES ---
         function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 // BUSCA openNoteModal y REEMPLAZA:
 function openNoteModal(id = null) {
-    // REPARACIÓN CARPETAS: Inyectar categorías existentes antes de abrir
+    // FIX CARPETAS: Refrescar el selector con las carpetas actuales
     const folderSelect = document.getElementById('nt-folder-modal');
     if (folderSelect) {
         folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
@@ -990,13 +995,12 @@ function openNoteModal(id = null) {
         document.getElementById('nt-title').value = n.title;
         document.getElementById('nt-text').value = n.content;
         document.getElementById('nt-folder-modal').value = n.folder;
-        document.getElementById('nt-color').value = n.color || '#3b82f6';
     } else {
         document.getElementById('nt-id').value = '';
         document.getElementById('nt-title').value = '';
         document.getElementById('nt-text').value = '';
     }
-    playSound('800'); // Sonido de apertura corregido
+    playSound('800');
 }
 
 function playSound(type) {
