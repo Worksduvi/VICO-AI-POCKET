@@ -117,21 +117,6 @@
                     <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="roi">Análisis ROI</span>
                 </div>
             </div>
-
-            <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
-
-            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5 shadow-inner">
-                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">Notas</div></div>
-                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">Links</div></div>
-            </div>
-
-            <div id="install-banner" class="hidden p-4 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between animate-bounce">
-                <div class="flex items-center gap-3">
-                    <div class="p-2 bg-blue-600 rounded-xl"><i data-lucide="download-cloud" class="text-white"></i></div>
-                    <div><h4 class="text-xs font-bold text-white">Instalar VICO POCKET</h4><p class="text-[9px] text-slate-400">Modo APK sin navegador</p></div>
-                </div>
-                <button onclick="triggerPwaInstall()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white">INSTALAR</button>
-            </div>
         </section>
 
       <section id="view-notes" class="hidden p-5 fade-in">
@@ -879,47 +864,43 @@ function toggleMicrowave() { document.getElementById('vico-microwave').classList
 }
 
    function renderAllChartsPro(dataArray) {
-    const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
-    
-    // Esperar un instante para que el DOM se estabilice
-    setTimeout(() => {
-        chartIds.forEach((id, index) => {
-            const canvas = document.getElementById(id);
-            if (!canvas) return;
+            const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
+            const labels = ['VALOR', 'RIESGO', 'VOLUMEN', 'ROI', 'MERCADO'];
             
-            const ctx = canvas.getContext('2d');
-            const existing = Chart.getChart(id);
-            if (existing) existing.destroy();
+            // Pausa técnica para asegurar carga de DOM
+            setTimeout(() => {
+                chartIds.forEach((id, index) => {
+                    const ctx = document.getElementById(id).getContext('2d');
+                    const existing = Chart.getChart(id);
+                    if (existing) existing.destroy();
 
-            // Lógica de datos reales: distribuimos los valores de la IA entre los 6 gráficos
-            const val = dataArray[index % dataArray.length];
-            const dataSet = [val, val-10, val+5, val-5, val+10].map(v => Math.max(0, v));
+                    // Varianza basada en datos reales de la IA
+                    const adjustedData = dataArray.map(v => Math.abs(v + (index * 2) - 5));
 
-            new Chart(ctx, {
-                type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
-                data: {
-                    labels: ['MKT', 'ROI', 'VAR', 'GROW', 'RISK'],
-                    datasets: [{
-                        data: dataSet,
-                        borderColor: '#00fff7',
-                        backgroundColor: id.includes('Pie') ? ['#3b82f6','#00fff7','#1e293b','#334155','#475569'] : 'rgba(0, 255, 247, 0.1)',
-                        fill: true, tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: (id.includes('Radar') || id.includes('Pie')) ? {} : {
-                        y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#475569', font: { size: 7 } } },
-                        x: { display: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 7 } } }
-                    }
-                }
-            });
-        });
-    }, 150);
-}
-
+                    new Chart(ctx, {
+                        type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: adjustedData,
+                                borderColor: '#00fff7',
+                                backgroundColor: id.includes('Pie') ? ['#3b82f6','#00fff7','#1e293b','#334155','#475569'] : 'rgba(0, 255, 247, 0.1)',
+                                fill: true, tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: (id.includes('Radar') || id.includes('Pie')) ? {} : {
+                                y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#475569', font: { size: 7 } } },
+                                x: { display: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 7 } } }
+                            }
+                        }
+                    });
+                });
+            }, 150);
+        }
 function printElement(elementId) {
     const content = document.getElementById(elementId).innerHTML;
     const win = window.open('', '', 'height=700,width=900');
@@ -966,18 +947,25 @@ function playSound(type) {
     o.start(); o.stop(audioCtx.currentTime + 0.3);
 }
 
-        function renderRssNotifyControls() {
-    const container = document.getElementById('rss-notify-controls');
-    if (!container) return;
-    container.innerHTML = app.rss.map((r, i) => `
-        <div class="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5">
-            <span class="text-[9px] text-slate-300 truncate mr-2">${r.name}</span>
-            <button onclick="toggleRssNotify(${i})" class="px-3 py-1 rounded-lg text-[8px] font-bold ${r.notify ? 'bg-green-600' : 'bg-slate-700'}">
-                ${r.notify ? 'ALERTA ON' : 'ALERTA OFF'}
-            </button>
-        </div>
-    `).join('');
-}
+      function renderRssNotifyControls() {
+            const container = document.getElementById('rss-notify-controls');
+            if (!container) return;
+            container.innerHTML = app.rss.map((r, i) => `
+                <div class="flex justify-between items-center bg-white/5 p-2 rounded-xl border border-white/5 mb-2">
+                    <span class="text-[9px] text-slate-300 truncate mr-2">${r.name}</span>
+                    <button onclick="toggleRssNotify(${i})" class="px-3 py-1 rounded-lg text-[8px] font-bold ${r.notify ? 'bg-green-600' : 'bg-slate-700'}">
+                        ${r.notify ? 'NOTIFY ON' : 'NOTIFY OFF'}
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function toggleRssNotify(index) {
+            app.rss[index].notify = !app.rss[index].notify;
+            save();
+            renderRssNotifyControls();
+            playSound('800');
+        }
 
 function toggleRssNotify(index) {
     app.rss[index].notify = !app.rss[index].notify;
