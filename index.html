@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>VICO POCKET OS - ELITE Final 10.1</title>
+    <meta name="theme-color" content="#0b0f1a">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="./icon.png">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --bg: #0b0f1a; --primary: #3b82f6; --glass: rgba(255, 255, 255, 0.03); --border: rgba(59, 130, 246, 0.15); }
+        
+        /* TEMAS DINÁMICOS */
+        body.theme-Cyber { --bg: #0b0f1a; --primary: #00fff7; }
+        body.theme-Gold { --bg: #1a1605; --primary: #fbbf24; }
+        body.theme-Nature { --bg: #051a0b; --primary: #10b981; }
+        body.theme-Nebula { --bg: #13051a; --primary: #d946ef; }
+        body.theme-Minimal { --bg: #000000; --primary: #ffffff; }
+
+        /* ESCALADO FUENTES */
+        body.font-sm { font-size: 11px; }
+        body.font-normal { font-size: 14px; }
+        body.font-lg { font-size: 18px; }
+
+        body { background-color: var(--bg); color: #e2e8f0; font-family: 'Inter', sans-serif; transition: 0.3s; margin: 0; overflow: hidden; }
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass-panel { background: rgba(11, 15, 26, 0.92); backdrop-filter: blur(25px); border: 1px solid var(--border); }
+        .hidden { display: none !important; }
+        
+        /* BARRAS */
+        .task-bar { position: fixed; top: 0; left: 0; width: 100%; height: 38px; background: rgba(0,0,0,0.92); z-index: 500; display: flex; justify-content: center; align-items: center; border-bottom: 1px solid var(--border); }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 75px; background: rgba(11, 15, 26, 0.98); border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: 10px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #475569; font-size: 8px; cursor: pointer; flex: 1; transition: 0.2s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { margin-bottom: 4px; transition: 0.3s; }
+        .nav-item.active i { transform: translateY(-3px); filter: drop-shadow(0 0 5px var(--primary)); }
+
+        input, textarea, select { background: rgba(0,0,0,0.6) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; border-radius: 12px; outline: none; padding: 12px; appearance: none; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .chip-active { background: var(--primary); color: black; font-weight: bold; box-shadow: 0 0 10px var(--primary); }
+        
+        /* ALARMAS Y ANIMACIONES */
+        @keyframes ring { 0% { transform: scale(1); } 50% { transform: scale(1.03); border-color: red; } 100% { transform: scale(1); } }
+        .alarm-active { animation: ring 0.5s infinite; border: 2px solid red !important; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .news-card { background: rgba(255,255,255,0.02); border-radius: 28px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: 0.3s; margin-bottom: 15px; }
+        .news-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        
+        .chat-bubble { max-width: 85%; padding: 12px; border-radius: 18px; margin-bottom: 8px; font-size: 11px; line-height: 1.4; }
+        .chat-user { background: var(--primary); color: #000; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-bot { background: rgba(255,255,255,0.05); color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; border: 1px solid var(--border); }
+    /* Efecto Halo y Matrix para el Logo */
+.logo-container {
+    position: relative;
+    padding: 10px;
+    border-radius: 20px;
+    transition: 0.5s;
+    overflow: hidden;
+}
+.logo-container::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    transition: 0.5s;
+}
+.logo-container:hover::before {
+    border-color: #fff;
+    box-shadow: 0 0 20px #fff, inset 0 0 10px #fff;
+    animation: borderHalo 2s linear infinite;
+}
+@keyframes borderHalo {
+    0% { clip-path: inset(0 0 95% 0); }
+    25% { clip-path: inset(0 95% 0 0); }
+    50% { clip-path: inset(95% 0 0 0); }
+    75% { clip-path: inset(0 0 0 95%); }
+    100% { clip-path: inset(0 0 95% 0); }
+}
+/* Capa Matrix que aparece al final del halo */
+.matrix-rain {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    color: #0f0;
+    font-family: monospace;
+    font-size: 8px;
+    display: none;
+    pointer-events: none;
+    z-index: 10;
+    padding: 5px;
+    border: 1px solid #0ff; /* Marco Cyberpunk */
+}
+.logo-container:hover .matrix-rain { display: block; }
+    /* --- ESTILOS EXTRA ELITE --- */
+.microwave-door { background: rgba(0, 255, 247, 0.05); border: 2px solid var(--primary); position: relative; overflow: hidden; }
+.thinking-text { font-family: 'Courier New', monospace; font-size: 9px; color: #0f0; text-shadow: 0 0 5px #0f0; animation: scrollText 10s linear infinite; }
+@keyframes scrollText { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+
+.timer-knob { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #334155; position: relative; background: conic-gradient(var(--primary) var(--progress), transparent 0deg); }
+.timer-knob::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; background: #0f172a; border-radius: 50%; }
+
+.notification-active { border-color: #10b981 !important; box-shadow: 0 0 20px rgba(16, 185, 129, 0.4); }
+    /* --- COMPONENTES ELITE VICO --- */
+.microwave-chassis { border: 3px solid #3b82f6; box-shadow: 0 0 20px #00fff7, inset 0 0 10px #3b82f6; position: relative; background: #0b0f1a; }
+.microwave-window { background: rgba(0, 255, 247, 0.05); border: 2px solid #1e293b; height: 120px; overflow: hidden; position: relative; }
+.ai-brain-scroll { position: absolute; width: 100%; color: #0f0; font-family: monospace; font-size: 8px; line-height: 1.2; text-shadow: 0 0 5px #0f0; animation: brainScroll 15s linear infinite; }
+@keyframes brainScroll { from { transform: translateY(100%); } to { transform: translateY(-100%); } }
+
+.dial-container { width: 50px; height: 50px; border-radius: 50%; border: 3px solid #1e293b; position: relative; background: conic-gradient(#3b82f6 var(--p), #0f172a 0deg); }
+.dial-container::after { content: ''; position: absolute; inset: 5px; background: #0b0f1a; border-radius: 50%; border: 1px solid #1e293b; }
+    </style>
+</head>
+<body class="theme-Cyber font-normal">
+
+    <div id="top-taskbar" class="task-bar hidden">
+        <div class="flex items-center gap-3 px-4 py-1 rounded-full bg-black/40 border border-white/5 shadow-inner">
+            <div class="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_red]"></div>
+            <span id="mini-timer" class="text-[11px] font-mono font-bold text-white tracking-widest">25:00</span>
+            <span class="text-[8px] text-slate-500 uppercase font-bold tracking-tighter" data-translate="focusing">Enfoque</span>
+        </div>
+    </div>
+
+    <main id="main-scroll" class="h-screen w-full overflow-y-auto pt-10 pb-24 scroll-smooth">
+        
+<section id="view-dashboard" class="p-5 space-y-6 fade-in">
+    <div class="p-6 rounded-3xl border border-blue-500/20 glass-panel bg-gradient-to-br from-blue-900/10 to-transparent text-center">
+        <div class="logo-container" onmouseover="playSound('pulsar')">
+            <h1 class="text-3xl font-bold orbitron text-white">VICO POCKET</h1>
+            <div class="matrix-rain">
+                1011010<br>VICO-OS<br>0101101
+            </div>
+        </div>
+        <p id="phrase" class="text-slate-500 italic text-[11px] mt-2">"Neural Bridge Established"</p>
+    </div>
+    
+    <div class="grid grid-cols-3 gap-2">
+        <div onclick="openNoteModal()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer border-blue-500/30 transition-all active:scale-95">
+            <i data-lucide="plus-circle" class="text-blue-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="quick_note">Nota Rápida</span>
+        </div>
+        <div onclick="switchTab('view-links')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+            <i data-lucide="bookmark" class="text-green-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="links">Links Pocket</span>
+        </div>
+        <div onclick="switchTab('view-calendar')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+            <i data-lucide="calendar" class="text-yellow-400 mb-1" size="20"></i><span id="dash-events-label" class="text-[9px] font-bold" data-translate="agenda">Agenda</span>
+        </div>
+        <div onclick="openPomo()" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+            <i data-lucide="zap" class="text-purple-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="focus">Focus</span>
+        </div>
+        <div onclick="switchTab('view-analysis')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+            <i data-lucide="activity" class="text-red-400 mb-1" size="20"></i><span class="text-[9px] font-bold" data-translate="roi">Análisis ROI</span>
+        </div>
+        <div onclick="switchTab('view-discovery')" class="glass-panel p-3 rounded-xl flex flex-col items-center cursor-pointer hover:bg-white/5 transition-all active:scale-95">
+            <i data-lucide="compass" class="text-orange-400 mb-1" size="20"></i><span class="text-[9px] font-bold">Discovery</span>
+        </div>
+    </div>
+    </section>
+
+            <div id="custom-buttons-dashboard" class="flex flex-wrap gap-2"></div>
+
+            <div class="glass-panel p-5 rounded-3xl flex justify-around text-center border-white/5 shadow-inner">
+                <div><div id="stat-notes" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="notes">Notas</div></div>
+                <div><div id="stat-links" class="text-2xl font-bold text-white">0</div><div class="text-[8px] text-slate-500 uppercase tracking-widest" data-translate="resources">Links</div></div>
+            </div>
+
+            <div id="install-banner" class="hidden p-4 glass-panel rounded-3xl border-blue-500/50 flex items-center justify-between animate-bounce">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-blue-600 rounded-xl"><i data-lucide="download-cloud" class="text-white"></i></div>
+                    <div><h4 class="text-xs font-bold text-white">Instalar VICO POCKET</h4><p class="text-[9px] text-slate-400">Modo APK sin navegador</p></div>
+                </div>
+                <button onclick="triggerPwaInstall()" class="bg-blue-600 px-4 py-2 rounded-xl text-[10px] font-bold text-white">INSTALAR</button>
+            </div>
+        </section>
+
+      <section id="view-notes" class="hidden p-5 fade-in">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-bold orbitron">Notas Pocket</h2>
+        <div class="flex gap-2">
+            <button onclick="createNewFolder()" class="bg-slate-700 p-2.5 rounded-xl shadow-lg text-white">
+                <i data-lucide="folder-plus"></i>
+            </button>
+            <button onclick="openNoteModal()" class="bg-blue-600 p-2.5 rounded-xl shadow-lg">
+                <i data-lucide="plus"></i>
+            </button>
+        </div>
+    </div>
+    <div id="folder-bar" class="flex gap-2 overflow-x-auto no-scrollbar pb-6 border-b border-white/5 mb-6"></div>
+    <div id="notes-grid" class="space-y-4"></div>
+</section>
+
+        <section id="view-links" class="hidden p-5 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold orbitron">Links Pocket</h2>
+                <button onclick="openLinkModal()" class="bg-green-600 p-2.5 rounded-xl shadow-lg text-white"><i data-lucide="plus"></i></button>
+            </div>
+            <div class="glass-panel p-4 rounded-xl mb-4 flex items-center gap-2">
+                <i data-lucide="search" class="text-slate-500" size="16"></i>
+                <input type="text" id="link-search" placeholder="Filtrar por etiquetas..." class="flex-1 bg-transparent border-none p-0 text-xs" oninput="renderLinks()">
+            </div>
+            <div id="links-list" class="space-y-3"></div>
+        </section>
+
+        <section id="view-discovery" class="hidden p-5 fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold orbitron">Discovery Elite</h2>
+                <div class="flex gap-2">
+                    <button onclick="fetchNews(app.activeRss)" class="text-blue-400 bg-blue-500/10 p-2 rounded-full"><i data-lucide="refresh-cw" size="18"></i></button>
+                    <button onclick="openRssModal()" class="text-white bg-blue-600 p-2 rounded-full"><i data-lucide="plus" size="18"></i></button>
+                </div>
+            </div>
+            <div id="discovery-chips" class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-2"></div>
+            <div id="news-list" class="space-y-6"></div>
+        </section>
+
+        <section id="view-calendar" class="hidden p-5 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold orbitron text-yellow-500" data-translate="agenda">Agenda</h2>
+                <button onclick="openEventModal()" class="bg-yellow-600 p-2.5 rounded-xl text-white shadow-lg"><i data-lucide="plus"></i></button>
+            </div>
+            <div id="events-list" class="space-y-3"></div>
+        </section>
+
+  <section id="view-analysis" class="hidden p-5 fade-in">
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold orbitron text-purple-400 flex items-center gap-2"><i data-lucide="line-chart"></i> IA ROI Pro</h2>
+        <button onclick="toggleMicrowave()" class="p-2 glass-panel rounded-xl text-cyan-400 border-cyan-500/30 hover:bg-cyan-500/10 transition-all">
+            <i data-lucide="layout-template"></i>
+        </button>
+    </div>
+    
+    <div class="glass-panel p-6 rounded-3xl mb-6 shadow-2xl border-purple-500/20">
+        <textarea id="ai-query" placeholder="Ej: Análisis bursátil Tesla vs BYD 2026..." class="w-full h-24 text-sm mb-4 resize-none"></textarea>
+        <div class="flex gap-2">
+            <button id="btn-ai" onclick="runROIAnalysis()" class="flex-1 bg-blue-600 py-3 rounded-2xl font-bold orbitron text-[10px] uppercase text-white shadow-lg">Analizar Prompt</button>
+            <label class="bg-slate-800 p-3 rounded-2xl cursor-pointer border border-white/5"><i data-lucide="file-up" class="text-purple-400"></i><input type="file" class="hidden" onchange="analyzeFile(this)"></label>
+        </div>
+    </div>
+
+    <div id="vico-microwave" class="hidden glass-panel p-4 rounded-[32px] border-cyan-500/50 mb-6 animate-in zoom-in">
+        <div class="flex gap-4">
+            <div class="microwave-door flex-1 h-32 rounded-2xl p-2 bg-black">
+                <div id="microwave-content" class="thinking-text"></div>
+            </div>
+            <div class="flex flex-col items-center justify-between py-2">
+                <div class="timer-knob" id="pomo-knob" style="--progress: 0deg;"></div>
+                <div class="text-[10px] font-mono text-cyan-400" id="micro-percent">0%</div>
+                <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+ <div id="ai-results" class="hidden space-y-6 animate-in slide-in-from-bottom pb-10">
+    
+    <div class="flex gap-2 justify-end mb-4">
+        <button onclick="window.print()" class="bg-slate-800 p-2.5 rounded-xl border border-white/10 text-white flex items-center gap-2 text-[10px] font-bold">
+            <i data-lucide="printer" size="14"></i> IMPRIMIR
+        </button>
+        <button onclick="shareAsPDF()" class="bg-blue-600 p-2.5 rounded-xl text-white flex items-center gap-2 text-[10px] font-bold shadow-lg">
+            <i data-lucide="share-2" size="14"></i> COMPARTIR PDF
+        </button>
+    </div>
+
+    <div class="glass-panel p-6 rounded-[32px] border-l-4 border-blue-500 shadow-2xl bg-black/40">
+        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-[0.2em]">Resumen Ejecutivo VICO</span>
+            <span class="text-[9px] text-slate-500 font-mono" id="report-date"></span>
+        </div>
+        <div id="ai-report" class="text-[12px] leading-relaxed text-slate-200 font-mono whitespace-pre-wrap"></div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+        <div class="glass-panel p-4 rounded-3xl border-t-2 border-cyan-500/30">
+            <h4 class="text-[9px] font-bold text-cyan-400 mb-3 uppercase">Proyección de Crecimiento Bursátil</h4>
+            <div class="h-48"><canvas id="chartStock"></canvas></div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-3">
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Atributos Clave</h4>
+                <div class="h-32"><canvas id="chartRadarPro"></canvas></div>
+            </div>
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Cuota de Mercado %</h4>
+                <div class="h-32"><canvas id="chartPiePro"></canvas></div>
+            </div>
+        </div>
+
+        <div class="glass-panel p-4 rounded-3xl border-t-2 border-blue-500/30">
+            <h4 class="text-[9px] font-bold text-blue-400 mb-3 uppercase">Comparativa de Rendimiento Operativo</h4>
+            <div class="h-40"><canvas id="chartBarPro"></canvas></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Varianza de Riesgo</h4>
+                <div class="h-32"><canvas id="chartAreaPro"></canvas></div>
+            </div>
+            <div class="glass-panel p-4 rounded-3xl">
+                <h4 class="text-[8px] font-bold text-slate-400 mb-2 uppercase">Impacto Global</h4>
+                <div class="h-32"><canvas id="chartComparison"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+        <section id="view-profile" class="hidden p-5 fade-in">
+            <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
+            
+            <div class="space-y-6">
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4" data-translate="ai_engine">Motor Inteligente</h3>
+                    <div class="flex gap-2">
+                        <input type="password" id="api-key-input" placeholder="Pega tu API Key..." class="flex-1 text-xs font-mono">
+                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs uppercase text-white shadow-lg">Save</button>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-5 rounded-3xl">
+                    <h3 class="text-[10px] font-bold text-white uppercase tracking-widest mb-4" data-translate="button_designer">Diseñador de Botones</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-4"><input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs"><input type="text" id="btn-url" placeholder="URL" class="text-xs"></div>
+                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs uppercase text-white shadow-lg">Añadir Botón</button>
+                </div>
+            
+    <div class="glass-panel p-5 rounded-3xl space-y-4" id="system-box">
+    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Configuración OS</h3>
+    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option><option value="Minimal">Black Minimal</option></select></div>
+    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tamaño Texto</span><select id="sys-font" onchange="updateSystem('font', this.value)" class="text-[10px] py-1 px-4"><option value="font-sm">Pequeño</option><option value="font-normal">Normal</option><option value="font-lg">Grande</option></select></div>
+     <div class="flex justify-between items-center"><span class="text-xs text-slate-300" data-translate="language">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option><option value="zh">中文</option><option value="fil">Filipino</option><option value="ms">Melayu</option></select></div>
+                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Pop-ups</span><input type="checkbox" id="sys-popup" onchange="updateSystem('showPopup', this.checked)" class="w-5 h-5 accent-green-600"></div>
+                </div>
+
+<div class="glass-panel p-5 rounded-3xl border-orange-500/30 space-y-4">
+    <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Data Vault & Sync</h3>
+    <div class="grid grid-cols-2 gap-2">
+        <button onclick="exportOSData()" class="bg-green-600/20 border border-green-500/50 py-2 rounded-xl text-[9px] font-bold text-green-400 uppercase flex items-center justify-center gap-1"><i data-lucide="download" size="12"></i> Exportar</button>
+        <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase flex items-center justify-center gap-1"><i data-lucide="upload" size="12"></i> Importar</button>
+        <input type="file" id="import-file" class="hidden" onchange="importOSData(this)">
+    </div>
+    
+    <div class="flex justify-between items-center border-t border-white/5 pt-3">
+        <span class="text-[10px] text-slate-400 uppercase font-bold">Notificaciones Android</span>
+        <input type="checkbox" id="sys-notify" onchange="updateSystem('notifications', this.checked)" class="w-5 h-5 accent-green-600">
+    </div>
+    <div class="flex justify-between items-center">
+        <span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos de Interfaz</span>
+        <input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600">
+    </div>
+    
+    <button onclick="forceSystemUpdate()" class="w-full bg-orange-600/20 border border-orange-500/50 py-3 rounded-xl font-bold text-xs text-orange-400 uppercase shadow-lg active:scale-95 transition-all">Limpiar Caché Nucleo</button>
+</div>
+    <p class="text-[8px] text-slate-600 mt-2 text-center">Usa esto si los cambios no se reflejan en tu APK.</p>
+    </div>
+                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-500 text-justify leading-relaxed">
+                    <h4 class="font-bold text-slate-400 mb-2 uppercase">Aviso Legal y Políticas</h4>
+                    <p>VICO POCKET funciona bajo el modelo Local-First. Sus datos, incluido las APIS residen únicamente en su dispositivo. Disfruta de VICO-Pocket!</p>
+                    <div class="mt-4 border-t border-white/5 pt-4 text-center">
+                        <p class="font-bold text-blue-400 flex items-center justify-center gap-2 mb-2">
+                             <i data-lucide="linkedin" size="12"></i>
+                             <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" target="_blank" class="underline">Jaime Andrés Dueñas Vicuña</a>
+                        </p>
+                        <a href="https://www.paypal.com/paypalme/proyectosduvi" target="_blank" class="inline-flex items-center gap-2 bg-[#0070ba] px-6 py-2 rounded-full font-bold text-[10px] text-white mt-3 shadow-lg"><i data-lucide="coffee" size="14"></i> PayPal Support</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="switchTab('view-dashboard', this)"><i data-lucide="home"></i><span>HOME</span></div>
+        <div class="nav-item" onclick="switchTab('view-notes', this)"><i data-lucide="file-text"></i><span>DATA</span></div>
+        <div class="nav-item" onclick="switchTab('view-links', this)"><i data-lucide="bookmark"></i><span>LINKS</span></div>
+        <div class="nav-item" onclick="switchTab('view-analysis', this)"><i data-lucide="pie-chart"></i><span>ROI</span></div>
+        <div class="nav-item" onclick="switchTab('view-discovery', this)"><i data-lucide="compass"></i><span>FEEDS</span></div>
+        <div class="nav-item" onclick="switchTab('view-calendar', this)"><i data-lucide="calendar"></i><span>AGENDA</span></div>
+        <div class="nav-item" onclick="switchTab('view-profile', this)"><i data-lucide="user"></i><span>CORE</span></div>
+    </nav>
+
+    <div id="modal-alarm" class="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-[40px] p-8 text-center border-red-500/50 alarm-active">
+            <div class="w-20 h-20 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_50px_red]"><i data-lucide="bell-ring" class="text-red-500 animate-bounce" size="40"></i></div>
+            <h2 class="orbitron text-2xl font-bold text-white mb-2 uppercase">VICO AGENDA</h2>
+            <p id="alarm-title" class="text-slate-300 text-sm mb-8 font-bold tracking-widest uppercase"></p>
+            <button onclick="stopAlarm()" class="w-full bg-red-600 py-4 rounded-2xl font-bold text-white shadow-lg tracking-[0.2em] transition-all active:scale-95">DETENER ALARMA</button>
+        </div>
+    </div>
+
+    <div id="vico-chat" class="fixed bottom-24 right-4 z-[150]">
+        <button onclick="toggleChat()" class="bg-blue-600 p-4 rounded-full shadow-2xl transition-all border border-white/10 hover:scale-110 active:scale-90"><i data-lucide="bot" class="text-white"></i></button>
+  <div id="chat-win" class="glass-panel fixed bottom-44 right-4 w-80 h-[450px] rounded-3xl flex flex-col hidden overflow-hidden shadow-2xl border-blue-500/20">
+    <div class="bg-blue-600 p-4 flex justify-center items-center text-white text-[10px] font-bold uppercase tracking-widest">
+        <span>VICO AI ASSISTANT</span>
+    </div>
+    <div id="chat-msgs" class="flex-1 overflow-y-auto p-4 space-y-4 text-[11px] leading-relaxed">
+        <div class="bg-white/5 p-3 rounded-2xl mr-10 border border-white/5 shadow-inner">VICO v8.9: Enlace neural activo. ¿Qué analizamos hoy?</div>
+    </div>
+    <div class="p-3 border-t border-white/5 flex gap-1">
+        <input type="text" id="chat-in" placeholder="..." class="flex-1 p-2.5 text-[10px] bg-black/40 border-none rounded-lg" onkeydown="if(event.key==='Enter') sendChat()">
+        <button onclick="sendChat()" class="bg-blue-600 p-2.5 rounded-xl"><i data-lucide="send" size="14"></i></button>
+    </div>
+</div>
+    </div>
+
+    <div id="modal-note" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-blue-500/30 shadow-2xl">
+            <h3 id="note-modal-title" class="font-bold orbitron text-blue-400 text-sm uppercase">Registro</h3>
+            <input type="hidden" id="nt-id"><input type="text" id="nt-title" placeholder="Título..." class="w-full text-sm">
+            <div class="flex gap-2"><select id="nt-folder-modal" class="flex-1 text-[10px] font-bold text-blue-400"></select><input type="color" id="nt-color" value="#3b82f6" class="w-10 h-10 border-none bg-transparent cursor-pointer"></div>
+            <textarea id="nt-text" placeholder="Contenido neural..." class="w-full h-40 text-xs resize-none"></textarea>
+            <div class="flex gap-2 pt-2"><button onclick="saveNote()" class="flex-1 bg-blue-600 py-3 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95">SAVE</button><button onclick="closeModal('modal-note')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CLOSE</button></div>
+        </div>
+    </div>
+
+    <div id="modal-link" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-green-500/30 shadow-2xl">
+            <h3 class="font-bold orbitron text-green-400 text-sm uppercase">Guardar Enlace</h3>
+            <input type="text" id="lk-url" placeholder="https://..." class="w-full text-sm"><input type="text" id="lk-title" placeholder="Título"><input type="text" id="lk-tags" placeholder="Etiquetas (comas)"><div class="flex gap-2 pt-2"><button onclick="saveLink()" class="flex-1 bg-green-600 py-3 rounded-xl font-bold text-white transition-all active:scale-95">SAVE</button><button onclick="closeModal('modal-link')" class="flex-1 glass-panel py-3 rounded-xl text-xs">CANCEL</button></div>
+        </div>
+    </div>
+
+    <div id="modal-event" class="fixed inset-0 z-[600] bg-black/90 backdrop-blur flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-yellow-500/30 shadow-2xl">
+            <h3 class="font-bold orbitron text-yellow-400 text-sm uppercase">Agendar Cita</h3>
+            <input type="text" id="ev-title" placeholder="Descripción de la cita..." class="w-full text-sm">
+            <input type="datetime-local" id="ev-date" class="w-full text-sm">
+            <button onclick="saveEvent()" class="w-full bg-yellow-600 py-3 rounded-xl font-bold text-white shadow-lg uppercase text-xs active:scale-95 transition-all">Confirmar</button>
+            <button onclick="closeModal('modal-event')" class="w-full text-[10px] text-slate-500 uppercase tracking-widest">CANCELAR</button>
+        </div>
+    </div>
+
+    <div id="modal-pomo" class="fixed inset-0 z-[600] bg-black/98 backdrop-blur flex items-center justify-center hidden">
+        <div class="text-center space-y-8"><div id="pomo-clock" class="text-8xl orbitron font-bold text-white">25:00</div>
+        <div class="flex justify-center gap-6"><button onclick="toggleFocus()" id="pomo-ctrl" class="bg-blue-600 p-8 rounded-full shadow-2xl active:scale-90"><i data-lucide="play" fill="white"></i></button><button onclick="resetFocus()" class="glass-panel p-8 rounded-full active:scale-90"><i data-lucide="rotate-ccw"></i></button></div>
+        <button onclick="minimizePomo()" class="text-slate-500 uppercase text-[10px] underline tracking-[0.2em]">MINIMIZAR</button></div>
+    </div>
+
+    <div id="modal-rss" class="fixed inset-0 z-[600] bg-black/90 flex items-center justify-center p-6 hidden"><div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4 border-orange-500/30 shadow-2xl"><h3 class="font-bold orbitron text-orange-400 text-sm uppercase">Nuevo Feed</h3><input type="text" id="new-rss-name" placeholder="Nombre"><input type="text" id="new-rss-url" placeholder="URL"><button onclick="addNewRss()" class="w-full bg-orange-600 py-3 rounded-xl font-bold text-white active:scale-95 transition-all">Añadir</button><button onclick="closeModal('modal-rss')" class="w-full text-[10px] text-slate-500">CANCELAR</button></div></div>
+
+    <script>
+        // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
+        // --- MOTOR DE DATOS VICO OS ELITE (PERSISTENCIA TOTAL) ---
+        let app = {
+            notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
+            events: JSON.parse(localStorage.getItem('vp_events')) || [],
+            links: JSON.parse(localStorage.getItem('vp_links')) || [],
+            btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
+            favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
+            rss: JSON.parse(localStorage.getItem('vp_rss')) || [
+                {name:'The Verge', url:'https://www.theverge.com/rss/index.xml'},
+                {name:'MIT News', url:'https://news.mit.edu/rss/feed'},
+                {name:'TechCrunch', url:'https://techcrunch.com/feed/'},
+                {name:'Nature', url:'https://www.nature.com/nature/articles?type=rss'},
+                {name:'El Mundo', url:'https://e00-elmundo.uecdn.es/rss/portada.xml'},
+                {name:'CNN', url:'http://rss.cnn.com/rss/cnn_topstories.rss'},
+                {name:'Infobae', url:'https://www.infobae.com/feeds/rss/'},
+                {name:'Ecoinventos', url:'https://ecoinventos.com/feed/'},
+                {name:'Computer Hoy', url:'https://computerhoy.com/rss.xml'},
+                {name:'WIRED', url:'https://www.wired.com/feed/rss'},
+                {name:'MIT Tech Review', url:'https://www.technologyreview.com/feed/'}
+            ],
+            config: JSON.parse(localStorage.getItem('vp_cfg')) || { 
+                key: '', theme: 'Cyber', font: 'font-normal', 
+                sound: true, lang: 'es', alarmSound: '800', 
+                showPopup: true, uiSounds: true 
+            },
+            pomo: { time: 1500, active: false, timer: null },
+            folders: ["Fijadas", "Resumen", "Proyectos", "Código", "Links", "Varios"],
+            activeFolder: 'Fijadas',
+            activeRss: 0,
+            notified: [],
+            alarmInterval: null
+        };
+
+        const DICT = {
+            es: { quickNote: "Nota Rápida", links: "Links Pocket", focus: "Focus", roi: "ROI", discovery: "Feeds", notes: "Notas", resources: "Links", system: "Sistema", ui_sounds: "Sonidos UI", run_analysis: "Análisis Bursátil" },
+            en: { quickNote: "Quick Note", links: "Links Pocket", focus: "Focus Mode", roi: "ROI", discovery: "Feeds", notes: "Notes", resources: "Links", system: "System", ui_sounds: "UI Sounds", run_analysis: "Stock Analysis" },
+            zh: { quickNote: "快速笔记", links: "链接口袋", focus: "专注", roi: "分析", discovery: "发现", notes: "笔记", resources: "资源", system: "系统", ui_sounds: "界面声音", run_analysis: "深度分析" }
+        };
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if(!app.config.sound) return;
+            const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+            o.connect(g); g.connect(audioCtx.destination);
+            if(type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); }
+            else if (type === 'siren') { o.frequency.setValueAtTime(800, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(1400, audioCtx.currentTime + 0.4); }
+            else if (type === 'zen') { o.frequency.setValueAtTime(500, audioCtx.currentTime); o.frequency.linearRampToValueAtTime(800, audioCtx.currentTime + 1); }
+            else { o.frequency.value = parseInt(type) || 800; }
+            g.gain.value = 0.05; o.start(); o.stop(audioCtx.currentTime + 0.5);
+        }
+
+        function triggerAlarm(title) {
+            document.getElementById('alarm-title').innerText = title;
+            document.getElementById('modal-alarm').classList.remove('hidden');
+            if(app.alarmInterval) clearInterval(app.alarmInterval);
+            app.alarmInterval = setInterval(() => playSound(app.config.alarmSound), 800);
+        }
+        function stopAlarm() { clearInterval(app.alarmInterval); document.getElementById('modal-alarm').classList.add('hidden'); }
+
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+            applySystemConfig();
+            renderAll();
+            setInterval(checkAgenda, 20000);
+            checkShareTarget();
+        });
+        // Detectar si venimos de "Compartir"
+const params = new URLSearchParams(window.location.search);
+const sharedUrl = params.get('url') || params.get('text');
+const sharedTitle = params.get('title');
+
+if (sharedUrl) {
+    // Limpiar el texto si viene mezclado título y url
+    const cleanUrl = sharedUrl.match(/https?:\/\/[^\s]+/)?.[0] || sharedUrl;
+    app.links.unshift({
+        id: Date.now().toString(),
+        url: cleanUrl,
+        title: sharedTitle || "Link Externo",
+        tags: ["Externo"]
+    });
+    save();
+    renderLinks();
+    renderDashboard();
+    switchTab('view-links');
+    alert("VICO POCKET: Link guardado en la Memory Card.");
+    // Limpiar URL para no repetir al recargar
+    window.history.replaceState({}, '', window.location.pathname);
+}
+
+        function applySystemConfig() {
+            const cfg = app.config;
+            document.body.className = `theme-${cfg.theme} ${cfg.font}`;
+            document.getElementById('sys-theme').value = cfg.theme;
+            document.getElementById('sys-font').value = cfg.font;
+            document.getElementById('sys-alarm').value = cfg.alarmSound;
+            document.getElementById('sys-popup').checked = cfg.showPopup;
+            document.getElementById('sys-lang').value = cfg.lang;
+            document.getElementById('api-key-input').value = cfg.key;
+            document.getElementById('nt-folder-modal').innerHTML = app.folders.map(f=>`<option value="${f}">${f}</option>`).join('');
+            translateUI();
+        }
+
+        function translateUI() { document.querySelectorAll('[data-translate]').forEach(el => { el.innerText = DICT[app.config.lang][el.dataset.translate] || el.innerText; }); }
+        function updateSystem(k, v) { app.config[k]=v; save(); applySystemConfig(); playSound(800); }
+        function saveApi() { app.config.key = document.getElementById('api-key-input').value.trim(); save(); alert('API Sync OK'); playSound(1000); }
+
+        function renderNotes() {
+            const bar = document.getElementById('folder-bar');
+            bar.innerHTML = app.folders.map(f => `<button onclick="setFolder('${f}')" class="px-5 py-2 rounded-full text-[10px] font-bold whitespace-nowrap transition-all ${app.activeFolder === f ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${f}</button>`).join('');
+            const grid = document.getElementById('notes-grid');
+            grid.innerHTML = app.notes.filter(n => n.folder === app.activeFolder).map(n => `
+                <div class="glass-panel p-5 rounded-3xl border-l-8 shadow-xl animate-in fade-in" style="border-left-color: ${n.color || 'var(--primary)'}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1" onclick="openNoteModal('${n.id}')"><h4 class="font-bold text-sm text-white">${n.title}</h4><p class="text-[10px] text-slate-400 mt-2 line-clamp-3 leading-relaxed">${n.content}</p></div>
+                        <button onclick="delNote('${n.id}')" class="text-slate-600 hover:text-red-400 p-2"><i data-lucide="trash-2" size="14"></i></button>
+                    </div>
+                    <div class="flex justify-between items-center bg-black/30 p-2 rounded-xl border border-white/5">
+                        <select onchange="moveNote('${n.id}', this.value)" class="text-[8px] bg-transparent border-none p-0 outline-none text-blue-400 font-bold appearance-none">
+                            ${app.folders.map(f=>`<option value="${f}" ${n.folder===f?'selected':''}>${f}</option>`).join('')}
+                        </select>
+                        <span class="text-[8px] text-slate-600 font-mono">${n.date}</span>
+                    </div>
+                </div>`).join('') || '<p class="text-center py-20 text-slate-800 text-xs">Vacio</p>';
+            lucide.createIcons();
+        }
+
+        function setFolder(f) { app.activeFolder = f; renderNotes(); playSound(600); }
+        function moveNote(id, f) { const idx=app.notes.findIndex(n=>n.id===id); app.notes[idx].folder=f; save(); renderNotes(); renderDashboard(); playSound(1000); }
+
+        async function fetchNews(idx=0) {
+            app.activeRss = idx; renderChips();
+            const list = document.getElementById('news-list');
+            list.innerHTML = '<div class="py-20 text-center animate-pulse"><i data-lucide="loader" class="mx-auto text-blue-400"></i></div>';
+            lucide.createIcons();
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(app.rss[idx].url)}`);
+                const data = await res.json();
+                list.innerHTML = data.items.map((item, ix) => {
+                    const img = item.thumbnail || (item.enclosure && item.enclosure.link) || (item.content.match(/src="([^"]+)"/) || [])[1];
+                    return `
+                    <div class="news-card glass-panel overflow-hidden rounded-3xl mb-4 border-white/5">
+                        ${img ? `<img src="${img}" class="h-48 w-full object-cover opacity-80" onerror="this.style.display='none'">` : ''}
+                        <div class="p-6">
+                            <h4 class="text-sm font-bold text-white mb-4 line-clamp-2 leading-tight">${item.title}</h4>
+                            <div class="flex justify-between items-center">
+                                <div class="flex gap-2">
+                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')"><i data-lucide="bookmark" size="18"></i></button>
+                                    <button class="bg-white/5 p-2.5 rounded-xl text-slate-400 transition-all active:scale-90" onclick="shareLink('${item.link}')"><i data-lucide="share-2" size="18"></i></button>
+                                </div>
+                                <button onclick="sendToROI('${item.title.replace(/'/g,"")}')" class="bg-blue-600 text-white px-5 py-2 rounded-xl text-[9px] font-bold orbitron uppercase active:scale-95 transition-all">Analyze</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+                lucide.createIcons();
+            } catch(e) { list.innerHTML = '<p class="text-center py-20 text-red-500">Error de red.</p>'; }
+        }
+        function renderChips() { document.getElementById('discovery-chips').innerHTML = app.rss.map((r,i) => `<button onclick="fetchNews(${i})" class="px-5 py-2 rounded-full text-[10px] whitespace-nowrap transition-all ${app.activeRss === i ? 'chip-active' : 'bg-slate-800 text-slate-500'}">${r.name}</button>`).join(''); }
+
+        function checkAgenda() {
+            const now = new Date();
+            app.events.forEach(e => {
+                const evDate = new Date(e.date);
+                if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
+                    if (app.config.notifications) {
+                        // NOTIFICACIÓN NATIVA ANDROID/iOS
+                        if ('serviceWorker' in navigator && 'PushManager' in window) {
+                            navigator.serviceWorker.ready.then(registration => {
+                                registration.showNotification("VICO OS: AGENDA", {
+                                    body: "Evento activo: " + e.title,
+                                    icon: "icon.png",
+                                    badge: "icon.png",
+                                    vibrate: [500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40],
+                                    requireInteraction: true, // Se mantiene en el panel hasta que se borre
+                                    tag: e.id 
+                                });
+                            });
+                        } else {
+                            new Notification("VICO POCKET", { body: e.title });
+                        }
+                    }
+                    triggerAlarm(e.title);
+                    app.notified.push(e.id);
+                }
+            });
+        }
+        function renderEvents() {
+            document.getElementById('events-list').innerHTML = app.events.sort((a,b)=>new Date(a.date).getTime()-new Date(b.date).getTime()).map(e => `
+                <div class="glass-panel p-4 rounded-xl border-l-4 border-yellow-500 flex justify-between items-center">
+                    <div><div class="text-xs font-bold text-white">${e.title}</div><div class="text-[9px] text-slate-500">${new Date(e.date).toLocaleString()}</div></div>
+                    <button onclick="delEvent('${e.id}')" class="text-slate-700 hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" size="16"></i></button>
+                </div>`).join('') || '<p class="text-center text-xs text-slate-600 py-10">Agenda Vacía</p>';
+            lucide.createIcons();
+        }
+        function delEvent(id) { app.events = app.events.filter(e=>e.id!==id); save(); renderEvents(); renderDashboard(); }
+
+        function saveEvent() {
+            const t = document.getElementById('ev-title').value, d = document.getElementById('ev-date').value;
+            if(!t || !d) return;
+            app.events.push({ id: Date.now().toString(), title: t, date: d });
+            save(); renderEvents(); renderDashboard(); closeModal('modal-event'); playSound(800);
+        }
+
+        function saveLink() {
+            const u = document.getElementById('lk-url').value, t = document.getElementById('lk-title').value, tags = document.getElementById('lk-tags').value;
+            if(!u) return;
+            app.links.unshift({ id: Date.now().toString(), url: u.startsWith('http') ? u : 'https://'+u, title: t || u, tags: tags.split(',').map(s=>s.trim()).filter(s=>s) });
+            save(); renderLinks(); renderDashboard(); closeModal('modal-link');
+            document.getElementById('lk-url').value=''; document.getElementById('lk-title').value=''; document.getElementById('lk-tags').value='';
+        }
+        function renderLinks() {
+            const q = document.getElementById('link-search').value.toLowerCase();
+            const list = document.getElementById('links-list');
+            list.innerHTML = app.links.filter(l => l.title.toLowerCase().includes(q) || l.url.toLowerCase().includes(q)).map(l => {
+                const domain = new URL(l.url).hostname;
+                const thumb = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+                return `
+                <div class="glass-panel p-4 rounded-[28px] flex gap-4 items-center border-l-2 border-green-500/30 animate-in fade-in">
+                    <div class="w-14 h-14 rounded-2xl bg-black/40 p-2 flex items-center justify-center shadow-inner border border-white/5">
+                        <img src="${thumb}" class="w-full h-full object-contain rounded-lg" onerror="this.src='https://lucide.dev/api/icons/link-2'">
+                    </div>
+                    <div class="flex-1 truncate">
+                        <a href="${l.url}" target="_blank" class="text-sm font-bold text-blue-400 block truncate hover:underline">${l.title}</a>
+                        <p class="text-[9px] text-slate-500 font-mono truncate mt-1 italic opacity-80">${l.url}</p>
+                    </div>
+                    <button onclick="delLink('${l.id}')" class="text-slate-700 hover:text-red-400 transition-colors p-2"><i data-lucide="trash-2" size="14"></i></button>
+                </div>`;
+            }).join('') || '<p class="text-center py-20 text-slate-700 text-xs">Memory Card Vacía.</p>';
+            lucide.createIcons();
+        }
+        function delLink(id) { app.links = app.links.filter(l=>l.id!==id); save(); renderLinks(); renderDashboard(); }
+
+        // --- CHAT MULTI-API (FIX API KEY) ---
+        // --- FUNCIÓN MAESTRA MULTI-API (CHAT Y ROI) ---
+// --- MOTOR NEURAL MULTI-API ---
+async function vicoNeuralLink(promptText) {
+            const key = app.config.key.trim();
+            if (!key) throw new Error("API Key faltante");
+            let url, body, headers = { "Content-Type": "application/json" };
+            if (key.startsWith('gsk_')) {
+                url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
+                headers["Authorization"] = `Bearer ${key}`;
+                body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: promptText}] };
+            } else {
+                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+                body = { contents: [{ parts: [{ text: promptText }] }] };
+            }
+            const r = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
+            const d = await r.json();
+            const res = key.startsWith('gsk_') ? d.choices[0].message.content : d.candidates[0].content.parts[0].text;
+            return res.replace(/[*#"`]/g, ""); // Limpieza total de símbolos
+        }
+
+        async function sendChat() {
+            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
+            if(!inp.value) return;
+            const ut = inp.value; 
+            msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`;
+            inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
+
+            try {
+                const promptFinal = `Responde de forma profesional a: "${ut}". 
+                NORMAS: 1. Sin asteriscos ni almohadillas. 2. Si crees que un diagrama visual explicaría mejor la respuesta, añade al final: [SUGESTION_VISUAL]`;
+                const aiResponse = await vicoNeuralLink(promptFinal);
+                
+                if (aiResponse.includes("[SUGESTION_VISUAL]")) {
+                    const text = aiResponse.replace("[SUGESTION_VISUAL]", "");
+                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${text}</div>`;
+                    msgs.innerHTML += `
+                        <div class="glass-panel p-3 border-blue-500/50 my-2 rounded-xl animate-pulse">
+                            <p class="text-[10px] text-blue-300 font-bold mb-2">VICO: ¿Deseas que genere un diagrama dinámico de este proceso?</p>
+                            <div class="flex gap-2">
+                                <button onclick="renderChatDiagram()" class="bg-blue-600 text-[9px] px-3 py-1 rounded-full font-bold">GENERAR DIAGRAMA</button>
+                                <button onclick="this.parentElement.parentElement.remove()" class="text-[9px] text-slate-500 px-3 py-1 font-bold">DESCARTAR</button>
+                            </div>
+                        </div>`;
+                } else {
+                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${aiResponse}</div>`;
+                }
+            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error de enlace neural.</div>`; }
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+        function renderChatDiagram() {
+            const msgs = document.getElementById('chat-msgs');
+            msgs.innerHTML += `
+                <div class="glass-panel p-4 rounded-2xl border-blue-500/30 my-2 bg-blue-900/10">
+                    <div class="flex justify-between items-center mb-3"><span class="text-[10px] font-bold text-blue-400 uppercase">Flujo de Proceso VICO</span><i data-lucide="activity" size="14"></i></div>
+                    <div class="flex flex-col items-center gap-2">
+                        <div class="p-2 glass-panel border-blue-500/50 rounded text-[9px]">ENTRADA DATOS</div>
+                        <i data-lucide="arrow-down" size="12" class="text-slate-600"></i>
+                        <div class="p-2 bg-blue-600 rounded text-[9px] font-bold animate-pulse text-white">PROCESO NEURAL</div>
+                        <i data-lucide="arrow-down" size="12" class="text-slate-600"></i>
+                        <div class="p-2 glass-panel border-green-500/50 rounded text-[9px]">RESULTADO ROI</div>
+                    </div>
+                </div>`;
+            lucide.createIcons();
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+// --- ACTUALIZACIÓN DEL ROI ENGINE ---
+function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
+
+        function toggleMicrowave() { document.getElementById('vico-microwave').classList.toggle('hidden'); }
+
+        async function runROIAnalysis() {
+            const q = document.getElementById('ai-query').value;
+            if(!q) return alert("Define el objetivo.");
+            const btn = document.getElementById('btn-ai');
+            const micro = document.getElementById('vico-microwave');
+            const microContent = document.getElementById('microwave-content');
+            
+            btn.disabled = true;
+            micro.classList.remove('hidden');
+            
+            // Animación Microondas
+            let progress = 0;
+            const thoughts = ["Accediendo a base de datos 2026...", "Calculando proyecciones bursátiles...", "Analizando competencia internacional...", "Estructurando informe ejecutivo...", "Sincronizando diagramas dinámicos..."];
+            const interval = setInterval(() => {
+                progress += 1;
+                document.getElementById('pomo-knob').style.setProperty('--p', (progress * 3.6) + 'deg');
+                document.getElementById('micro-percent').innerText = progress + '%';
+                if(progress % 15 === 0) microContent.innerHTML = thoughts[Math.floor(progress/20)] + "<br>" + microContent.innerHTML;
+                if(progress >= 100) clearInterval(interval);
+            }, 60);
+
+            try {
+                // Prompt optimizado para obtener DATOS numéricos
+                const megaPrompt = `Realiza un análisis estratégico y bursátil profesional de: ${q}. 
+                INCLUYE: Comparativa autores 2026 y fuentes fiables.
+                IMPORTANTE: Al final del texto, añade una línea con este formato exacto para los gráficos:
+                DATA_BLOCK[80, 60, 45, 90, 70] 
+                Responde sin símbolos Markdown (* o #).`;
+
+                const aiResponse = await vicoNeuralLink(megaPrompt);
+                
+                // Extraer datos del bloque de la IA
+                const dataMatch = aiResponse.match(/DATA_BLOCK\[(.*?)\]/);
+                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [50, 40, 60, 70, 50];
+                const cleanText = aiResponse.replace(/DATA_BLOCK\[.*?\]/, "");
+
+                // Sonido Ding
+                playSound('800'); setTimeout(() => playSound('1500'), 150);
+
+                document.getElementById('report-date').innerText = new Date().toLocaleDateString();
+                document.getElementById('ai-results').classList.remove('hidden');
+                document.getElementById('ai-report').innerText = cleanText;
+                
+                // Pasar datos reales a los gráficos
+                renderAllChartsPro(chartData);
+                
+                // Scroll automático al informe
+                document.getElementById('ai-results').scrollIntoView({ behavior: 'smooth' });
+            } catch(e) { alert("VICO: Fallo en el enlace neural."); }
+            finally { btn.disabled = false; micro.classList.add('hidden'); }
+        }
+
+        function renderAllChartsPro(dataArray) {
+            const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
+            
+            // Estilos de colores VICO
+            const colors = { primary: '#3b82f6', secondary: '#00fff7', glass: 'rgba(0, 255, 247, 0.1)' };
+
+            chartIds.forEach((id, index) => {
+                const ctx = document.getElementById(id).getContext('2d');
+                const existing = Chart.getChart(id);
+                if (existing) existing.destroy();
+
+                // Lógica de datos: usamos el valor base y le aplicamos una varianza lógica por gráfico
+                const finalData = dataArray.map(v => v + (index * 2)); 
+
+                new Chart(ctx, {
+                    type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
+                    data: {
+                        labels: ['MKT', 'ROI', 'VAR', 'GROW', 'RISK'],
+                        datasets: [{
+                            data: finalData,
+                            borderColor: colors.secondary,
+                            backgroundColor: id.includes('Pie') ? [colors.primary, colors.secondary, '#1e293b', '#334155', '#475569'] : colors.glass,
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: { enabled: true, backgroundColor: '#0b0f1a', titleFont: { family: 'Orbitron' } }
+                        },
+                        scales: (id.includes('Radar') || id.includes('Pie')) ? {} : {
+                            y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#475569', font: { size: 8 } } },
+                            x: { display: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 8 } } }
+                        }
+                    }
+                });
+            });
+        }
+
+        function shareAsPDF() {
+            if (navigator.share) {
+                alert("VICO: Preparando captura del informe ejecutivo para compartir...");
+                window.print(); // En móviles esto abre el diálogo de Guardar como PDF
+            }
+        }
+
+        // --- AUXILIARES GLOBALES ---
+        function switchTab(id, el) { playSound(600); document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        function openNoteModal(id=null) { 
+            playSound(400); document.getElementById('modal-note').classList.remove('hidden'); 
+            if(id) { const n = app.notes.find(x=>x.id===id); document.getElementById('nt-id').value=n.id; document.getElementById('nt-title').value=n.title; document.getElementById('nt-text').value=n.content; document.getElementById('nt-folder-modal').value=n.folder; document.getElementById('nt-color').value=n.color || '#3b82f6'; }
+            else { document.getElementById('nt-id').value=''; document.getElementById('nt-title').value=''; document.getElementById('nt-text').value=''; }
+        }
+        function save() { 
+            localStorage.setItem('vp_notes', JSON.stringify(app.notes)); 
+            localStorage.setItem('vp_events', JSON.stringify(app.events)); 
+            localStorage.setItem('vp_links', JSON.stringify(app.links)); 
+            localStorage.setItem('vp_cfg', JSON.stringify(app.config)); 
+            localStorage.setItem('vp_btns', JSON.stringify(app.btns)); 
+            localStorage.setItem('vp_rss', JSON.stringify(app.rss)); 
+        }
+        function renderAll() { renderNotes(); renderDashboard(); fetchNews(0); renderCustomBtns(); renderLinks(); renderEvents(); renderRssList(); }
+        function renderDashboard() { document.getElementById('stat-notes').innerText = app.notes.length; document.getElementById('stat-links').innerText = app.links.length; document.getElementById('dash-events-label').innerText = `${DICT[app.config.lang].agenda} (${app.events.length})`; }
+        function renderCustomBtns() { document.getElementById('custom-buttons-dashboard').innerHTML = app.btns.map(b => `<button onclick="window.open('${b.url}','_blank')" class="bg-blue-600/20 border border-blue-500/30 px-5 py-2 rounded-2xl text-[10px] font-bold text-blue-400 m-1 active:scale-95 transition-all">${b.label}</button>`).join(''); }
+        function createCustomBtn() { const l=document.getElementById('btn-name').value, u=document.getElementById('btn-url').value; if(!l||!u) return; app.btns.push({id:Date.now().toString(),label:l,url:u}); save(); renderCustomBtns(); }
+        function renderRssList() { document.getElementById('rss-list-container').innerHTML = app.rss.map((r,i)=>`<div class="flex justify-between items-center text-[10px] bg-white/5 p-2 rounded"><span>${r.name}</span><button onclick="delRss(${i})" class="text-red-500">×</button></div>`).join(''); }
+        function addRssSource() { const n=document.getElementById('rss-name').value, u=document.getElementById('rss-url').value; if(!n||!u) return; app.rss.push({name:n, url:u}); save(); renderRssList(); }
+        function delRss(i) { app.rss.splice(i,1); save(); renderRssList(); }
+        function exportData() { const b=new Blob([JSON.stringify(app)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='vico_backup.json'; a.click(); }
+        function importData(i) { const r = new FileReader(); r.onload = e => { app = JSON.parse(e.target.result); save(); location.reload(); }; r.readAsText(i.files[0]); }
+        function toggleChat() { document.getElementById('chat-win').classList.toggle('hidden'); playSound(500); }
+        function openPomo() { document.getElementById('modal-pomo').classList.remove('hidden'); }
+        function openEventModal() { document.getElementById('modal-event').classList.remove('hidden'); }
+        function openLinkModal() { document.getElementById('modal-link').classList.remove('hidden'); }
+        function openRssModal() { document.getElementById('modal-rss').classList.remove('hidden'); }
+        function addNewRss() { const n=document.getElementById('new-rss-name').value, u=document.getElementById('new-rss-url').value; if(!n||!u) return; app.rss.push({name:n, url:u}); save(); fetchNews(app.rss.length-1); closeModal('modal-rss'); }
+        function saveLinkToPocket(u, t) { app.links.unshift({ id: Date.now().toString(), url: u, title: t, tags: ['Discovery'] }); save(); renderLinks(); renderDashboard(); playSound(1000); alert("Link Guardado."); }
+        function shareLink(u) { if(navigator.share) navigator.share({url:u}); else prompt("Link:", u); }
+        function sendToROI(t) { document.getElementById('ai-query').value = `ROI: ${t}`; switchTab('view-analysis'); }
+        function toggleFav(u) { if(app.favs.includes(u)) app.favs=app.favs.filter(x=>x!==u); else app.favs.push(u); save(); fetchNews(app.activeRss); }
+        function delNote(id) { app.notes = app.notes.filter(n => n.id !== id); save(); renderNotes(); renderDashboard(); }
+        function checkShareTarget() {
+    const params = new URLSearchParams(window.location.search);
+    const sharedTitle = params.get('title');
+    const sharedText = params.get('text');
+    const sharedUrl = params.get('url');
+
+    if (sharedTitle || sharedText || sharedUrl) {
+        // Extraer la URL del texto si viene mezclada
+        const finalUrl = sharedUrl || (sharedText && sharedText.match(/https?:\/\/[^\s]+/)?.[0]) || sharedText;
+        
+        if (finalUrl) {
+            app.links.unshift({
+                id: Date.now().toString(),
+                url: finalUrl,
+                title: sharedTitle || "Link Compartido Externo",
+                tags: ["Externo"]
+            });
+            save();
+            renderLinks();
+            renderDashboard();
+            switchTab('view-links');
+            alert("VICO POCKET: Link guardado en la Memory Card.");
+            // Limpiar la URL para evitar que se guarde de nuevo al recargar
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }
+}
+        function toggleFocus() {
+            const ctrl = document.getElementById('pomo-ctrl'), tb = document.getElementById('top-taskbar');
+            if(app.pomo.active) { clearInterval(app.pomo.timer); app.pomo.active = false; tb.classList.add('hidden'); ctrl.innerHTML = '<i data-lucide="play" fill="white"></i>'; }
+            else { app.pomo.active = true; tb.classList.remove('hidden'); ctrl.innerHTML = '<i data-lucide="pause" fill="white"></i>';
+                app.pomo.timer = setInterval(() => { app.pomo.time--; updatePomoUI(); if(app.pomo.time <= 0) { resetFocus(); alert("Focus terminado."); } }, 1000);
+            }
+            lucide.createIcons();
+        }
+        function resetFocus() { clearInterval(app.pomo.timer); app.pomo.time = 1500; app.pomo.active = false; document.getElementById('top-taskbar').classList.add('hidden'); updatePomoUI(); document.getElementById('pomo-ctrl').innerHTML = '<i data-lucide="play" fill="white"></i>'; lucide.createIcons(); }
+        function updatePomoUI() { const m = Math.floor(app.pomo.time/60), s = app.pomo.time%60; const str = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; document.getElementById('pomo-clock').innerText = str; document.getElementById('mini-timer').innerText = str; }
+        function minimizePomo() { document.getElementById('modal-pomo').classList.add('hidden'); if(app.pomo.active) document.getElementById('top-taskbar').classList.remove('hidden'); }
+        let deferredPrompt; window.addEventListener('beforeinstallprompt',(e)=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('install-banner').classList.remove('hidden'); });
+        async function triggerPwaInstall(){ if(!deferredPrompt)return; deferredPrompt.prompt(); const {outcome}=await deferredPrompt.userChoice; if(outcome==='accepted')document.getElementById('install-banner').classList.add('hidden'); deferredPrompt=null; }
+    function forceSystemUpdate() {
+    playSound('siren');
+    if ('serviceWorker' in navigator) {
+        caches.keys().then(function(names) {
+            for (let name of names) caches.delete(name);
+        });
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+    // Forzar recarga completa desde el servidor ignorando caché
+    setTimeout(() => {
+        location.reload(true);
+    }, 500);
+    }
+        function createNewFolder() {
+    const name = prompt("Nombre de la nueva categoría:");
+    if (name && !app.folders.includes(name)) {
+        app.folders.push(name);
+        save();
+        renderNotes(); // Actualiza la barra superior
+        applySystemConfig(); // Actualiza el selector dentro del modal de notas
+        alert("Categoría '" + name + "' creada.");
+    }
+        }
+        function minimizePomo() {
+    document.getElementById('modal-pomo').classList.add('hidden');
+    if(app.pomo.active) {
+        document.getElementById('top-taskbar').classList.remove('hidden');
+    }
+        }
+        function saveNote() {
+    const id = document.getElementById('nt-id').value;
+    const title = document.getElementById('nt-title').value;
+    const content = document.getElementById('nt-text').value;
+    const folder = document.getElementById('nt-folder-modal').value;
+    const color = document.getElementById('nt-color').value;
+
+    if (!title || !content) return alert("Completa los campos.");
+
+    if (id) {
+        // Editar existente
+        const idx = app.notes.findIndex(n => n.id === id);
+        app.notes[idx] = { ...app.notes[idx], title, content, folder, color };
+    } else {
+        // Nueva nota
+        app.notes.unshift({
+            id: Date.now().toString(),
+            title, content, folder, color,
+            date: new Date().toLocaleDateString()
+        });
+    }
+
+    save();
+    renderNotes();
+    renderDashboard();
+    closeModal('modal-note');
+    playSound(800);
+        }
+   function save() {
+            localStorage.setItem('vp_notes', JSON.stringify(app.notes));
+            localStorage.setItem('vp_events', JSON.stringify(app.events));
+            localStorage.setItem('vp_links', JSON.stringify(app.links));
+            localStorage.setItem('vp_config', JSON.stringify(app.config)); // UNIFICADO
+            localStorage.setItem('vp_btns', JSON.stringify(app.btns));
+            localStorage.setItem('vp_rss', JSON.stringify(app.rss));
+            localStorage.setItem('vp_folders', JSON.stringify(app.folders));
+        }
+
+        function exportOSData() {
+            const blob = new Blob([JSON.stringify(app)], {type: 'application/json'});
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `vico_pocket_backup_${Date.now()}.json`; a.click();
+        }
+
+        function importOSData(input) {
+            const reader = new FileReader();
+            reader.onload = e => { 
+                try { app = JSON.parse(e.target.result); save(); location.reload(); } catch(err) { alert("Error en JSON"); }
+            };
+            reader.readAsText(input.files[0]);
+    }
+    </script>
+</body>
+</html>
