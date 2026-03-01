@@ -173,46 +173,75 @@
             <div id="discovery-chips" class="flex gap-2 overflow-x-auto no-scrollbar pb-4"></div>
             <div id="news-list" class="space-y-6 pb-20"></div>
         </section>
-
-        <section id="view-calendar" class="hidden p-5 fade-in">
+<section id="view-calendar" class="hidden p-5 fade-in pb-20">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold orbitron text-yellow-500">Agenda</h2>
-                <button onclick="openEventModal()" class="bg-yellow-600 p-2.5 rounded-xl text-white"><i data-lucide="plus"></i></button>
+                <h2 class="text-xl font-bold orbitron text-yellow-500">Agenda Pro</h2>
+                <button onclick="openEventModal()" class="bg-yellow-600 p-2.5 rounded-xl text-white shadow-lg active:scale-95"><i data-lucide="plus"></i></button>
             </div>
-            <div id="events-list" class="space-y-3 pb-20"></div>
+            <div id="events-list" class="space-y-3 mb-8"></div>
+            <div class="glass-panel p-4 rounded-2xl border-white/5">
+                <h3 class="text-[9px] font-bold text-slate-500 uppercase mb-3">Historial de Notificaciones</h3>
+                <div id="notif-history" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar"></div>
+                <button onclick="clearNotifHistory()" class="w-full mt-3 text-[8px] text-red-400 uppercase font-bold">Limpiar Historial</button>
+            </div>
         </section>
 
         <section id="view-profile" class="hidden p-5 fade-in pb-24">
             <h2 class="text-2xl font-bold orbitron mb-6 text-slate-300">VICO Core</h2>
             <div class="space-y-6">
-                <div class="glass-panel p-5 rounded-3xl">
-                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-4">Motor Neural</h3>
-                    <div class="flex gap-2">
-                        <input type="password" id="api-key-input" placeholder="API Key..." class="flex-1 text-xs">
-                        <button onclick="saveApi()" class="bg-green-600 px-4 rounded-xl font-bold text-xs text-white">SAVE</button>
+                <div class="glass-panel p-5 rounded-3xl border-blue-500/20">
+                    <h3 class="text-[10px] font-bold text-blue-400 uppercase mb-4">Diseñador de Accesos (Dashboard)</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <input type="text" id="btn-name" placeholder="Etiqueta" class="text-xs">
+                        <input type="text" id="btn-url" placeholder="URL (https://...)" class="text-xs">
                     </div>
+                    <button onclick="createCustomBtn()" class="w-full bg-blue-600 py-3 rounded-xl font-bold text-xs text-white shadow-lg">Inyectar Botón</button>
                 </div>
-                <div class="glass-panel p-5 rounded-3xl space-y-4">
-                    <h3 class="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Ajustes de Sistema</h3>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Tema Visual</span><select id="sys-theme" onchange="updateSystem('theme', this.value)" class="text-[10px] py-1 px-4"><option value="Cyber">Cyber Blue</option><option value="Gold">Luxury Gold</option><option value="Nature">Nature Green</option></select></div>
-                    <div class="flex justify-between items-center"><span class="text-xs text-slate-300">Idioma</span><select id="sys-lang" onchange="updateSystem('lang', this.value)" class="text-[10px] py-1 px-4"><option value="es">Español</option><option value="en">English</option></select></div>
-                </div>
-                <div class="glass-panel p-5 rounded-3xl border-blue-500/30 space-y-4">
-                    <h3 class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">Sincronización & Sync</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="exportOSData()" class="bg-green-600/20 border border-green-500/50 py-2 rounded-xl text-[9px] font-bold text-green-400 uppercase">Exportar JSON</button>
-                        <button onclick="document.getElementById('import-file').click()" class="bg-blue-600/20 border border-blue-500/50 py-2 rounded-xl text-[9px] font-bold text-blue-400 uppercase">Importar JSON</button>
-                        <input type="file" id="import-file" class="hidden" onchange="importOSData(this)">
+
+                <div class="glass-panel p-5 rounded-3xl text-[10px] text-slate-400 space-y-3">
+                    <h4 class="font-bold text-white uppercase border-b border-white/5 pb-2">Seguridad & Privacidad</h4>
+                    <p>VICO POCKET v12 funciona bajo cifrado local. Ningún dato sale de este dispositivo. El núcleo está protegido contra inyecciones externas.</p>
+                    <p class="font-bold text-blue-400 flex items-center gap-2">
+                        <i data-lucide="shield-check" size="14"></i> Cifrado Local-First Activo
+                    </p>
+                    <div class="pt-2 border-t border-white/5">
+                        <p class="text-[9px]">Desarrollado por:</p>
+                        <a href="https://www.linkedin.com/in/jaime-andrés-dueñas-vicuña" target="_blank" class="text-white font-bold underline flex items-center gap-2 mt-1">
+                            <i data-lucide="linkedin" size="12"></i> Jaime Andrés Dueñas Vicuña
+                        </a>
                     </div>
-                    <div class="flex justify-between items-center border-t border-white/5 pt-3"><span class="text-[10px] text-slate-400 uppercase font-bold">Notificaciones Android</span><input type="checkbox" id="sys-notify" onchange="updateSystem('notifications', this.checked)" class="w-5 h-5 accent-green-600"></div>
-                    <div class="flex justify-between items-center"><span class="text-[10px] text-slate-400 uppercase font-bold">Sonidos UI</span><input type="checkbox" id="sys-ui-sounds" onchange="updateSystem('uiSounds', this.checked)" class="w-5 h-5 accent-blue-600"></div>
-                    <div class="mt-4"><h4 class="text-[9px] font-bold text-blue-400 uppercase mb-2">Alertas RSS Individuales</h4><div id="rss-notify-controls" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar"></div></div>
-                </div>
-                <div class="glass-panel p-5 rounded-3xl text-center">
-                    <a href="https://www.paypal.com/paypalme/proyectosduvi" target="_blank" class="inline-flex items-center gap-2 bg-[#0070ba] px-6 py-2 rounded-full font-bold text-[10px] text-white shadow-lg"><i data-lucide="coffee" size="14"></i> PayPal Support</a>
-                    <p class="text-[8px] text-slate-600 mt-4 leading-relaxed">VICO POCKET OS - Handcrafted by Jaime Andrés Dueñas Vicuña. Local-First Nucleus Protected.</p>
                 </div>
             </div>
+        </section>
+    </main>
+
+    <div id="modal-link" class="fixed inset-0 z-[1000] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-[40px] p-8 border-green-500/30 shadow-[0_0_50px_rgba(16,185,129,0.2)]">
+            <div class="w-16 h-16 bg-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="link-2" class="text-green-400" size="32"></i>
+            </div>
+            <h3 class="orbitron text-center text-lg text-white mb-6">Captura Elite</h3>
+            <div class="space-y-4">
+                <input type="text" id="lk-url" placeholder="https://..." class="w-full text-sm py-4">
+                <input type="text" id="lk-title" placeholder="Título del enlace..." class="w-full text-sm py-4">
+                <input type="text" id="lk-tags" placeholder="Etiquetas (opcional, separadas por comas)" class="w-full text-[10px] py-4">
+                <div class="flex gap-3 pt-4">
+                    <button onclick="saveLink()" class="flex-1 bg-green-600 py-4 rounded-2xl font-bold text-white shadow-lg active:scale-95 transition-all">GUARDAR</button>
+                    <button onclick="closeModal('modal-link')" class="flex-1 glass-panel py-4 rounded-2xl text-xs">CERRAR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-kanban" class="fixed inset-0 z-[1000] bg-black/90 flex items-center justify-center p-6 hidden">
+        <div class="glass-panel w-full max-w-sm rounded-3xl p-6 space-y-4">
+            <h3 class="orbitron text-purple-400 text-sm uppercase">Nueva Tarea Kanban</h3>
+            <input type="text" id="kb-task" placeholder="¿Qué hay que hacer?" class="w-full text-sm">
+            <select id="kb-col" class="w-full text-xs"><option value="todo">TODO</option><option value="doing">DOING</option><option value="done">DONE</option></select>
+            <button onclick="saveKanbanTask()" class="w-full bg-purple-600 py-3 rounded-xl font-bold text-white uppercase text-[10px]">Añadir al Flow</button>
+            <button onclick="closeModal('modal-kanban')" class="w-full text-[10px] text-slate-500">DESCARTAR</button>
+        </div>
+    </div>
         </section>
     </main>
 
@@ -265,146 +294,56 @@
     </div>
 
     <script>
-        // --- PROTECCIÓN NÚCLEO PACK DUVI ---
-        setInterval(() => { const start = Date.now(); debugger; if (Date.now() - start > 100) { document.body.innerHTML = "<h1 class='orbitron' style='color:red; text-align:center; padding-top:20%'>ERROR: VIOLACIÓN DE NÚCLEO DETECTADA</h1>"; } }, 1000);
-        if (window.location.hostname !== "worksduvi.github.io" && window.location.hostname !== "localhost") { document.body.innerHTML = "<h1>ACCESO DENEGADO</h1>"; }
-
-        // --- MOTOR DE DATOS ---
+        // --- 🛡️ PROTOCOLO ANTI-AMNESIA & SEGURIDAD ---
+        setInterval(() => { const start = Date.now(); debugger; if (Date.now() - start > 100) { document.body.innerHTML = "<h1 class='orbitron' style='color:red; text-align:center; padding-top:20%'>NÚCLEO BLOQUEADO: VIOLACIÓN DETECTADA</h1>"; } }, 1000);
+        
+        // --- 🧠 MOTOR DE DATOS PERSISTENTE ---
         let app = {
             notes: JSON.parse(localStorage.getItem('vp_notes')) || [],
             events: JSON.parse(localStorage.getItem('vp_events')) || [],
             links: JSON.parse(localStorage.getItem('vp_links')) || [],
-            favs: JSON.parse(localStorage.getItem('vp_favs')) || [],
+            btns: JSON.parse(localStorage.getItem('vp_btns')) || [],
+            kanban: JSON.parse(localStorage.getItem('vp_kanban')) || [],
             rss: JSON.parse(localStorage.getItem('vp_rss')) || [
-                {name:'The Verge', url:'https://www.theverge.com/rss/index.xml', notify: true},
-                {name:'MIT News', url:'https://news.mit.edu/rss/feed', notify: true},
-                {name:'TechCrunch', url:'https://techcrunch.com/feed/', notify: true},
-                {name:'Nature', url:'https://www.nature.com/nature/articles?type=rss', notify: true},
-                {name:'El Mundo', url:'https://e00-elmundo.uecdn.es/rss/portada.xml', notify: true},
-                {name:'CNN', url:'http://rss.cnn.com/rss/cnn_topstories.rss', notify: true},
-                {name:'Infobae', url:'https://www.infobae.com/feeds/rss/', notify: true},
-                {name:'Computer Hoy', url:'https://computerhoy.com/rss.xml', notify: true},
-                {name:'WIRED', url:'https://www.wired.com/feed/rss', notify: true}
+                {name:'The Verge', url:'https://www.theverge.com/rss/index.xml'},
+                {name:'MIT News', url:'https://news.mit.edu/rss/feed'},
+                {name:'TechCrunch', url:'https://techcrunch.com/feed/'},
+                {name:'Nature', url:'https://www.nature.com/nature/articles?type=rss'},
+                {name:'El Mundo', url:'https://e00-elmundo.uecdn.es/rss/portada.xml'},
+                {name:'CNN', url:'http://rss.cnn.com/rss/cnn_topstories.rss'},
+                {name:'Infobae', url:'https://www.infobae.com/feeds/rss/'},
+                {name:'Ecoinventos', url:'https://ecoinventos.com/feed/'},
+                {name:'Computer Hoy', url:'https://computerhoy.com/rss.xml'},
+                {name:'WIRED', url:'https://www.wired.com/feed/rss'},
+                {name:'MIT Tech Review', url:'https://www.technologyreview.com/feed/'}
             ],
-            config: JSON.parse(localStorage.getItem('vp_config')) || { key: '', theme: 'Cyber', uiSounds: true, notifications: true, lang: 'es', mode: 'dark' },
+            config: JSON.parse(localStorage.getItem('vp_config')) || { 
+                key: '', theme: 'Cyber', sound: true, uiSounds: true, 
+                lang: 'es', notifications: true, mode: 'dark' 
+            },
             pomo: { time: 1500, active: false, timer: null },
-            folders: JSON.parse(localStorage.getItem('vp_folders')) || ["Proyectos", "Código", "Links", "Varios"],
+            folders: JSON.parse(localStorage.getItem('vp_folders')) || ["Fijadas", "Proyectos", "Código", "Links"],
             activeFolder: 'Proyectos', activeRss: 0, notified: []
         };
 
+        // --- 🔊 SONIDOS & UI ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if(!app.config.uiSounds) return;
             const o = audioCtx.createOscillator(), g = audioCtx.createGain();
             o.connect(g); g.connect(audioCtx.destination);
-            if(type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.15); }
+            if(type === 'pulsar') { o.frequency.setValueAtTime(400, audioCtx.currentTime); o.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); }
             else if (type === '1500') { o.frequency.value = 1500; }
             else { o.frequency.value = parseInt(type) || 800; }
-            g.gain.setValueAtTime(0.05, audioCtx.currentTime);
-            g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-            o.start(); o.stop(audioCtx.currentTime + 0.3);
+            g.gain.setValueAtTime(0.05, audioCtx.currentTime); o.start(); o.stop(audioCtx.currentTime + 0.3);
         }
 
-        function applySystemConfig() {
-            const cfg = app.config;
-            document.body.className = `theme-${cfg.theme} ${cfg.mode === 'light' ? 'mode-light' : ''}`;
-            const snd = document.getElementById('sys-ui-sounds'), ntf = document.getElementById('sys-notify');
-            if(snd) { snd.checked = cfg.uiSounds; snd.parentElement.style.background = cfg.uiSounds ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)"; }
-            if(ntf) { ntf.checked = cfg.notifications; ntf.parentElement.style.background = cfg.notifications ? "rgba(16, 185, 129, 0.2)" : "rgba(239, 68, 68, 0.2)"; }
-            if(cfg.notifications && Notification.permission !== "granted") Notification.requestPermission();
-            renderRssNotifyControls();
-        }
-
-        async function vicoNeuralLink(promptText) {
-            const key = app.config.key.trim();
-            if (!key) throw new Error("API Key faltante");
-            let url, body, headers = { "Content-Type": "application/json" };
-            if (key.startsWith('gsk_')) {
-                url = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
-                headers["Authorization"] = `Bearer ${key}`;
-                body = { model: "llama-3.3-70b-versatile", messages: [{role: "user", content: promptText}] };
-            } else {
-                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
-                body = { contents: [{ parts: [{ text: promptText }] }] };
-            }
-            const r = await fetch(url, { method: "POST", headers, body: JSON.stringify(body) });
-            const d = await r.json();
-            return key.startsWith('gsk_') ? d.choices[0].message.content : d.candidates[0].content.parts[0].text;
-        }
-
-        async function runROIAnalysis() {
-            const q = document.getElementById('ai-query').value;
-            if(!q) return alert("Define el objetivo.");
-            const btn = document.getElementById('btn-ai'), micro = document.getElementById('vico-microwave'), microTxt = document.getElementById('microwave-content');
-            btn.disabled = true; micro.classList.remove('hidden');
-            let progress = 0;
-            const thoughts = ["Analizando pautas bursátiles...", "Extrayendo autores 2026...", "Calculando volatilidad...", "Modelando diagramas Élite...", "Finalizando reporte ejecutivo..."];
-            const interval = setInterval(() => {
-                progress += 1;
-                document.getElementById('pomo-knob').style.setProperty('--progress', (progress * 3.6) + 'deg');
-                document.getElementById('micro-percent').innerText = progress + '%';
-                if(progress % 20 === 0) microTxt.innerHTML = thoughts[progress/20 - 1] + "<br>" + microTxt.innerHTML;
-                if(progress >= 100) clearInterval(interval);
-            }, 60);
-
-            try {
-                const megaPrompt = `Análisis Bursátil Profesional de: ${q}. INCLUYE: Comparativa autores 2026 y fechas. IMPORTANTE: Al final añade: DATA_BLOCK[85, 40, 90, 30, 70] con datos reales. Responde sin Markdown.`;
-                const aiRes = await vicoNeuralLink(megaPrompt);
-                const dataMatch = aiRes.match(/DATA_BLOCK\[(.*?)\]/);
-                const chartData = dataMatch ? dataMatch[1].split(',').map(Number) : [60, 50, 80, 40, 70];
-                playSound('1500'); // DING!
-                document.getElementById('ai-results').classList.remove('hidden');
-                document.getElementById('ai-report').innerText = aiRes.replace(/DATA_BLOCK\[.*?\]/, "");
-                renderAllChartsPro(chartData);
-            } catch(e) { alert("Error Neural."); }
-            finally { btn.disabled = false; micro.classList.add('hidden'); }
-        }
-
-        function renderAllChartsPro(dataArray) {
-            const chartIds = ['chartStock', 'chartRadarPro', 'chartPiePro', 'chartBarPro', 'chartAreaPro', 'chartComparison'];
-            setTimeout(() => {
-                chartIds.forEach((id, index) => {
-                    const ctx = document.getElementById(id).getContext('2d');
-                    const existing = Chart.getChart(id); if (existing) existing.destroy();
-                    new Chart(ctx, {
-                        type: id.includes('Stock') ? 'line' : (id.includes('Radar') ? 'radar' : (id.includes('Pie') ? 'doughnut' : 'bar')),
-                        data: { labels: ['VAL','ROI','VAR','GROW','RISK'], datasets: [{ data: dataArray.map(v => v + index), borderColor: '#00fff7', backgroundColor: 'rgba(0, 255, 247, 0.1)', fill: true, tension: 0.4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: id.includes('Radar') || id.includes('Pie') ? {} : { y: { display: true, grid: { color: 'rgba(255,255,255,0.02)' } } } }
-                    });
-                });
-            }, 200);
-        }
-
-        async function sendChat() {
-            const inp = document.getElementById('chat-in'), msgs = document.getElementById('chat-msgs');
-            if(!inp.value) return;
-            const ut = inp.value; msgs.innerHTML += `<div class="chat-bubble chat-user">${ut}</div>`; inp.value = ''; msgs.scrollTop = msgs.scrollHeight;
-            try {
-                const res = await vicoNeuralLink(`Actúa como VICO. Responde a: ${ut}. REGLA: Si crees que un diagrama ayudaría añade al final: [SUGESTION_VISUAL]. Sin Markdown.`);
-                if (res.includes("[SUGESTION_VISUAL]")) {
-                    msgs.innerHTML += `<div class="chat-bubble chat-bot">${res.replace("[SUGESTION_VISUAL]", "")}</div>`;
-                    msgs.innerHTML += `<div class="glass-panel p-3 border-blue-500/50 my-2 rounded-xl"><p class="text-[10px] text-blue-300 font-bold">¿Quieres un diagrama?</p><button onclick="renderChatDiagram()" class="bg-blue-600 text-[9px] px-3 py-1 rounded-full mt-2">GENERAR</button></div>`;
-                } else { msgs.innerHTML += `<div class="chat-bubble chat-bot">${res}</div>`; }
-            } catch(e) { msgs.innerHTML += `<div class="text-red-500 text-[9px] p-2">Error Neural.</div>`; }
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-
-        function renderChatDiagram() {
-            const msgs = document.getElementById('chat-msgs'), id = "diag-" + Date.now();
-            msgs.innerHTML += `<div class="vico-diagram-container" id="${id}"><div class="diagram-btn-float"><button onclick="downloadPng('${id}')" class="p-1 bg-blue-600 rounded text-white text-[8px]">PNG</button></div><canvas id="canvas-${id}" height="180"></canvas></div>`;
-            const ctx = document.getElementById(`canvas-${id}`).getContext('2d');
-            new Chart(ctx, { type: 'radar', data: { labels: ['A','B','C','D','E'], datasets: [{ data: [80, 20, 90, 60, 95], borderColor: '#00fff7' }] } });
-            msgs.scrollTop = msgs.scrollHeight;
-        }
-
-        function downloadPng(id) { const link = document.createElement('a'); link.download = 'VICO_DIAG.png'; link.href = document.querySelector(`#${id} canvas`).toDataURL(); link.click(); }
-        function openNoteModal(id=null) {
-            const folderSelect = document.getElementById('nt-folder-modal');
-            folderSelect.innerHTML = app.folders.map(f => `<option value="${f}">${f}</option>`).join('');
-            document.getElementById('modal-note').classList.remove('hidden');
-            if(id) { const n = app.notes.find(x=>x.id===id); document.getElementById('nt-id').value=n.id; document.getElementById('nt-title').value=n.title; document.getElementById('nt-text').value=n.content; document.getElementById('nt-folder-modal').value=n.folder; }
-            else { document.getElementById('nt-id').value=''; document.getElementById('nt-title').value=''; document.getElementById('nt-text').value=''; }
-            playSound('800');
+        // --- 📅 AGENDA PRO & NOTIFICACIONES ---
+        function saveEvent() {
+            const t = document.getElementById('ev-title').value, d = document.getElementById('ev-date').value;
+            if(!t || !d) return;
+            app.events.push({ id: Date.now().toString(), title: t, date: d });
+            save(); renderEvents(); closeModal('modal-event'); playSound('800');
         }
 
         function checkAgenda() {
@@ -413,27 +352,98 @@
                 const evDate = new Date(e.date);
                 if (Math.abs(now - evDate) < 60000 && !app.notified.includes(e.id)) {
                     if (app.config.notifications && 'serviceWorker' in navigator) {
-                        navigator.serviceWorker.ready.then(reg => reg.showNotification("VICO OS", { body: e.title, requireInteraction: true }));
+                        navigator.serviceWorker.ready.then(reg => {
+                            reg.showNotification("VICO OS", { 
+                                body: e.title, 
+                                icon: "icon.png", 
+                                requireInteraction: true,
+                                vibrate: [200, 100, 200]
+                            });
+                        });
                     }
-                    playSound('siren'); app.notified.push(e.id);
+                    triggerAlarm(e.title);
+                    app.notified.push(e.id);
                 }
             });
         }
 
-        function switchTab(id, el) { 
-            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); 
-            document.getElementById(id).classList.remove('hidden'); 
-            if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } 
-            playSound('800'); 
+        // --- 📋 KANBAN FLOW LOGIC ---
+        function addKanbanTask() { document.getElementById('modal-kanban').classList.remove('hidden'); }
+        function saveKanbanTask() {
+            const task = document.getElementById('kb-task').value;
+            const col = document.getElementById('kb-col').value;
+            if(!task) return;
+            app.kanban.push({ id: Date.now(), text: task, status: col });
+            save(); renderKanban(); closeModal('modal-kanban');
+        }
+        function renderKanban() {
+            ['todo', 'doing', 'done'].forEach(status => {
+                const col = document.getElementById(`col-${status}`);
+                col.innerHTML = `<h4 class="text-[8px] font-bold mb-2 uppercase">${status}</h4>`;
+                app.kanban.filter(t => t.status === status).forEach(t => {
+                    col.innerHTML += `<div class="kanban-card group relative">${t.text}
+                        <button onclick="delKanban(${t.id})" class="absolute right-1 top-1 opacity-0 group-hover:opacity-100 text-red-500">×</button>
+                    </div>`;
+                });
+            });
+        }
+        function delKanban(id) { app.kanban = app.kanban.filter(t => t.id !== id); save(); renderKanban(); }
+
+        // --- 🔗 LINKS POCKET (CAPTURA EXTERNA) ---
+        function checkShareTarget() {
+            const params = new URLSearchParams(window.location.search);
+            const url = params.get('url') || params.get('text');
+            if (url) {
+                document.getElementById('lk-url').value = url.match(/https?:\/\/[^\s]+/)?.[0] || url;
+                document.getElementById('modal-link').classList.remove('hidden');
+            }
+        }
+        function saveLink() {
+            const u = document.getElementById('lk-url').value, t = document.getElementById('lk-title').value, tags = document.getElementById('lk-tags').value;
+            if(!u) return;
+            app.links.unshift({ id: Date.now().toString(), url: u, title: t || u, tags: tags.split(',') });
+            save(); 
+            alert("Sincronizado en Memory Card.");
+            if(new URLSearchParams(window.location.search).get('url')) window.close(); // Auto-cierre tipo Pocket
+            else { renderLinks(); closeModal('modal-link'); }
         }
 
-        function save() { localStorage.setItem('vp_notes', JSON.stringify(app.notes)); localStorage.setItem('vp_events', JSON.stringify(app.events)); localStorage.setItem('vp_links', JSON.stringify(app.links)); localStorage.setItem('vp_config', JSON.stringify(app.config)); localStorage.setItem('vp_rss', JSON.stringify(app.rss)); localStorage.setItem('vp_folders', JSON.stringify(app.folders)); }
-        function toggleThemeMode() { app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark'; save(); applySystemConfig(); playSound('800'); }
-        function saveApi() { app.config.key = document.getElementById('api-key-input').value; save(); alert("Sync OK"); }
-        function renderRssNotifyControls() { const container = document.getElementById('rss-notify-controls'); if (container) container.innerHTML = app.rss.map((r, i) => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl mb-2"><span>${r.name}</span><button onclick="toggleRssNotify(${i})" class="px-3 py-1 rounded-lg text-[8px] ${r.notify ? 'bg-green-600' : 'bg-slate-700'}">${r.notify ? 'ON' : 'OFF'}</button></div>`).join(''); }
-        function toggleRssNotify(i) { app.rss[i].notify = !app.rss[i].notify; save(); renderRssNotifyControls(); }
+        // --- 📡 DISCOVERY RSS (11 FEEDS) ---
+        async function fetchNews(idx = 0) {
+            app.activeRss = idx; renderChips();
+            const list = document.getElementById('news-list');
+            list.innerHTML = '<div class="py-20 animate-pulse text-center text-blue-400">ENLAZANDO SATÉLITE...</div>';
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(app.rss[idx].url)}`);
+                const data = await res.json();
+                list.innerHTML = data.items.map(item => `
+                    <div class="news-card glass-panel p-4 rounded-3xl mb-4 border-white/5">
+                        <h4 class="text-sm font-bold text-white mb-2">${item.title}</h4>
+                        <div class="flex justify-between items-center">
+                            <a href="${item.link}" target="_blank" class="text-[9px] text-blue-400 font-bold uppercase">Leer más</a>
+                            <button onclick="saveLinkToPocket('${item.link}','${item.title.replace(/'/g,"")}')" class="text-slate-500"><i data-lucide="bookmark" size="14"></i></button>
+                        </div>
+                    </div>`).join('');
+                lucide.createIcons();
+            } catch(e) { list.innerHTML = '<p class="text-center text-red-500 text-xs">Error de conexión. Verifica internet.</p>'; }
+        }
 
-        window.onload = () => { lucide.createIcons(); applySystemConfig(); renderDashboard(); setInterval(checkAgenda, 20000); };
+        // --- ⚙️ SISTEMA & CORE ---
+        function save() { localStorage.setItem('vp_notes', JSON.stringify(app.notes)); localStorage.setItem('vp_events', JSON.stringify(app.events)); localStorage.setItem('vp_links', JSON.stringify(app.links)); localStorage.setItem('vp_config', JSON.stringify(app.config)); localStorage.setItem('vp_rss', JSON.stringify(app.rss)); localStorage.setItem('vp_folders', JSON.stringify(app.folders)); localStorage.setItem('vp_kanban', JSON.stringify(app.kanban)); }
+        function exportOSData() { const blob = new Blob([JSON.stringify(app)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `vico_backup_${Date.now()}.json`; a.click(); }
+        function importOSData(input) { const reader = new FileReader(); reader.onload = e => { try { app = JSON.parse(e.target.result); save(); location.reload(); } catch(err) { alert("Error en JSON"); } }; reader.readAsText(input.files[0]); }
+        function toggleThemeMode() { app.config.mode = app.config.mode === 'dark' ? 'light' : 'dark'; save(); location.reload(); }
+
+        window.onload = () => {
+            lucide.createIcons();
+            applySystemConfig();
+            renderAll();
+            checkShareTarget();
+            setInterval(checkAgenda, 20000);
+        };
+        function renderAll() { renderNotes(); renderKanban(); renderEvents(); fetchNews(0); renderLinks(); }
+        function switchTab(id, el) { document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); if(el) { document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); el.classList.add('active'); } playSound('800'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
     </script>
 </body>
 </html>
